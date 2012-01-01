@@ -1,3 +1,25 @@
+/*
+ * FastTravel - The Exploration and RPG-Friendly Teleportation Plugin
+ * 
+ * Copyright (c) 2011 craftycreeper, minebot.net
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would
+ *    be appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not
+ *    be misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source
+ *    distribution.
+ */
+
 package net.minebot.fasttravel.listeners;
 
 import net.minebot.fasttravel.FastTravel;
@@ -18,10 +40,6 @@ import org.bukkit.block.Sign;
 
 public class FastTravelBlockListener extends BlockListener {
 	
-	//private static final BlockFace[] breakFaces = {BlockFace.UP, BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH, BlockFace.SELF};
-	//private static final BlockFace[] placeFaces = {BlockFace.UP, BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH,
-	//	BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST, BlockFace.SELF};
-	
 	public void onBlockBreak(BlockBreakEvent event) {
 		if (event.isCancelled()) return;
 		
@@ -33,17 +51,6 @@ public class FastTravelBlockListener extends BlockListener {
 		if (FastTravelUtil.isFTSign(block))
 			sign = (Sign)block.getState();
 		else return;
-		
-		/*
-		else {
-			//Prevent removal via removing attached block
-			sign = attachedSign(block, breakFaces);
-			if (sign == null) return;
-			Block attached = getAttachedBlock(sign.getBlock());
-			//Not the block we need to be worrying about
-			if (attached != block) return;
-		}
-		*/
 		
 		//Now we see if a sign exists with the name on this one,
 		//and if so, check whether they have permissions to remove it
@@ -88,6 +95,9 @@ public class FastTravelBlockListener extends BlockListener {
 		}
 	}
 	
+	/* Outdated: we no longer worry about block placement. Kept here
+	 * in case I change my mind. */
+	
 	/*
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if (event.isCancelled()) return;
@@ -119,6 +129,15 @@ public class FastTravelBlockListener extends BlockListener {
 	*/
 
 	/*
+	private static final BlockFace[] breakFaces = {BlockFace.UP, BlockFace.EAST,
+		BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH, BlockFace.SELF};
+	private static final BlockFace[] placeFaces = {BlockFace.UP, BlockFace.EAST,
+		BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH,
+	BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH_EAST,
+		BlockFace.SOUTH_WEST, BlockFace.SELF};
+	 */
+	
+	/*
 	private Sign attachedSign(Block block, BlockFace[] faceList) {
         for (BlockFace bf : faceList) {
             Block face = block.getRelative(bf);
@@ -128,15 +147,6 @@ public class FastTravelBlockListener extends BlockListener {
             }
         }
         return null;
-    }
-	
-	public static Block getAttachedBlock(Block b) {
-        MaterialData m = b.getState().getData();
-        BlockFace face = BlockFace.DOWN;
-        if (m instanceof Attachable) {
-            face = ((Attachable) m).getAttachedFace();
-        }
-        return b.getRelative(face);
     }
     */
 
