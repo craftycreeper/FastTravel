@@ -1,28 +1,30 @@
 /*
- * FastTravel - The Exploration and RPG-Friendly Teleportation Plugin
+ * FastTravelSigns - The Simple Exploration and RPG-Friendly Teleportation Plugin
  * 
- * Copyright (c) 2011 craftycreeper, minebot.net
+ * Copyright (c) 2011-2012 craftycreeper, minebot.net
  * 
- * This software is provided 'as-is', without any express or implied
- * warranty. In no event will the authors be held liable for any damages
- * arising from the use of this software.
- * Permission is granted to anyone to use this software for any purpose,
- * including commercial applications, and to alter it and redistribute it
- * freely, subject to the following restrictions:
- *
- * 1. The origin of this software must not be misrepresented; you must not
- *    claim that you wrote the original software. If you use this software
- *    in a product, an acknowledgment in the product documentation would
- *    be appreciated but is not required.
- * 2. Altered source versions must be plainly marked as such, and must not
- *    be misrepresented as being the original software.
- * 3. This notice may not be removed or altered from any source
- *    distribution.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package net.minebot.fasttravel.listeners;
 
-import net.minebot.fasttravel.FastTravel;
+import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 
@@ -30,16 +32,19 @@ import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 //import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPhysicsEvent;
 //import org.bukkit.event.block.BlockPlaceEvent;
 //import org.bukkit.material.Attachable;
 //import org.bukkit.material.MaterialData;
 import org.bukkit.block.Sign;
 
-public class FastTravelBlockListener extends BlockListener {
+public class FastTravelBlockListener implements Listener {
 	
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBreak(BlockBreakEvent event) {
 		if (event.isCancelled()) return;
 		
@@ -58,17 +63,17 @@ public class FastTravelBlockListener extends BlockListener {
 		String[] lines = sign.getLines();
 		String signName = ChatColor.stripColor(lines[1]);
 		
-		if (!FastTravel.db.signExists(signName))
+		if (!FastTravelSignsPlugin.db.signExists(signName))
 			return;
 		
 		FastTravelSign ftsign = 
-			FastTravel.db.getSign(signName);
+			FastTravelSignsPlugin.db.getSign(signName);
 		
 		boolean allowed = false;
 		
-		if (player.hasPermission("fasttravel.remove.all"))
+		if (player.hasPermission("fasttravelsigns.remove.all"))
 			allowed = true;
-		else if (player.hasPermission("fasttravel.remove.own") &&
+		else if (player.hasPermission("fasttravelsigns.remove.own") &&
 			ftsign.getCreator().equals(player.getName()))
 			allowed = true;
 			
@@ -79,13 +84,14 @@ public class FastTravelBlockListener extends BlockListener {
 		}
 		
 		//Now we do the removal.
-		FastTravel.db.removeSign(ftsign.getName());
-		FastTravel.db.takeSignFromAllUsers(ftsign);
+		FastTravelSignsPlugin.db.removeSign(ftsign.getName());
+		FastTravelSignsPlugin.db.takeSignFromAllUsers(ftsign);
 		
 		FastTravelUtil.sendFTMessage(player, "Travel point " + ChatColor.AQUA +
 			ftsign.getName() + ChatColor.WHITE + " has been removed.");
 	}
 	
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockPhysics(BlockPhysicsEvent event) {
 		if (event.isCancelled()) return;
 		

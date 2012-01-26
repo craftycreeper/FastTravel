@@ -1,30 +1,32 @@
 /*
- * FastTravel - The Exploration and RPG-Friendly Teleportation Plugin
+ * FastTravelSigns - The Simple Exploration and RPG-Friendly Teleportation Plugin
  * 
- * Copyright (c) 2011 craftycreeper, minebot.net
+ * Copyright (c) 2011-2012 craftycreeper, minebot.net
  * 
- * This software is provided 'as-is', without any express or implied
- * warranty. In no event will the authors be held liable for any damages
- * arising from the use of this software.
- * Permission is granted to anyone to use this software for any purpose,
- * including commercial applications, and to alter it and redistribute it
- * freely, subject to the following restrictions:
- *
- * 1. The origin of this software must not be misrepresented; you must not
- *    claim that you wrote the original software. If you use this software
- *    in a product, an acknowledgment in the product documentation would
- *    be appreciated but is not required.
- * 2. Altered source versions must be plainly marked as such, and must not
- *    be misrepresented as being the original software.
- * 3. This notice may not be removed or altered from any source
- *    distribution.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ * of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package net.minebot.fasttravel.listeners;
 
 import java.util.HashMap;
 
-import net.minebot.fasttravel.FastTravel;
+import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 
@@ -32,14 +34,17 @@ import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerListener;
 
-public class FastTravelPlayerListener extends PlayerListener {
+public class FastTravelPlayerListener implements Listener {
 	
 	private HashMap<String, Long> interactLast = new HashMap<String, Long>();
 	
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if (event.isCancelled()) return;
 		
@@ -55,10 +60,10 @@ public class FastTravelPlayerListener extends PlayerListener {
 		String[] lines = sign.getLines();
 		String line1 = ChatColor.stripColor(lines[1]);
 		
-		if (!FastTravel.db.signExists(line1))
+		if (!FastTravelSignsPlugin.db.signExists(line1))
 			return;
 		
-		if (!player.hasPermission("fasttravel.use")) {
+		if (!player.hasPermission("fasttravelsigns.use")) {
 			FastTravelUtil.sendFTMessage(player,
 				"You don't have permission to use fast travel.");
 			return;
@@ -74,14 +79,14 @@ public class FastTravelPlayerListener extends PlayerListener {
 		interactLast.put(player.getName(), curTime);
 		//Now that the checks are done - see if the user has the sign, and
 		//if not, add it.
-		FastTravelSign ftsign = FastTravel.db.getSign(line1);
+		FastTravelSign ftsign = FastTravelSignsPlugin.db.getSign(line1);
 		
-		if (FastTravel.db.userHasSign(player.getName(), ftsign)) {
+		if (FastTravelSignsPlugin.db.userHasSign(player.getName(), ftsign)) {
 			FastTravelUtil.sendFTMessage(player, "You have already added travel point " +
 				ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE + ".");
 		}
 		else {
-			FastTravel.db.giveSignToUser(player.getName(), ftsign);
+			FastTravelSignsPlugin.db.giveSignToUser(player.getName(), ftsign);
 			FastTravelUtil.sendFTMessage(player, "Travel point " +
 				ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE + 
 				" added!");

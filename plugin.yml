@@ -1,25 +1,25 @@
-name: FastTravel
-main: net.minebot.fasttravel.FastTravel
-version: 0.2
+name: FastTravelSigns
+main: net.minebot.fasttravel.FastTravelSignsPlugin
+version: 0.3
 permissions:
-    fasttravel.use:
+    fasttravelsigns.use:
         description: Allows users to find travel points and use them with /ft.
-        default: true
-    fasttravel.multiworld:
+        default: op
+    fasttravelsigns.multiworld:
         description: Allows users to use fast travel points located in other worlds.
-        default: true
-    fasttravel.create:
+        default: op
+    fasttravelsigns.create:
         description: Allows users to create travel points.
         default: op
-    fasttravel.remove.all:
+    fasttravelsigns.remove.all:
         description: Allows users to remove all travel signs, including those of others.
         default: op
-    fasttravel.remove.own:
+    fasttravelsigns.remove.own:
         description: Allows users to remove their own travel signs.
         default: op
 commands:
     ft:
         description: Obtain list of travel points and warp to them
-        permission: fasttravel.use
+        permission: fasttravelsigns.use
         usage: |
             /ft [travelpoint]
