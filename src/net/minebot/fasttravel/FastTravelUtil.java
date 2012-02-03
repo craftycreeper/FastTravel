@@ -26,11 +26,10 @@ package net.minebot.fasttravel;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 public class FastTravelUtil {
 	
@@ -52,17 +51,17 @@ public class FastTravelUtil {
 		return false;
 	}
 	
-	public static void sendFTMessage(Player player, String mess) {
-		player.sendMessage(ChatColor.LIGHT_PURPLE + "[FastTravel]" +
+	public static void sendFTMessage(CommandSender sender, String mess) {
+		sender.sendMessage(ChatColor.LIGHT_PURPLE + "[FastTravel]" +
 					ChatColor.WHITE + " " + mess);
 	}
 	
-	public static boolean safeLocation(World world, Location loc) {
+	public static boolean safeLocation(Location loc) {
 		double y = loc.getY();
 		loc.setY(y+1);
-		Block block1 = world.getBlockAt(loc);
+		Block block1 = loc.getWorld().getBlockAt(loc);
 		loc.setY(y+2);
-		Block block2 = world.getBlockAt(loc);
+		Block block2 = loc.getWorld().getBlockAt(loc);
 		loc.setY(y);
 		int id1 = block1.getTypeId();
 		int id2 = block2.getTypeId();

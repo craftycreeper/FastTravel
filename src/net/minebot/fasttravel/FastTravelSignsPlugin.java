@@ -29,6 +29,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import net.minebot.fasttravel.commands.FastTravelCommand;
+import net.minebot.fasttravel.commands.FastTravelDeleteCommand;
+import net.minebot.fasttravel.commands.FastTravelListCommand;
+import net.minebot.fasttravel.commands.FastTravelSetpointCommand;
 import net.minebot.fasttravel.data.FastTravelDB;
 import net.minebot.fasttravel.listeners.*;
 
@@ -39,7 +42,6 @@ import org.bukkit.configuration.InvalidConfigurationException;
 public class FastTravelSignsPlugin extends JavaPlugin {
 
 	public static File dataDir = new File("plugins/FastTravelSigns");
-	public static FastTravelDB db;
 	
 	public void onEnable() {
 		//If folder does not exist, create it
@@ -63,8 +65,15 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 			e.printStackTrace();
 		}
 		
+		//Legacy database? Convert!
+		if (new File(dataDir + "/FastTravelSigns.db").exists() &&
+				!(new File(dataDir + "/signs.yml").exists())) {
+			getLogger().info("Old-style database found. Converting to new YAML format...");
+			FastTravelLegacyDBConverter.convert(dataDir + "/signs.yml", dataDir + "/FastTravelSigns.db");
+		}
+		
 		//Load signs database
-		db = new FastTravelDB(this);
+		FastTravelDB.init(this, dataDir + "/signs.yml");
 		
 		//Events
 		PluginManager pm = getServer().getPluginManager();
@@ -72,14 +81,17 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		pm.registerEvents(new FastTravelSignListener(), this);
 		pm.registerEvents(new FastTravelPlayerListener(), this);
 		
-		//command
+		//commands
 		getCommand("ft").setExecutor(new FastTravelCommand(this));
+		getCommand("ftlist").setExecutor(new FastTravelListCommand());
+		getCommand("ftdelete").setExecutor(new FastTravelDeleteCommand());
+		getCommand("ftsetpoint").setExecutor(new FastTravelSetpointCommand());
 		
 		getLogger().info("Enabled.");
 	}
 
 	public void onDisable() {
-		db.save();
+		//FastTravelDB.save();
 		
 		getLogger().info("Disabled.");
 	}

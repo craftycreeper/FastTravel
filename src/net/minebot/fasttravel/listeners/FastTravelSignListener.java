@@ -26,9 +26,9 @@ package net.minebot.fasttravel.listeners;
 
 import java.util.regex.Pattern;
 
-import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FastTravelSign;
+import net.minebot.fasttravel.data.FTSign;
+import net.minebot.fasttravel.data.FastTravelDB;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -70,7 +70,7 @@ public class FastTravelSignListener implements Listener {
 		}
 		
 		//Check for existing sign with this name
-		if (FastTravelSignsPlugin.db.signExists(lines[1])) {
+		if (FastTravelDB.getSign(lines[1]) != null) {
 			dropSign(sign);
 			FastTravelUtil.sendFTMessage(player,
 				"There is already a travel point named " + ChatColor.AQUA
@@ -89,12 +89,13 @@ public class FastTravelSignListener implements Listener {
 		}
 		
 		else {
-			FastTravelSign ftsign = FastTravelSignsPlugin.db.addSign(lines[1], sign, player);
+			FTSign newFTSign = new FTSign(lines[1], player.getName(), sign);
+			FastTravelDB.addSign(newFTSign);
 			
 			FastTravelUtil.sendFTMessage(player, "New travel point " +
 					ChatColor.AQUA + lines[1] + ChatColor.WHITE + " created.");
 			
-			FastTravelSignsPlugin.db.giveSignToUser(player.getName(), ftsign);
+			newFTSign.addPlayer(player.getName());
 			
 			//Colorize sign
 			event.setLine(0, ChatColor.DARK_PURPLE +

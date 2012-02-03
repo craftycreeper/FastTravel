@@ -24,14 +24,16 @@
 
 package net.minebot.fasttravel.commands;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FastTravelSign;
+import net.minebot.fasttravel.data.FTSign;
+import net.minebot.fasttravel.data.FastTravelDB;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -69,7 +71,7 @@ public class FastTravelCommand implements CommandExecutor {
 			//Check cooldown
 			int cooldownLength = plugin.getConfig().getInt("cooldown");
 			long curTime = System.currentTimeMillis()/1000;
-			if (cooldownLength > 0) {
+			if (cooldownLength > 0 && !player.hasPermission("fasttravelsigns.overrides.cooldown")) {
 				Long cd = cooldowns.get(player.getName());
 				if (cd != null && (curTime - cd) < cooldownLength) {
 					long timeRemaining = (cooldownLength - (curTime - cd));
@@ -86,29 +88,23 @@ public class FastTravelCommand implements CommandExecutor {
 			}
 			
 			//Time to travel. Check if the requested sign exists.
-			if (!FastTravelSignsPlugin.db.signExists(args[0])) {
+			FTSign ftsign = FastTravelDB.getSign(args[0]);
+			
+			if (ftsign == null) {
 				FastTravelUtil.sendFTMessage(player,
 					"That travel point does not exist.");
 				return true;
 			}
 			
-			FastTravelSign ftsign = FastTravelSignsPlugin.db.getSign(args[0]);
-			if (!FastTravelSignsPlugin.db.userHasSign(player.getName(), ftsign)) {
+			boolean allPoints = player.hasPermission("fasttravelsigns.overrides.allpoints");
+			if (!ftsign.foundBy(player.getName()) && !allPoints) {
 				FastTravelUtil.sendFTMessage(player,
 					"You haven't found that travel point yet.");
 				return true;
 			}
 			//Check if world exists
-			World targworld = plugin.getServer().getWorld(ftsign.getWorld());
-			if (targworld == null) {
-				FastTravelUtil.sendFTMessage(player,
-					"The world containing that location no longer exists. Oops!");
-				FastTravelSignsPlugin.db.removeSign(args[0]);
-				FastTravelSignsPlugin.db.takeSignFromAllUsers(ftsign);
-				return true;
-			}
-			
-			if (targworld != player.getWorld() &&
+			World targworld = ftsign.getTPLocation().getWorld();			
+			if (!allPoints && !targworld.equals(player.getWorld()) &&
 					!player.hasPermission("fasttravelsigns.multiworld")) {
 				FastTravelUtil.sendFTMessage(player,
 					"You may not fast travel to different worlds.");
@@ -116,14 +112,15 @@ public class FastTravelCommand implements CommandExecutor {
 			}
 			
 			//Go!
-			float yaw = (float)FastTravelUtil.getYawForFace(ftsign.getDirection());
-			Location target = new Location(targworld, ftsign.getX(), 
-					ftsign.getY(), ftsign.getZ(), yaw, 0);
-			while (!FastTravelUtil.safeLocation(targworld, target)) {
+			Location targ = ftsign.getTPLocation().clone();
+			while (!FastTravelUtil.safeLocation(targ)) {
 				//Find a safe place
-				target.setY(target.getY() + 1);
+				targ.setY(targ.getY() + 1);
 			}
-			player.teleport(target);
+			Chunk targChunk = targworld.getChunkAt(targ);
+			if (!targChunk.isLoaded())
+				targChunk.load();
+			player.teleport(targ);
 			FastTravelUtil.sendFTMessage(player, "Travelling to " + 
 					ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE + ".");
 			
@@ -135,7 +132,7 @@ public class FastTravelCommand implements CommandExecutor {
 	
 	private void sendList(Player player) {
 		FastTravelUtil.sendFTMessage(player, "Your travel points:");
-		ArrayList<FastTravelSign> usigns = FastTravelSignsPlugin.db.getUserSigns(player.getName());
+		List<FTSign> usigns = FastTravelDB.getSignsFor(player.getName());
 		if (usigns == null || usigns.size() == 0) {
 			FastTravelUtil.sendFTMessage(player,
 				"None. Find [FastTravel] signs and right click them to activate.");
@@ -143,7 +140,7 @@ public class FastTravelCommand implements CommandExecutor {
 		else {
 			int counter = 0;
 			String pointstr = "";
-			for (FastTravelSign sign : usigns) {
+			for (FTSign sign : usigns) {
 				counter++;
 				if (counter != 1) pointstr = pointstr + ", ";
 				pointstr = pointstr + ChatColor.AQUA + sign.getName() + ChatColor.WHITE;
@@ -157,7 +154,5 @@ public class FastTravelCommand implements CommandExecutor {
 				FastTravelUtil.sendFTMessage(player, pointstr);
 		}
 	}
-	
-	
 
 }

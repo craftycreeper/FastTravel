@@ -26,9 +26,9 @@ package net.minebot.fasttravel.listeners;
 
 import java.util.HashMap;
 
-import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FastTravelSign;
+import net.minebot.fasttravel.data.FTSign;
+import net.minebot.fasttravel.data.FastTravelDB;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -60,12 +60,13 @@ public class FastTravelPlayerListener implements Listener {
 		String[] lines = sign.getLines();
 		String line1 = ChatColor.stripColor(lines[1]);
 		
-		if (!FastTravelSignsPlugin.db.signExists(line1))
+		
+		FTSign ftsign = FastTravelDB.getSign(line1);
+		if (ftsign == null)
 			return;
 		
 		if (!player.hasPermission("fasttravelsigns.use")) {
-			FastTravelUtil.sendFTMessage(player,
-				"You don't have permission to use fast travel.");
+			FastTravelUtil.sendFTMessage(player, "You don't have permission to use fast travel.");
 			return;
 		}
 		
@@ -79,14 +80,13 @@ public class FastTravelPlayerListener implements Listener {
 		interactLast.put(player.getName(), curTime);
 		//Now that the checks are done - see if the user has the sign, and
 		//if not, add it.
-		FastTravelSign ftsign = FastTravelSignsPlugin.db.getSign(line1);
 		
-		if (FastTravelSignsPlugin.db.userHasSign(player.getName(), ftsign)) {
+		if (ftsign.foundBy(player.getName())) {
 			FastTravelUtil.sendFTMessage(player, "You have already added travel point " +
 				ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE + ".");
 		}
 		else {
-			FastTravelSignsPlugin.db.giveSignToUser(player.getName(), ftsign);
+			ftsign.addPlayer(player.getName());
 			FastTravelUtil.sendFTMessage(player, "Travel point " +
 				ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE + 
 				" added!");

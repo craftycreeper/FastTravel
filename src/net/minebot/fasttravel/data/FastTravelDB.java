@@ -24,119 +24,137 @@
 
 package net.minebot.fasttravel.data;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
 
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class FastTravelDB {
 
-	private HashMap<String,FastTravelSign> signs;
-	private HashMap<String,ArrayList<FastTravelSign>> userSigns;
+	private static FastTravelSignsPlugin plugin;
 	
-	private String savePath = FastTravelSignsPlugin.dataDir + "/FastTravelSigns.db";
+	private static Map<String,FTSign> signs;
 	
-	public FastTravelDB(FastTravelSignsPlugin plugin) {
-		File savefile = new File(savePath);
-		if (savefile.exists()) {
-			load();
-			plugin.getLogger().info("Loaded " + signs.size() + " travel signs.");
+	private static String saveFile;
+	
+	public static void init(FastTravelSignsPlugin plugin, String saveFile) {
+		FastTravelDB.plugin = plugin;
+		FastTravelDB.saveFile = saveFile;
+		
+		signs = new HashMap<String,FTSign>();
+		
+		load();
+	}
+	
+	private static void load() {
+		YamlConfiguration signYAML = new YamlConfiguration();
+		try {
+			signYAML.load(saveFile);
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
 		}
 		
-		else {
-			signs = new HashMap<String,FastTravelSign>();
-			userSigns = new HashMap<String,ArrayList<FastTravelSign>>();
-			plugin.getLogger().info("Creating new database.");
+		for(String signName : signYAML.getKeys(false)) {
+			String creator = signYAML.getString(signName + ".creator");
+			World locWorld = plugin.getServer().getWorld(signYAML.getString(signName + ".signloc.world"));
+			World tpLocWorld = plugin.getServer().getWorld(signYAML.getString(signName + ".tploc.world"));
+			List<String> signPlayers = signYAML.getStringList(signName + ".players");
 			
-			save();
+			if (creator == null || locWorld == null || tpLocWorld == null) {
+				plugin.getLogger().warning("Could not load sign '"+signName+"' - missing data!");
+				continue;
+			}
+			
+			Location location = new Location(locWorld, signYAML.getDouble(signName + ".signloc.x"),
+					signYAML.getDouble(signName + ".signloc.y"), signYAML.getDouble(signName + ".signloc.z"));
+			location.setYaw((float) signYAML.getDouble(signName + ".signloc.yaw"));
+			
+			Location tploc = new Location(locWorld, signYAML.getDouble(signName + ".tploc.x"),
+					signYAML.getDouble(signName + ".tploc.y"), signYAML.getDouble(signName + ".tploc.z"));
+			tploc.setYaw((float) signYAML.getDouble(signName + ".tploc.yaw"));
+			
+			signs.put(signName.toLowerCase(), new FTSign(signName, creator, location, tploc, signPlayers));
 		}
-	}
-	
-	public boolean signExists(String name) {
-		return signs.containsKey(name.toLowerCase());
-	}
-	
-	public boolean signAt(int x, int y, int z) {
-		for (FastTravelSign sign : signs.values()) {
-			if (sign.getX() == x && sign.getY() == y && sign.getZ() == z)
-				return true;
-		}
-		return false;
-	}
-	
-	public FastTravelSign getSign(String name) {
-		return signs.get(name.toLowerCase());
-	}
-	
-	public boolean userHasSign(String username, FastTravelSign sign) {
-		if (!userSigns.containsKey(username)) return false;
-		else return userSigns.get(username).contains(sign);
-	}
-	
-	public ArrayList<FastTravelSign> getUserSigns(String username) {
-		if (!userSigns.containsKey(username)) return null;
-		else return userSigns.get(username);
-	}
-	
-	//Add/remove signs
-	public FastTravelSign addSign(String name, Block block, Player p) {
-		FastTravelSign ftsign = new FastTravelSign(name, p.getName(), block);
-		signs.put(name.toLowerCase(), ftsign);
-		save();
-		return ftsign;
-	}
-	
-	public void removeSign(String name) {
-		signs.remove(name.toLowerCase());
-		save();
-	}
-	
-	//Which users have which sign access
-	public void giveSignToUser(String username, FastTravelSign sign) {
-		if (!userSigns.containsKey(username))
-			userSigns.put(username, new ArrayList<FastTravelSign>());
 		
-		ArrayList<FastTravelSign> usigns = userSigns.get(username);
+		plugin.getLogger().info("Loaded " + signs.size() + " fast travel signs.");
 		
-		if (!usigns.contains(sign)) {
-			usigns.add(sign);
-			Collections.sort(usigns);
-			save();
+	}
+	
+	public static void save() {
+		YamlConfiguration signYAML = new YamlConfiguration();
+		for(String signName : signs.keySet()) {
+			FTSign sign = signs.get(signName);
+			signName = sign.getName();
+			signYAML.set(signName + ".creator", sign.getCreator());
+			signYAML.set(signName + ".signloc.world", sign.getSignLocation().getWorld().getName());
+			signYAML.set(signName + ".signloc.x", sign.getSignLocation().getX());
+			signYAML.set(signName + ".signloc.y", sign.getSignLocation().getY());
+			signYAML.set(signName + ".signloc.z", sign.getSignLocation().getZ());
+			signYAML.set(signName + ".signloc.yaw", (double)sign.getSignLocation().getYaw());
+			signYAML.set(signName + ".tploc.world", sign.getTPLocation().getWorld().getName());
+			signYAML.set(signName + ".tploc.x", sign.getTPLocation().getX());
+			signYAML.set(signName + ".tploc.y", sign.getTPLocation().getY());
+			signYAML.set(signName + ".tploc.z", sign.getTPLocation().getZ());
+			signYAML.set(signName + ".tploc.yaw", (double)sign.getTPLocation().getYaw());
+			signYAML.set(signName + ".players", sign.getPlayers());
+		}
+		
+		try {
+			signYAML.save(saveFile);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
-	public void takeSignFromUser(String username, FastTravelSign sign) {
-		if (!userSigns.containsKey(username)) return;
-		ArrayList<FastTravelSign> usigns = userSigns.get(username);
-		if (usigns.contains(sign)) {
-			usigns.remove(sign);
-			save();
-		}
-	}
-	
-	public void takeSignFromAllUsers(FastTravelSign sign) {
-		for (ArrayList<FastTravelSign> usigns : userSigns.values()) {
-			if (usigns.contains(sign))
-				usigns.remove(sign);
-		}
+	public static void removeSign(String name) {
+		if (signs.containsKey(name.toLowerCase()))
+			signs.remove(name.toLowerCase());
 		save();
 	}
 	
-	public void clearUserSigns(String username) {
-		userSigns.remove(username);
+	public static FTSign getSign(String name) {
+		if (signs.containsKey(name.toLowerCase()))
+			return signs.get(name.toLowerCase());
+		else return null;
+	}
+	
+	public static List<FTSign> getSignsFor(String player) {
+		List<FTSign> playerSigns = new ArrayList<FTSign>();
+		for (FTSign sign : signs.values()) {
+			if (sign.foundBy(player))
+				playerSigns.add(sign);
+		}
+		Collections.sort(playerSigns);
+		return playerSigns;
+	}
+	
+	public static List<FTSign> getAllSigns() {
+		List<FTSign> allSigns = new ArrayList<FTSign>();
+		allSigns.addAll(signs.values());
+		Collections.sort(allSigns);
+		return allSigns;
+	}
+	
+	public static void addSign(FTSign sign) {
+		if (!signs.containsKey(sign.getName().toLowerCase()))
+			signs.put(sign.getName().toLowerCase(), sign);
 		save();
 	}
 	
 	//Load/save
+	/*
 	public void load() {
 		try {
 			File savefile = new File(savePath);
@@ -164,5 +182,6 @@ public class FastTravelDB {
 			e.printStackTrace();
 		}
 	}
+	*/
 	
 }
