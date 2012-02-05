@@ -50,8 +50,7 @@ public class FastTravelCommand implements CommandExecutor {
 		plugin = instance;
 	}
 	
-	public boolean onCommand(CommandSender sender, Command command,
-			String label, String[] args) {
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		
 		if(!(sender instanceof Player)) return false;
 		Player player = (Player)sender;
@@ -64,7 +63,13 @@ public class FastTravelCommand implements CommandExecutor {
 		
 		if (args.length == 0) {
 			//Send a list
-			sendList(player);
+			FastTravelUtil.sendFTMessage(player, "Your travel points:");
+			List<FTSign> usigns = FastTravelDB.getSignsFor(player.getName());
+			if (usigns == null || usigns.size() == 0) {
+				FastTravelUtil.sendFTMessage(player,
+					"None. Find [FastTravel] signs and right click them to activate.");
+			}
+			else FastTravelUtil.sendFTSignList(player, usigns);
 		}
 		
 		else if (args.length == 1) {
@@ -117,42 +122,18 @@ public class FastTravelCommand implements CommandExecutor {
 				//Find a safe place
 				targ.setY(targ.getY() + 1);
 			}
+			
+			//Load chunk
 			Chunk targChunk = targworld.getChunkAt(targ);
 			if (!targChunk.isLoaded())
 				targChunk.load();
+			
 			player.teleport(targ);
-			FastTravelUtil.sendFTMessage(player, "Travelling to " + 
-					ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE + ".");
+			FastTravelUtil.sendFTMessage(player, "Travelling to " + ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE + ".");
 			
 			if (cooldownLength > 0) cooldowns.put(player.getName(), curTime);
 		}
-		
 		return true;
-	}
-	
-	private void sendList(Player player) {
-		FastTravelUtil.sendFTMessage(player, "Your travel points:");
-		List<FTSign> usigns = FastTravelDB.getSignsFor(player.getName());
-		if (usigns == null || usigns.size() == 0) {
-			FastTravelUtil.sendFTMessage(player,
-				"None. Find [FastTravel] signs and right click them to activate.");
-		}
-		else {
-			int counter = 0;
-			String pointstr = "";
-			for (FTSign sign : usigns) {
-				counter++;
-				if (counter != 1) pointstr = pointstr + ", ";
-				pointstr = pointstr + ChatColor.AQUA + sign.getName() + ChatColor.WHITE;
-				if (counter == 4) {
-					FastTravelUtil.sendFTMessage(player, pointstr);
-					counter = 0;
-					pointstr = "";
-				}
-			}
-			if (counter != 0)
-				FastTravelUtil.sendFTMessage(player, pointstr);
-		}
 	}
 
 }

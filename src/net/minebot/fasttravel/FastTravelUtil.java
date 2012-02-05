@@ -24,6 +24,10 @@
 
 package net.minebot.fasttravel;
 
+import java.util.List;
+
+import net.minebot.fasttravel.data.FTSign;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -56,6 +60,23 @@ public class FastTravelUtil {
 					ChatColor.WHITE + " " + mess);
 	}
 	
+	public static void sendFTSignList(CommandSender sender, List<FTSign> signs) {
+		int counter = 0;
+		String pointstr = "";
+		for (FTSign sign : signs) {
+			counter++;
+			if (counter != 1) pointstr = pointstr + ", ";
+			pointstr = pointstr + ChatColor.AQUA + sign.getName() + ChatColor.WHITE;
+			if (counter == 4) {
+				sendFTMessage(sender, pointstr);
+				counter = 0;
+				pointstr = "";
+			}
+		}
+		if (counter != 0)
+			sendFTMessage(sender, pointstr);
+	}
+	
 	public static boolean safeLocation(Location loc) {
 		double y = loc.getY();
 		loc.setY(y+1);
@@ -65,8 +86,7 @@ public class FastTravelUtil {
 		loc.setY(y);
 		int id1 = block1.getTypeId();
 		int id2 = block2.getTypeId();
-		if ((id1 == 0 || id1 == 63 || id1 == 68) &&
-			(id2 == 0 || id2 == 63 || id2 == 68))
+		if ((id1 == 0 || id1 == 63 || id1 == 68) && (id2 == 0 || id2 == 63 || id2 == 68))
 			return true;
 		return false;
 	}
@@ -110,7 +130,7 @@ public class FastTravelUtil {
 			dir = 0;
 			break;
 		}
-		return dir + 90; // wut
+		return dir + 90;
 	}
 	
 }

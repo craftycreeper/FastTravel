@@ -30,14 +30,12 @@ public class FastTravelSetpointCommand implements CommandExecutor {
 		else if (args.length == 1) {
 			FTSign sign = FastTravelDB.getSign(args[0]);
 			sign.setTPLocation(((Player)sender).getLocation());
-			FastTravelUtil.sendFTMessage(sender, ChatColor.AQUA + sign.getName() + ChatColor.WHITE +
-				" will teleport users to this location now.");
+			FastTravelUtil.sendFTMessage(sender, ChatColor.AQUA + sign.getName() + ChatColor.WHITE + " will teleport users to this location now.");
 		}
 		else if (args.length == 2 && args[1].equals("clear")) {
 			FTSign sign = FastTravelDB.getSign(args[0]);
 			sign.setTPLocation(sign.getSignLocation().clone());
-			FastTravelUtil.sendFTMessage(sender, ChatColor.AQUA + sign.getName() + ChatColor.WHITE +
-					" has had its alternate teleport location cleared.");
+			FastTravelUtil.sendFTMessage(sender, ChatColor.AQUA + sign.getName() + ChatColor.WHITE + " has had its alternate teleport location cleared.");
 		}
 		
 		return true;

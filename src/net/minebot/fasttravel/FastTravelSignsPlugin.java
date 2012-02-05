@@ -78,6 +78,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		//Events
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new FastTravelBlockListener(), this);
+		pm.registerEvents(new FastTravelEntityListener(), this);
 		pm.registerEvents(new FastTravelSignListener(), this);
 		pm.registerEvents(new FastTravelPlayerListener(), this);
 		
