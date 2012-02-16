@@ -1,6 +1,6 @@
 name: FastTravelSigns
 main: net.minebot.fasttravel.FastTravelSignsPlugin
-version: 0.4.1
+version: 0.5
 permissions:
     fasttravelsigns.use:
         description: Allows users to find travel points and use them with /ft.
@@ -10,6 +10,9 @@ permissions:
         default: op
     fasttravelsigns.overrides.cooldown:
         description: Allows one to avoid cooldowns.
+        default: op
+    fasttravelsigns.overrides.price:
+        description: Allows one to avoid travel costs.
         default: op
     fasttravelsigns.multiworld:
         description: Allows users to use fast travel points located in other worlds.
@@ -25,6 +28,9 @@ permissions:
         default: op
     fasttravelsigns.list:
         description: Allows use of /ftlist command.
+        default: op
+    fasttravelsigns.price:
+        description: Allows use of /ftprice command.
         default: op
     fasttravelsigns.delete:
         description: Allows use of /ftdelete command.
@@ -43,6 +49,11 @@ commands:
         permission: fasttravelsigns.list
         usage: |
             /ftlist
+    ftprice:
+        description: Set the price to travel to a given point
+        permission: fasttravelsigns.price
+        usage: |
+            /ftprice [travelpoint] [price]
     ftdelete:
         description: Delete an existing travel point
         permission: fasttravelsigns.delete

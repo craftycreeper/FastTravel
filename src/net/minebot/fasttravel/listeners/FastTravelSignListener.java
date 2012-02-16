@@ -26,6 +26,7 @@ package net.minebot.fasttravel.listeners;
 
 import java.util.regex.Pattern;
 
+import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FTSign;
 import net.minebot.fasttravel.data.FastTravelDB;
@@ -42,6 +43,12 @@ import org.bukkit.inventory.ItemStack;
 
 public class FastTravelSignListener implements Listener {
 
+	private FastTravelSignsPlugin plugin;
+	
+	public FastTravelSignListener(FastTravelSignsPlugin instance) {
+		this.plugin = instance;
+	}
+	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onSignChange(SignChangeEvent event) {
 		
@@ -90,6 +97,15 @@ public class FastTravelSignListener implements Listener {
 		
 		else {
 			FTSign newFTSign = new FTSign(lines[1], player.getName(), sign);
+			
+			//Economy support - set default price
+			if (plugin.getEconomy() != null) {
+				double defPrice = plugin.getConfig().getDouble("economy.default-price");
+				if (defPrice > 0)
+					event.setLine(2, "Price: " + defPrice);
+				newFTSign.setPrice(defPrice);
+			}
+			
 			FastTravelDB.addSign(newFTSign);
 			
 			FastTravelUtil.sendFTMessage(player, "New travel point " +

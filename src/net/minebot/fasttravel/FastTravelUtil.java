@@ -60,13 +60,14 @@ public class FastTravelUtil {
 					ChatColor.WHITE + " " + mess);
 	}
 	
-	public static void sendFTSignList(CommandSender sender, List<FTSign> signs) {
+	public static void sendFTSignList(CommandSender sender, List<FTSign> signs, boolean econ) {
 		int counter = 0;
 		String pointstr = "";
 		for (FTSign sign : signs) {
 			counter++;
 			if (counter != 1) pointstr = pointstr + ", ";
 			pointstr = pointstr + ChatColor.AQUA + sign.getName() + ChatColor.WHITE;
+			if (econ && sign.getPrice() > 0) pointstr = pointstr + " (" + sign.getPrice() + ")";
 			if (counter == 4) {
 				sendFTMessage(sender, pointstr);
 				counter = 0;

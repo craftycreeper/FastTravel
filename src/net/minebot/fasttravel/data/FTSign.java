@@ -12,6 +12,7 @@ import org.bukkit.material.Sign;
 public class FTSign implements Comparable<FTSign> {
 	
 	private String name, creator;
+	private double price;
 	private Location location;
 	private Location tploc;
 	private List<String> players;
@@ -20,31 +21,43 @@ public class FTSign implements Comparable<FTSign> {
 		this.name = name;
 		this.creator = creatorname;
 		
+		price = 0;
+		
 		players = new ArrayList<String>();
 
 		location = block.getLocation();
-		
 		Sign s = (Sign)block.getState().getData();
 		location.setYaw((float)FastTravelUtil.getYawForFace(s.getFacing()));
 		tploc = location.clone();
 	}
 	
-	public FTSign(String name, String creatorname, Location location, Location tpLoc, List<String> players) {
+	public FTSign(String name, String creatorname, double price, Location location, Location tpLoc, List<String> players) {
 		this.name = name;
 		this.creator = creatorname;
+		
+		this.price = price;
 		
 		this.players = players;
 
 		this.location = location;
 		this.tploc = tpLoc;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
 	
 	public String getCreator() {
 		return creator;
+	}
+	
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+		FastTravelDB.save();
 	}
 
 	public Location getSignLocation() {

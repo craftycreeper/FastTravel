@@ -2,6 +2,7 @@ package net.minebot.fasttravel.commands;
 
 import java.util.List;
 
+import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FTSign;
 import net.minebot.fasttravel.data.FastTravelDB;
@@ -12,6 +13,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class FastTravelListCommand implements CommandExecutor {
+	
+	private FastTravelSignsPlugin plugin;
+
+	public FastTravelListCommand(FastTravelSignsPlugin instance) {
+		this.plugin = instance;
+	}
+	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		
 		if (sender instanceof Player && !((Player)sender).hasPermission("fasttravelsigns.list")) {
@@ -24,7 +32,7 @@ public class FastTravelListCommand implements CommandExecutor {
 		}
 		else {
 			FastTravelUtil.sendFTMessage(sender, "List of all fast travel signs:");
-			FastTravelUtil.sendFTSignList(sender, signs);
+			FastTravelUtil.sendFTSignList(sender, signs, (plugin.getEconomy() != null));
 		}
 		return true;
 	}

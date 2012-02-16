@@ -69,7 +69,7 @@ public class FastTravelCommand implements CommandExecutor {
 				FastTravelUtil.sendFTMessage(player,
 					"None. Find [FastTravel] signs and right click them to activate.");
 			}
-			else FastTravelUtil.sendFTSignList(player, usigns);
+			else FastTravelUtil.sendFTSignList(player, usigns, (plugin.getEconomy() != null));
 		}
 		
 		else if (args.length == 1) {
@@ -103,17 +103,29 @@ public class FastTravelCommand implements CommandExecutor {
 			
 			boolean allPoints = player.hasPermission("fasttravelsigns.overrides.allpoints");
 			if (!ftsign.foundBy(player.getName()) && !allPoints) {
-				FastTravelUtil.sendFTMessage(player,
-					"You haven't found that travel point yet.");
+				FastTravelUtil.sendFTMessage(player, "You haven't found that travel point yet.");
 				return true;
 			}
 			//Check if world exists
 			World targworld = ftsign.getTPLocation().getWorld();			
 			if (!allPoints && !targworld.equals(player.getWorld()) &&
 					!player.hasPermission("fasttravelsigns.multiworld")) {
-				FastTravelUtil.sendFTMessage(player,
-					"You may not fast travel to different worlds.");
+				FastTravelUtil.sendFTMessage(player, "You may not fast travel to different worlds.");
 				return true;
+			}
+			
+			//Check for economy support, and make sure player has money
+			if (plugin.getEconomy() != null && ftsign.getPrice() > 0 && !player.hasPermission("fasttravelsigns.overrides.price")) {
+				if (!plugin.getEconomy().has(player.getName(), ftsign.getPrice())) {
+					FastTravelUtil.sendFTMessage(player, "You lack the money to travel there (Would cost " +
+						plugin.getEconomy().format(ftsign.getPrice()) + ")");
+					return true;
+				}
+				else {
+					//Charge player
+					plugin.getEconomy().withdrawPlayer(player.getName(), ftsign.getPrice());
+					FastTravelUtil.sendFTMessage(player, "You have been charged " + plugin.getEconomy().format(ftsign.getPrice()));
+				}
 			}
 			
 			//Go!

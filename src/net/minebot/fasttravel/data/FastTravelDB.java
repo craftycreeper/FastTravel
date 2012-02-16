@@ -77,6 +77,8 @@ public class FastTravelDB {
 				continue;
 			}
 			
+			double price = signYAML.getDouble(signName + ".price", 0.0);
+			
 			Location location = new Location(locWorld, signYAML.getDouble(signName + ".signloc.x"),
 					signYAML.getDouble(signName + ".signloc.y"), signYAML.getDouble(signName + ".signloc.z"));
 			location.setYaw((float) signYAML.getDouble(signName + ".signloc.yaw"));
@@ -85,7 +87,7 @@ public class FastTravelDB {
 					signYAML.getDouble(signName + ".tploc.y"), signYAML.getDouble(signName + ".tploc.z"));
 			tploc.setYaw((float) signYAML.getDouble(signName + ".tploc.yaw"));
 			
-			signs.put(signName.toLowerCase(), new FTSign(signName, creator, location, tploc, signPlayers));
+			signs.put(signName.toLowerCase(), new FTSign(signName, creator, price, location, tploc, signPlayers));
 		}
 		
 		plugin.getLogger().info("Loaded " + signs.size() + " fast travel signs.");
@@ -109,6 +111,7 @@ public class FastTravelDB {
 			signYAML.set(signName + ".tploc.z", sign.getTPLocation().getZ());
 			signYAML.set(signName + ".tploc.yaw", (double)sign.getTPLocation().getYaw());
 			signYAML.set(signName + ".players", sign.getPlayers());
+			signYAML.set(signName + ".price", sign.getPrice());
 		}
 		
 		try {
