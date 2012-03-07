@@ -38,6 +38,7 @@ import org.bukkit.command.CommandSender;
 public class FastTravelUtil {
 	
 	public static boolean isFTSign(Block block) {
+		if (block == null) return false;
 		if (block.getTypeId() != 63 && block.getTypeId() != 68)
 			return false;
 		String[] lines = ((Sign)block.getState()).getLines();
