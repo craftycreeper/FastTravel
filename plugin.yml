@@ -1,6 +1,6 @@
 name: FastTravelSigns
 main: net.minebot.fasttravel.FastTravelSignsPlugin
-version: 0.5.1
+version: 0.5.2
 permissions:
     fasttravelsigns.use:
         description: Allows users to find travel points and use them with /ft.
@@ -10,6 +10,9 @@ permissions:
         default: op
     fasttravelsigns.overrides.cooldown:
         description: Allows one to avoid cooldowns.
+        default: op
+    fasttravelsigns.overrides.warmup:
+        description: Allows one to avoid warmup time.
         default: op
     fasttravelsigns.overrides.price:
         description: Allows one to avoid travel costs.
@@ -38,6 +41,9 @@ permissions:
     fasttravelsigns.setpoint:
         description: Allows use of /ftsetpoint command.
         default: op
+    fasttravelsigns.reload:
+        description: Allows use of /ftreload command.
+        default: op
 commands:
     ft:
         description: Obtain list of travel points and warp to them
@@ -65,3 +71,8 @@ commands:
         usage: |
             /ftsetpoint [travelpoint]
             /ftsetpoint [travelpoint] clear
+    ftreload:
+        description: Reload FastTravelSigns config file and signs database
+        permission: fasttravelsigns.reload
+        usage: |
+            /ftreload

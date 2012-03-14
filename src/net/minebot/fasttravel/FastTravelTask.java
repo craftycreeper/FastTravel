@@ -22,21 +22,52 @@
  * SOFTWARE.
  */
 
-package net.minebot.fasttravel.data;
+package net.minebot.fasttravel;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
+import net.minebot.fasttravel.data.FTSign;
 
-public class FastTravelDBSave implements Serializable {
-	private static final long serialVersionUID = 1L;
+import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
 
-	public HashMap<String, FastTravelSign> signs;
-	public HashMap<String, ArrayList<FastTravelSign>> userSigns;
+public class FastTravelTask implements Runnable {
 
-	public FastTravelDBSave(HashMap<String, FastTravelSign> signs,
-			HashMap<String, ArrayList<FastTravelSign>> userSigns) {
-		this.signs = signs;
-		this.userSigns = userSigns;
+	private FastTravelSignsPlugin plugin;
+	private Player player;
+	private String name;
+	private FTSign sign;
+
+	public FastTravelTask(FastTravelSignsPlugin plugin, Player player, FTSign sign) {
+		this.plugin = plugin;
+		this.player = player;
+		this.name = player.getName();
+		this.sign = sign;
 	}
+
+	public void run() {
+		plugin.playersWarmingUp.remove(name);
+
+		// Double check to make sure they didn't log off...
+		if (!plugin.getServer().getOfflinePlayer(name).isOnline()) {
+			return;
+		}
+
+		Location targ = sign.getTPLocation().clone();
+		while (!FastTravelUtil.safeLocation(targ)) {
+			// Find a safe place - simple "go up" algorithm
+			targ.setY(targ.getY() + 1);
+		}
+
+		World targworld = sign.getTPLocation().getWorld();
+		Chunk targChunk = targworld.getChunkAt(targ);
+		if (!targChunk.isLoaded())
+			targChunk.load();
+
+		player.teleport(targ);
+		FastTravelUtil.sendFTMessage(player, "Travelled to " + ChatColor.AQUA + sign.getName()
+				+ ChatColor.WHITE + ".");
+	}
+
 }

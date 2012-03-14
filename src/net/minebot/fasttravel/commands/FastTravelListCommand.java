@@ -13,24 +13,23 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class FastTravelListCommand implements CommandExecutor {
-	
+
 	private FastTravelSignsPlugin plugin;
 
 	public FastTravelListCommand(FastTravelSignsPlugin instance) {
 		this.plugin = instance;
 	}
-	
+
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		
-		if (sender instanceof Player && !((Player)sender).hasPermission("fasttravelsigns.list")) {
+
+		if (sender instanceof Player && !((Player) sender).hasPermission("fasttravelsigns.list")) {
 			return false;
 		}
-		
+
 		List<FTSign> signs = FastTravelDB.getAllSigns();
 		if (signs.size() == 0) {
 			FastTravelUtil.sendFTMessage(sender, "The signs database is empty.");
-		}
-		else {
+		} else {
 			FastTravelUtil.sendFTMessage(sender, "List of all fast travel signs:");
 			FastTravelUtil.sendFTSignList(sender, signs, (plugin.getEconomy() != null));
 		}

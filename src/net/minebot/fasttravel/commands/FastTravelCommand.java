@@ -28,13 +28,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
+import net.minebot.fasttravel.FastTravelTask;
 import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FTSign;
 import net.minebot.fasttravel.data.FastTravelDB;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -42,108 +41,120 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class FastTravelCommand implements CommandExecutor {
-	
+
 	private HashMap<String, Long> cooldowns = new HashMap<String, Long>();
 	private FastTravelSignsPlugin plugin;
-	
+
 	public FastTravelCommand(FastTravelSignsPlugin instance) {
 		plugin = instance;
 	}
-	
+
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		
-		if(!(sender instanceof Player)) return false;
-		Player player = (Player)sender;
-		
+
+		if (!(sender instanceof Player))
+			return false;
+
+		Player player = (Player) sender;
+
 		if (!player.hasPermission("fasttravelsigns.use")) {
-			FastTravelUtil.sendFTMessage(player,
-				"You don't have permission to use fast travel.");
+			FastTravelUtil.sendFTMessage(player, "You don't have permission to use fast travel.");
 			return true;
 		}
-		
+
+		if (plugin.playersWarmingUp.contains(player.getName())) {
+			FastTravelUtil.sendFTMessage(player, "You are already preparing to travel.");
+			return true;
+		}
+
 		if (args.length == 0) {
-			//Send a list
+			// Send a list
 			FastTravelUtil.sendFTMessage(player, "Your travel points:");
 			List<FTSign> usigns = FastTravelDB.getSignsFor(player.getName());
 			if (usigns == null || usigns.size() == 0) {
 				FastTravelUtil.sendFTMessage(player,
-					"None. Find [FastTravel] signs and right click them to activate.");
-			}
-			else FastTravelUtil.sendFTSignList(player, usigns, (plugin.getEconomy() != null));
+						"None. Find [FastTravel] signs and right click them to activate.");
+			} else
+				FastTravelUtil.sendFTSignList(player, usigns, (plugin.getEconomy() != null));
 		}
-		
+
 		else if (args.length == 1) {
-			//Check cooldown
+			// Check cooldown
 			int cooldownLength = plugin.getConfig().getInt("cooldown");
-			long curTime = System.currentTimeMillis()/1000;
+			long curTime = System.currentTimeMillis() / 1000;
 			if (cooldownLength > 0 && !player.hasPermission("fasttravelsigns.overrides.cooldown")) {
 				Long cd = cooldowns.get(player.getName());
 				if (cd != null && (curTime - cd) < cooldownLength) {
 					long timeRemaining = (cooldownLength - (curTime - cd));
 					String strRemain = timeRemaining + " seconds";
 					if (timeRemaining > 59) {
-						int min = (int)(timeRemaining / 60);
-						if (min == 1) strRemain = "1 minute";
-						else strRemain = min + " minutes";
+						int min = (int) (timeRemaining / 60);
+						if (min == 1)
+							strRemain = "1 minute";
+						else
+							strRemain = min + " minutes";
 					}
-					FastTravelUtil.sendFTMessage(player, "You must wait " + 
-						strRemain + " before travelling again.");
+					FastTravelUtil.sendFTMessage(player, "You must wait " + strRemain
+							+ " before travelling again.");
 					return true;
 				}
 			}
-			
-			//Time to travel. Check if the requested sign exists.
+
+			// Time to travel. Check if the requested sign exists.
 			FTSign ftsign = FastTravelDB.getSign(args[0]);
-			
+
 			if (ftsign == null) {
-				FastTravelUtil.sendFTMessage(player,
-					"That travel point does not exist.");
+				FastTravelUtil.sendFTMessage(player, "That travel point does not exist.");
 				return true;
 			}
-			
+
 			boolean allPoints = player.hasPermission("fasttravelsigns.overrides.allpoints");
 			if (!ftsign.foundBy(player.getName()) && !allPoints) {
 				FastTravelUtil.sendFTMessage(player, "You haven't found that travel point yet.");
 				return true;
 			}
-			//Check if world exists
-			World targworld = ftsign.getTPLocation().getWorld();			
-			if (!allPoints && !targworld.equals(player.getWorld()) &&
-					!player.hasPermission("fasttravelsigns.multiworld")) {
-				FastTravelUtil.sendFTMessage(player, "You may not fast travel to different worlds.");
+			// Check if world exists
+			World targworld = ftsign.getTPLocation().getWorld();
+			if (!allPoints && !targworld.equals(player.getWorld())
+					&& !player.hasPermission("fasttravelsigns.multiworld")) {
+				FastTravelUtil
+						.sendFTMessage(player, "You may not fast travel to different worlds.");
 				return true;
 			}
-			
-			//Check for economy support, and make sure player has money
-			if (plugin.getEconomy() != null && ftsign.getPrice() > 0 && !player.hasPermission("fasttravelsigns.overrides.price")) {
+
+			// Check for economy support, and make sure player has money
+			if (plugin.getEconomy() != null && ftsign.getPrice() > 0
+					&& !player.hasPermission("fasttravelsigns.overrides.price")) {
 				if (!plugin.getEconomy().has(player.getName(), ftsign.getPrice())) {
-					FastTravelUtil.sendFTMessage(player, "You lack the money to travel there (Would cost " +
-						plugin.getEconomy().format(ftsign.getPrice()) + ")");
+					FastTravelUtil.sendFTMessage(player,
+							"You lack the money to travel there (Would cost "
+									+ plugin.getEconomy().format(ftsign.getPrice()) + ")");
 					return true;
-				}
-				else {
-					//Charge player
+				} else {
+					// Charge player
 					plugin.getEconomy().withdrawPlayer(player.getName(), ftsign.getPrice());
-					FastTravelUtil.sendFTMessage(player, "You have been charged " + plugin.getEconomy().format(ftsign.getPrice()));
+					FastTravelUtil.sendFTMessage(player, "You have been charged "
+							+ plugin.getEconomy().format(ftsign.getPrice()));
 				}
 			}
-			
-			//Go!
-			Location targ = ftsign.getTPLocation().clone();
-			while (!FastTravelUtil.safeLocation(targ)) {
-				//Find a safe place
-				targ.setY(targ.getY() + 1);
+
+			// Create travel task
+			FastTravelTask traveltask = new FastTravelTask(plugin, player, ftsign);
+
+			// Handle warmup time if needed
+			int warmup = plugin.getConfig().getInt("warmup");
+			if (warmup > 0 && !player.hasPermission("fasttravelsigns.overrides.warmup")) {
+				FastTravelUtil.sendFTMessage(player,
+						"Travelling to " + ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE
+								+ " in " + warmup + " seconds.");
+				plugin.playersWarmingUp.add(player.getName());
+				plugin.getServer().getScheduler()
+						.scheduleSyncDelayedTask(plugin, traveltask, warmup * 20);
+			} else {
+				traveltask.run();
 			}
-			
-			//Load chunk
-			Chunk targChunk = targworld.getChunkAt(targ);
-			if (!targChunk.isLoaded())
-				targChunk.load();
-			
-			player.teleport(targ);
-			FastTravelUtil.sendFTMessage(player, "Travelling to " + ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE + ".");
-			
-			if (cooldownLength > 0) cooldowns.put(player.getName(), curTime);
+
+			if (cooldownLength > 0)
+				cooldowns.put(player.getName(), curTime);
 		}
 		return true;
 	}

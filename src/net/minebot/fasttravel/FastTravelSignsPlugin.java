@@ -27,6 +27,7 @@ package net.minebot.fasttravel;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import net.milkbowl.vault.economy.Economy;
 
@@ -42,16 +43,49 @@ import org.bukkit.configuration.InvalidConfigurationException;
 public class FastTravelSignsPlugin extends JavaPlugin {
 
 	public static File dataDir = new File("plugins/FastTravelSigns");
-	
+
 	private Economy economy = null;
-	
+
+	// Players in transit - put here for now. Should find a better place later.
+	public ArrayList<String> playersWarmingUp;
+
 	public void onEnable() {
-		//If folder does not exist, create it
+		// If folder does not exist, create it
 		if (!dataDir.isDirectory()) {
 			dataDir.mkdir();
 		}
-		
-		//Load config, set defaults
+
+		// Load config and etc
+		dataInit();
+
+		playersWarmingUp = new ArrayList<String>();
+
+		// Events
+		PluginManager pm = getServer().getPluginManager();
+		pm.registerEvents(new FastTravelBlockListener(), this);
+		pm.registerEvents(new FastTravelEntityListener(), this);
+		pm.registerEvents(new FastTravelSignListener(this), this);
+		pm.registerEvents(new FastTravelPlayerListener(), this);
+
+		// commands
+		getCommand("ft").setExecutor(new FastTravelCommand(this));
+		getCommand("ftlist").setExecutor(new FastTravelListCommand(this));
+		getCommand("ftprice").setExecutor(new FastTravelPriceCommand(this));
+		getCommand("ftdelete").setExecutor(new FastTravelDeleteCommand());
+		getCommand("ftsetpoint").setExecutor(new FastTravelSetpointCommand());
+		getCommand("ftreload").setExecutor(new FastTravelReloadCommand(this));
+
+		getLogger().info("Enabled.");
+	}
+
+	public void onDisable() {
+		// FastTravelDB.save();
+
+		getLogger().info("Disabled.");
+	}
+
+	public void dataInit() {
+		// Load config, set defaults
 		String confFile = dataDir + "/config.yml";
 		try {
 			getConfig().load(confFile);
@@ -60,6 +94,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		} catch (InvalidConfigurationException e) {
 		}
 		getConfig().addDefault("cooldown", 0);
+		getConfig().addDefault("warmup", 0);
 		getConfig().addDefault("economy.enabled", false);
 		getConfig().addDefault("economy.default-price", 0);
 		getConfig().options().copyDefaults(true);
@@ -68,63 +103,42 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		if (getConfig().getBoolean("economy.enabled"))
 			setupEconomy();
 		else
 			getLogger().info("Economy support not enabled.");
-		
-		//Legacy database? Convert!
-		if (new File(dataDir + "/FastTravelSigns.db").exists() &&
-				!(new File(dataDir + "/signs.yml").exists())) {
+
+		// Legacy database? Convert!
+		if (new File(dataDir + "/FastTravelSigns.db").exists()
+				&& !(new File(dataDir + "/signs.yml").exists())) {
 			getLogger().info("Old-style database found. Converting to new YAML format...");
-			FastTravelLegacyDBConverter.convert(dataDir + "/signs.yml", dataDir + "/FastTravelSigns.db");
+			FastTravelLegacyDBConverter.convert(dataDir + "/signs.yml", dataDir
+					+ "/FastTravelSigns.db");
 		}
-		
-		//Load signs database
+
+		// Load signs database
 		FastTravelDB.init(this, dataDir + "/signs.yml");
-		
-		//Events
-		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvents(new FastTravelBlockListener(), this);
-		pm.registerEvents(new FastTravelEntityListener(), this);
-		pm.registerEvents(new FastTravelSignListener(this), this);
-		pm.registerEvents(new FastTravelPlayerListener(), this);
-		
-		//commands
-		getCommand("ft").setExecutor(new FastTravelCommand(this));
-		getCommand("ftlist").setExecutor(new FastTravelListCommand(this));
-		getCommand("ftprice").setExecutor(new FastTravelPriceCommand(this));
-		getCommand("ftdelete").setExecutor(new FastTravelDeleteCommand());
-		getCommand("ftsetpoint").setExecutor(new FastTravelSetpointCommand());
-		
-		getLogger().info("Enabled.");
 	}
 
-	public void onDisable() {
-		//FastTravelDB.save();
-		
-		getLogger().info("Disabled.");
-	}
-	
-	private void setupEconomy() {
+	public void setupEconomy() {
 		if (getServer().getPluginManager().getPlugin("Vault") == null) {
 			getLogger().warning("Could not find Vault! Disabling economy support.");
-            return;
-        }
-		
-		RegisteredServiceProvider<Economy> economyProvider = 
-				getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-        if (economyProvider != null) {
-            economy = economyProvider.getProvider();
-        }
-        if (economy == null) {
-        	getLogger().warning("Could not find an economy plugin! Disabling economy support.");
-        	return;
-        }
-        getLogger().info("Using " + economy.getName() + " for economy support.");
+			return;
+		}
+
+		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager()
+				.getRegistration(net.milkbowl.vault.economy.Economy.class);
+		if (economyProvider != null) {
+			economy = economyProvider.getProvider();
+		}
+		if (economy == null) {
+			getLogger().warning("Could not find an economy plugin! Disabling economy support.");
+			return;
+		}
+		getLogger().info("Using " + economy.getName() + " for economy support.");
 	}
-	
+
 	public Economy getEconomy() {
 		return economy;
 	}

@@ -42,20 +42,20 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class FastTravelDB {
 
 	private static FastTravelSignsPlugin plugin;
-	
-	private static Map<String,FTSign> signs;
-	
+
+	private static Map<String, FTSign> signs;
+
 	private static String saveFile;
-	
+
 	public static void init(FastTravelSignsPlugin plugin, String saveFile) {
 		FastTravelDB.plugin = plugin;
 		FastTravelDB.saveFile = saveFile;
-		
-		signs = new HashMap<String,FTSign>();
-		
+
+		signs = new HashMap<String, FTSign>();
+
 		load();
 	}
-	
+
 	private static void load() {
 		YamlConfiguration signYAML = new YamlConfiguration();
 		try {
@@ -65,38 +65,44 @@ public class FastTravelDB {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		
-		for(String signName : signYAML.getKeys(false)) {
+
+		for (String signName : signYAML.getKeys(false)) {
 			String creator = signYAML.getString(signName + ".creator");
-			World locWorld = plugin.getServer().getWorld(signYAML.getString(signName + ".signloc.world"));
-			World tpLocWorld = plugin.getServer().getWorld(signYAML.getString(signName + ".tploc.world"));
+			World locWorld = plugin.getServer().getWorld(
+					signYAML.getString(signName + ".signloc.world"));
+			World tpLocWorld = plugin.getServer().getWorld(
+					signYAML.getString(signName + ".tploc.world"));
 			List<String> signPlayers = signYAML.getStringList(signName + ".players");
-			
+
 			if (creator == null || locWorld == null || tpLocWorld == null) {
-				plugin.getLogger().warning("Could not load sign '"+signName+"' - missing data!");
+				plugin.getLogger()
+						.warning("Could not load sign '" + signName + "' - missing data!");
 				continue;
 			}
-			
+
 			double price = signYAML.getDouble(signName + ".price", 0.0);
-			
+
 			Location location = new Location(locWorld, signYAML.getDouble(signName + ".signloc.x"),
-					signYAML.getDouble(signName + ".signloc.y"), signYAML.getDouble(signName + ".signloc.z"));
+					signYAML.getDouble(signName + ".signloc.y"), signYAML.getDouble(signName
+							+ ".signloc.z"));
 			location.setYaw((float) signYAML.getDouble(signName + ".signloc.yaw"));
-			
+
 			Location tploc = new Location(locWorld, signYAML.getDouble(signName + ".tploc.x"),
-					signYAML.getDouble(signName + ".tploc.y"), signYAML.getDouble(signName + ".tploc.z"));
+					signYAML.getDouble(signName + ".tploc.y"), signYAML.getDouble(signName
+							+ ".tploc.z"));
 			tploc.setYaw((float) signYAML.getDouble(signName + ".tploc.yaw"));
-			
-			signs.put(signName.toLowerCase(), new FTSign(signName, creator, price, location, tploc, signPlayers));
+
+			signs.put(signName.toLowerCase(), new FTSign(signName, creator, price, location, tploc,
+					signPlayers));
 		}
-		
+
 		plugin.getLogger().info("Loaded " + signs.size() + " fast travel signs.");
-		
+
 	}
-	
+
 	public static void save() {
 		YamlConfiguration signYAML = new YamlConfiguration();
-		for(String signName : signs.keySet()) {
+		for (String signName : signs.keySet()) {
 			FTSign sign = signs.get(signName);
 			signName = sign.getName();
 			signYAML.set(signName + ".creator", sign.getCreator());
@@ -104,35 +110,36 @@ public class FastTravelDB {
 			signYAML.set(signName + ".signloc.x", sign.getSignLocation().getX());
 			signYAML.set(signName + ".signloc.y", sign.getSignLocation().getY());
 			signYAML.set(signName + ".signloc.z", sign.getSignLocation().getZ());
-			signYAML.set(signName + ".signloc.yaw", (double)sign.getSignLocation().getYaw());
+			signYAML.set(signName + ".signloc.yaw", (double) sign.getSignLocation().getYaw());
 			signYAML.set(signName + ".tploc.world", sign.getTPLocation().getWorld().getName());
 			signYAML.set(signName + ".tploc.x", sign.getTPLocation().getX());
 			signYAML.set(signName + ".tploc.y", sign.getTPLocation().getY());
 			signYAML.set(signName + ".tploc.z", sign.getTPLocation().getZ());
-			signYAML.set(signName + ".tploc.yaw", (double)sign.getTPLocation().getYaw());
+			signYAML.set(signName + ".tploc.yaw", (double) sign.getTPLocation().getYaw());
 			signYAML.set(signName + ".players", sign.getPlayers());
 			signYAML.set(signName + ".price", sign.getPrice());
 		}
-		
+
 		try {
 			signYAML.save(saveFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void removeSign(String name) {
 		if (signs.containsKey(name.toLowerCase()))
 			signs.remove(name.toLowerCase());
 		save();
 	}
-	
+
 	public static FTSign getSign(String name) {
 		if (signs.containsKey(name.toLowerCase()))
 			return signs.get(name.toLowerCase());
-		else return null;
+		else
+			return null;
 	}
-	
+
 	public static List<FTSign> getSignsFor(String player) {
 		List<FTSign> playerSigns = new ArrayList<FTSign>();
 		for (FTSign sign : signs.values()) {
@@ -142,49 +149,36 @@ public class FastTravelDB {
 		Collections.sort(playerSigns);
 		return playerSigns;
 	}
-	
+
 	public static List<FTSign> getAllSigns() {
 		List<FTSign> allSigns = new ArrayList<FTSign>();
 		allSigns.addAll(signs.values());
 		Collections.sort(allSigns);
 		return allSigns;
 	}
-	
+
 	public static void addSign(FTSign sign) {
 		if (!signs.containsKey(sign.getName().toLowerCase()))
 			signs.put(sign.getName().toLowerCase(), sign);
 		save();
 	}
-	
-	//Load/save
+
+	// Load/save
 	/*
-	public void load() {
-		try {
-			File savefile = new File(savePath);
-			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(savefile));
-			Object readobj = ois.readObject();
-			ois.close();
-			
-			FastTravelDBSave saveData = (FastTravelDBSave)readobj;
-			this.signs = saveData.signs;
-			this.userSigns = saveData.userSigns;
-		} catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-	
-	public void save() {
-		FastTravelDBSave saveData = new FastTravelDBSave(signs, userSigns);
-		try {
-			File savefile = new File(savePath);
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(savefile));
-			oos.writeObject(saveData);
-			oos.flush();
-			oos.close();
-		} catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-	*/
-	
+	 * public void load() { try { File savefile = new File(savePath);
+	 * ObjectInputStream ois = new ObjectInputStream(new
+	 * FileInputStream(savefile)); Object readobj = ois.readObject();
+	 * ois.close();
+	 * 
+	 * FastTravelDBSave saveData = (FastTravelDBSave)readobj; this.signs =
+	 * saveData.signs; this.userSigns = saveData.userSigns; } catch(Exception
+	 * e){ e.printStackTrace(); } }
+	 * 
+	 * public void save() { FastTravelDBSave saveData = new
+	 * FastTravelDBSave(signs, userSigns); try { File savefile = new
+	 * File(savePath); ObjectOutputStream oos = new ObjectOutputStream(new
+	 * FileOutputStream(savefile)); oos.writeObject(saveData); oos.flush();
+	 * oos.close(); } catch(Exception e){ e.printStackTrace(); } }
+	 */
+
 }

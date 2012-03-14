@@ -36,39 +36,40 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 
 public class FastTravelUtil {
-	
+
 	public static boolean isFTSign(Block block) {
-		if (block == null) return false;
+		if (block == null)
+			return false;
 		if (block.getTypeId() != 63 && block.getTypeId() != 68)
 			return false;
-		String[] lines = ((Sign)block.getState()).getLines();
+		String[] lines = ((Sign) block.getState()).getLines();
 		String line1 = ChatColor.stripColor(lines[0]);
 		if (line1.equalsIgnoreCase("[fasttravel]"))
 			return true;
 		return false;
 	}
-	
+
 	public static boolean isFTSign(String[] lines) {
 		String line1 = ChatColor.stripColor(lines[0]);
-		if (line1.equalsIgnoreCase("[fasttravel]") ||
-				line1.equalsIgnoreCase("[ft]"))
+		if (line1.equalsIgnoreCase("[fasttravel]") || line1.equalsIgnoreCase("[ft]"))
 			return true;
 		return false;
 	}
-	
+
 	public static void sendFTMessage(CommandSender sender, String mess) {
-		sender.sendMessage(ChatColor.LIGHT_PURPLE + "[FastTravel]" +
-					ChatColor.WHITE + " " + mess);
+		sender.sendMessage(ChatColor.LIGHT_PURPLE + "[FastTravel]" + ChatColor.WHITE + " " + mess);
 	}
-	
+
 	public static void sendFTSignList(CommandSender sender, List<FTSign> signs, boolean econ) {
 		int counter = 0;
 		String pointstr = "";
 		for (FTSign sign : signs) {
 			counter++;
-			if (counter != 1) pointstr = pointstr + ", ";
+			if (counter != 1)
+				pointstr = pointstr + ", ";
 			pointstr = pointstr + ChatColor.AQUA + sign.getName() + ChatColor.WHITE;
-			if (econ && sign.getPrice() > 0) pointstr = pointstr + " (" + sign.getPrice() + ")";
+			if (econ && sign.getPrice() > 0)
+				pointstr = pointstr + " (" + sign.getPrice() + ")";
 			if (counter == 4) {
 				sendFTMessage(sender, pointstr);
 				counter = 0;
@@ -78,12 +79,12 @@ public class FastTravelUtil {
 		if (counter != 0)
 			sendFTMessage(sender, pointstr);
 	}
-	
+
 	public static boolean safeLocation(Location loc) {
 		double y = loc.getY();
-		loc.setY(y+1);
+		loc.setY(y + 1);
 		Block block1 = loc.getWorld().getBlockAt(loc);
-		loc.setY(y+2);
+		loc.setY(y + 2);
 		Block block2 = loc.getWorld().getBlockAt(loc);
 		loc.setY(y);
 		int id1 = block1.getTypeId();
@@ -92,10 +93,10 @@ public class FastTravelUtil {
 			return true;
 		return false;
 	}
-	
+
 	public static int getYawForFace(BlockFace face) {
 		int dir;
-		switch(face) {
+		switch (face) {
 		case NORTH:
 			dir = 0;
 			break;
@@ -134,5 +135,5 @@ public class FastTravelUtil {
 		}
 		return dir + 90;
 	}
-	
+
 }

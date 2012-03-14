@@ -44,87 +44,84 @@ import org.bukkit.inventory.ItemStack;
 public class FastTravelSignListener implements Listener {
 
 	private FastTravelSignsPlugin plugin;
-	
+
 	public FastTravelSignListener(FastTravelSignsPlugin instance) {
 		this.plugin = instance;
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onSignChange(SignChangeEvent event) {
-		
+
 		Block sign = event.getBlock();
 		String[] lines = event.getLines();
-		
+
 		Player player = event.getPlayer();
-		
-		if (!FastTravelUtil.isFTSign(lines)) return;
-		
-		//Check create permission
+
+		if (!FastTravelUtil.isFTSign(lines))
+			return;
+
+		// Check create permission
 		if (!player.hasPermission("fasttravelsigns.create")) {
 			dropSign(sign);
 			FastTravelUtil.sendFTMessage(player,
-				"You do not have permission to create travel points.");
+					"You do not have permission to create travel points.");
 			return;
 		}
-		
-		//Check for valid name
+
+		// Check for valid name
 		Pattern an = Pattern.compile("^[a-zA-Z0-9]+$");
 		if (!an.matcher(lines[1]).find()) {
 			dropSign(sign);
 			FastTravelUtil.sendFTMessage(player,
-				"Travel point names should only contain numbers and letters (no spaces).");
+					"Travel point names should only contain numbers and letters (no spaces).");
 			return;
 		}
-		
-		//Check for existing sign with this name
+
+		// Check for existing sign with this name
 		if (FastTravelDB.getSign(lines[1]) != null) {
 			dropSign(sign);
-			FastTravelUtil.sendFTMessage(player,
-				"There is already a travel point named " + ChatColor.AQUA
-				+ lines[1] + ChatColor.WHITE + ".");
+			FastTravelUtil.sendFTMessage(player, "There is already a travel point named "
+					+ ChatColor.AQUA + lines[1] + ChatColor.WHITE + ".");
 			return;
 		}
-		
-		//Check to make sure above block is air
-		Block aboveBlock = sign.getWorld().getBlockAt(sign.getX(), sign.getY() + 1,
-				sign.getZ());
+
+		// Check to make sure above block is air
+		Block aboveBlock = sign.getWorld().getBlockAt(sign.getX(), sign.getY() + 1, sign.getZ());
 		if (aboveBlock.getState().getData().getItemType() != Material.AIR) {
 			dropSign(sign);
 			FastTravelUtil.sendFTMessage(player,
-				"Travel signs need at least one block of air above them.");
+					"Travel signs need at least one block of air above them.");
 			return;
 		}
-		
+
 		else {
 			FTSign newFTSign = new FTSign(lines[1], player.getName(), sign);
-			
-			//Economy support - set default price
+
+			// Economy support - set default price
 			if (plugin.getEconomy() != null) {
 				double defPrice = plugin.getConfig().getDouble("economy.default-price");
 				if (defPrice > 0)
 					event.setLine(2, "Price: " + defPrice);
 				newFTSign.setPrice(defPrice);
 			}
-			
+
 			FastTravelDB.addSign(newFTSign);
-			
-			FastTravelUtil.sendFTMessage(player, "New travel point " +
-					ChatColor.AQUA + lines[1] + ChatColor.WHITE + " created.");
-			
+
+			FastTravelUtil.sendFTMessage(player, "New travel point " + ChatColor.AQUA + lines[1]
+					+ ChatColor.WHITE + " created.");
+
 			newFTSign.addPlayer(player.getName());
-			
-			//Colorize sign
-			event.setLine(0, ChatColor.DARK_PURPLE +
-					"[FastTravel]");
+
+			// Colorize sign
+			event.setLine(0, ChatColor.DARK_PURPLE + "[FastTravel]");
 			event.setLine(1, ChatColor.DARK_BLUE + lines[1]);
 		}
-		
+
 	}
-	
+
 	private void dropSign(Block block) {
-        block.setType(Material.AIR);
-        block.getWorld().dropItemNaturally(block.getLocation(),
-        	new ItemStack(Material.SIGN, 1));
+		block.setType(Material.AIR);
+		block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.SIGN, 1));
 	}
-	
+
 }

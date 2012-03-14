@@ -41,57 +41,56 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class FastTravelPlayerListener implements Listener {
-	
+
 	private HashMap<String, Long> interactLast = new HashMap<String, Long>();
-	
+
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		if (event.isCancelled()) return;
-		
+		if (event.isCancelled())
+			return;
+
 		Block block = event.getClickedBlock();
 		Player player = event.getPlayer();
 		Action action = event.getAction();
-		
-		if (!FastTravelUtil.isFTSign(block) || 
-				(action != Action.RIGHT_CLICK_BLOCK && action != Action.LEFT_CLICK_BLOCK))
+
+		if (!FastTravelUtil.isFTSign(block)
+				|| (action != Action.RIGHT_CLICK_BLOCK && action != Action.LEFT_CLICK_BLOCK))
 			return;
-		
-		Sign sign = (Sign)block.getState();
+
+		Sign sign = (Sign) block.getState();
 		String[] lines = sign.getLines();
 		String line1 = ChatColor.stripColor(lines[1]);
-		
-		
+
 		FTSign ftsign = FastTravelDB.getSign(line1);
 		if (ftsign == null)
 			return;
-		
+
 		if (!player.hasPermission("fasttravelsigns.use")) {
 			FastTravelUtil.sendFTMessage(player, "You don't have permission to use fast travel.");
 			return;
 		}
-		
-		long curTime = System.currentTimeMillis()/1000;
+
+		long curTime = System.currentTimeMillis() / 1000;
 		Long lastTime = interactLast.get(player.getName());
-		if (lastTime != null && curTime - lastTime.longValue() <= 8){
-			//Wait 8 seconds before triggering this again to prevent
+		if (lastTime != null && curTime - lastTime.longValue() <= 8) {
+			// Wait 8 seconds before triggering this again to prevent
 			// spamming someone removing a sign
 			return;
 		}
 		interactLast.put(player.getName(), curTime);
-		//Now that the checks are done - see if the user has the sign, and
-		//if not, add it.
-		
+		// Now that the checks are done - see if the user has the sign, and
+		// if not, add it.
+
 		if (ftsign.foundBy(player.getName())) {
-			FastTravelUtil.sendFTMessage(player, "You have already added travel point " +
-				ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE + ".");
-		}
-		else {
+			FastTravelUtil.sendFTMessage(player, "You have already added travel point "
+					+ ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE + ".");
+		} else {
 			ftsign.addPlayer(player.getName());
-			FastTravelUtil.sendFTMessage(player, "Travel point " +
-				ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE + 
-				" added!");
+			FastTravelUtil.sendFTMessage(player,
+					"Travel point " + ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE
+							+ " added!");
 		}
-		
+
 	}
 
 }
