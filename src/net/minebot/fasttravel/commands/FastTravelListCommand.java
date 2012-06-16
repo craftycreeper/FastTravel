@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FTSign;
+import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelDB;
 
 import org.bukkit.command.Command;
@@ -26,7 +26,7 @@ public class FastTravelListCommand implements CommandExecutor {
 			return false;
 		}
 
-		List<FTSign> signs = FastTravelDB.getAllSigns();
+		List<FastTravelSign> signs = FastTravelDB.getAllSigns();
 		if (signs.size() == 0) {
 			FastTravelUtil.sendFTMessage(sender, "The signs database is empty.");
 		} else {

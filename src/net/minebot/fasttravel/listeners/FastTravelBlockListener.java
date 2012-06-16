@@ -25,7 +25,7 @@
 package net.minebot.fasttravel.listeners;
 
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FTSign;
+import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelDB;
 
 import org.bukkit.ChatColor;
@@ -66,7 +66,7 @@ public class FastTravelBlockListener implements Listener {
 		String[] lines = sign.getLines();
 		String signName = ChatColor.stripColor(lines[1]);
 
-		FTSign ftsign = FastTravelDB.getSign(signName);
+		FastTravelSign ftsign = FastTravelDB.getSign(signName);
 		if (ftsign == null)
 			return;
 

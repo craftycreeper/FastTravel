@@ -24,7 +24,7 @@
 
 package net.minebot.fasttravel;
 
-import net.minebot.fasttravel.data.FTSign;
+import net.minebot.fasttravel.data.FastTravelSign;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -37,9 +37,9 @@ public class FastTravelTask implements Runnable {
 	private FastTravelSignsPlugin plugin;
 	private Player player;
 	private String name;
-	private FTSign sign;
+	private FastTravelSign sign;
 
-	public FastTravelTask(FastTravelSignsPlugin plugin, Player player, FTSign sign) {
+	public FastTravelTask(FastTravelSignsPlugin plugin, Player player, FastTravelSign sign) {
 		this.plugin = plugin;
 		this.player = player;
 		this.name = player.getName();

@@ -1,7 +1,7 @@
 package net.minebot.fasttravel.commands;
 
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FTSign;
+import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelDB;
 
 import org.bukkit.ChatColor;
@@ -26,7 +26,7 @@ public class FastTravelSetpointCommand implements CommandExecutor {
 			return true;
 		}
 
-		FTSign sign = FastTravelDB.getSign(args[0]);
+		FastTravelSign sign = FastTravelDB.getSign(args[0]);
 		if (sign == null) {
 			FastTravelUtil.sendFTMessage(sender, "No fast travel sign exists with that name.");
 		} else if (args.length == 1) {

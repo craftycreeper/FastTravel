@@ -43,7 +43,7 @@ public class FastTravelDB {
 
 	private static FastTravelSignsPlugin plugin;
 
-	private static Map<String, FTSign> signs;
+	private static Map<String, FastTravelSign> signs;
 
 	private static String saveFile;
 
@@ -51,7 +51,7 @@ public class FastTravelDB {
 		FastTravelDB.plugin = plugin;
 		FastTravelDB.saveFile = saveFile;
 
-		signs = new HashMap<String, FTSign>();
+		signs = new HashMap<String, FastTravelSign>();
 
 		load();
 	}
@@ -91,9 +91,11 @@ public class FastTravelDB {
 					signYAML.getDouble(signName + ".tploc.y"), signYAML.getDouble(signName
 							+ ".tploc.z"));
 			tploc.setYaw((float) signYAML.getDouble(signName + ".tploc.yaw"));
+			
+			boolean automatic = signYAML.getBoolean(signName + ".automatic", false);
 
-			signs.put(signName.toLowerCase(), new FTSign(signName, creator, price, location, tploc,
-					signPlayers));
+			signs.put(signName.toLowerCase(), new FastTravelSign(signName, creator, price, location, tploc,
+					automatic, signPlayers));
 		}
 
 		plugin.getLogger().info("Loaded " + signs.size() + " fast travel signs.");
@@ -103,7 +105,7 @@ public class FastTravelDB {
 	public static void save() {
 		YamlConfiguration signYAML = new YamlConfiguration();
 		for (String signName : signs.keySet()) {
-			FTSign sign = signs.get(signName);
+			FastTravelSign sign = signs.get(signName);
 			signName = sign.getName();
 			signYAML.set(signName + ".creator", sign.getCreator());
 			signYAML.set(signName + ".signloc.world", sign.getSignLocation().getWorld().getName());
@@ -116,6 +118,7 @@ public class FastTravelDB {
 			signYAML.set(signName + ".tploc.y", sign.getTPLocation().getY());
 			signYAML.set(signName + ".tploc.z", sign.getTPLocation().getZ());
 			signYAML.set(signName + ".tploc.yaw", (double) sign.getTPLocation().getYaw());
+			signYAML.set(signName + ".automatic", sign.isAutomatic());
 			signYAML.set(signName + ".players", sign.getPlayers());
 			signYAML.set(signName + ".price", sign.getPrice());
 		}
@@ -133,31 +136,31 @@ public class FastTravelDB {
 		save();
 	}
 
-	public static FTSign getSign(String name) {
+	public static FastTravelSign getSign(String name) {
 		if (signs.containsKey(name.toLowerCase()))
 			return signs.get(name.toLowerCase());
 		else
 			return null;
 	}
 
-	public static List<FTSign> getSignsFor(String player) {
-		List<FTSign> playerSigns = new ArrayList<FTSign>();
-		for (FTSign sign : signs.values()) {
-			if (sign.foundBy(player))
+	public static List<FastTravelSign> getSignsFor(String player) {
+		List<FastTravelSign> playerSigns = new ArrayList<FastTravelSign>();
+		for (FastTravelSign sign : signs.values()) {
+			if (sign.isAutomatic() || sign.foundBy(player))
 				playerSigns.add(sign);
 		}
 		Collections.sort(playerSigns);
 		return playerSigns;
 	}
 
-	public static List<FTSign> getAllSigns() {
-		List<FTSign> allSigns = new ArrayList<FTSign>();
+	public static List<FastTravelSign> getAllSigns() {
+		List<FastTravelSign> allSigns = new ArrayList<FastTravelSign>();
 		allSigns.addAll(signs.values());
 		Collections.sort(allSigns);
 		return allSigns;
 	}
 
-	public static void addSign(FTSign sign) {
+	public static void addSign(FastTravelSign sign) {
 		if (!signs.containsKey(sign.getName().toLowerCase()))
 			signs.put(sign.getName().toLowerCase(), sign);
 		save();

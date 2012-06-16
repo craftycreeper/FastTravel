@@ -74,6 +74,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		getCommand("ftdelete").setExecutor(new FastTravelDeleteCommand());
 		getCommand("ftsetpoint").setExecutor(new FastTravelSetpointCommand());
 		getCommand("ftreload").setExecutor(new FastTravelReloadCommand(this));
+		getCommand("ftauto").setExecutor(new FastTravelAutoCommand());
 
 		getLogger().info("Enabled.");
 	}
@@ -108,14 +109,6 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 			setupEconomy();
 		else
 			getLogger().info("Economy support not enabled.");
-
-		// Legacy database? Convert!
-		if (new File(dataDir + "/FastTravelSigns.db").exists()
-				&& !(new File(dataDir + "/signs.yml").exists())) {
-			getLogger().info("Old-style database found. Converting to new YAML format...");
-			FastTravelLegacyDBConverter.convert(dataDir + "/signs.yml", dataDir
-					+ "/FastTravelSigns.db");
-		}
 
 		// Load signs database
 		FastTravelDB.init(this, dataDir + "/signs.yml");

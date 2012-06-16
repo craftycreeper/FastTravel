@@ -26,7 +26,7 @@ package net.minebot.fasttravel;
 
 import java.util.List;
 
-import net.minebot.fasttravel.data.FTSign;
+import net.minebot.fasttravel.data.FastTravelSign;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -60,16 +60,21 @@ public class FastTravelUtil {
 		sender.sendMessage(ChatColor.LIGHT_PURPLE + "[FastTravel]" + ChatColor.WHITE + " " + mess);
 	}
 
-	public static void sendFTSignList(CommandSender sender, List<FTSign> signs, boolean econ) {
+	public static void sendFTSignList(CommandSender sender, List<FastTravelSign> signs, boolean econ) {
 		int counter = 0;
 		String pointstr = "";
-		for (FTSign sign : signs) {
+		for (FastTravelSign sign : signs) {
 			counter++;
 			if (counter != 1)
 				pointstr = pointstr + ", ";
-			pointstr = pointstr + ChatColor.AQUA + sign.getName() + ChatColor.WHITE;
+			if (sign.isAutomatic())
+				// Special coloring for automatic signs
+				pointstr += ChatColor.GREEN;
+			else
+				pointstr += ChatColor.AQUA;
+			pointstr += sign.getName() + ChatColor.WHITE;
 			if (econ && sign.getPrice() > 0)
-				pointstr = pointstr + " (" + sign.getPrice() + ")";
+				pointstr += " (" + sign.getPrice() + ")";
 			if (counter == 4) {
 				sendFTMessage(sender, pointstr);
 				counter = 0;

@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FTSign;
+import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelDB;
 
 import org.bukkit.ChatColor;
@@ -69,7 +69,7 @@ public class FastTravelSignListener implements Listener {
 		}
 
 		// Check for valid name
-		Pattern an = Pattern.compile("^[a-zA-Z0-9]+$");
+		Pattern an = Pattern.compile("^[a-zA-Z0-9_-]+$");
 		if (!an.matcher(lines[1]).find()) {
 			dropSign(sign);
 			FastTravelUtil.sendFTMessage(player,
@@ -95,7 +95,7 @@ public class FastTravelSignListener implements Listener {
 		}
 
 		else {
-			FTSign newFTSign = new FTSign(lines[1], player.getName(), sign);
+			FastTravelSign newFTSign = new FastTravelSign(lines[1], player.getName(), sign);
 
 			// Economy support - set default price
 			if (plugin.getEconomy() != null) {

@@ -30,7 +30,7 @@ import java.util.List;
 import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelTask;
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FTSign;
+import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelDB;
 
 import org.bukkit.ChatColor;
@@ -69,7 +69,7 @@ public class FastTravelCommand implements CommandExecutor {
 		if (args.length == 0) {
 			// Send a list
 			FastTravelUtil.sendFTMessage(player, "Your travel points:");
-			List<FTSign> usigns = FastTravelDB.getSignsFor(player.getName());
+			List<FastTravelSign> usigns = FastTravelDB.getSignsFor(player.getName());
 			if (usigns == null || usigns.size() == 0) {
 				FastTravelUtil.sendFTMessage(player,
 						"None. Find [FastTravel] signs and right click them to activate.");
@@ -100,7 +100,7 @@ public class FastTravelCommand implements CommandExecutor {
 			}
 
 			// Time to travel. Check if the requested sign exists.
-			FTSign ftsign = FastTravelDB.getSign(args[0]);
+			FastTravelSign ftsign = FastTravelDB.getSign(args[0]);
 
 			if (ftsign == null) {
 				FastTravelUtil.sendFTMessage(player, "That travel point does not exist.");
@@ -108,7 +108,7 @@ public class FastTravelCommand implements CommandExecutor {
 			}
 
 			boolean allPoints = player.hasPermission("fasttravelsigns.overrides.allpoints");
-			if (!ftsign.foundBy(player.getName()) && !allPoints) {
+			if (!(ftsign.isAutomatic() || ftsign.foundBy(player.getName())) && !allPoints) {
 				FastTravelUtil.sendFTMessage(player, "You haven't found that travel point yet.");
 				return true;
 			}
