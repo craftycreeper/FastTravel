@@ -80,7 +80,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 	}
 
 	public void onDisable() {
-		// FastTravelDB.save();
+		FastTravelDB.save();
 
 		getLogger().info("Disabled.");
 	}
