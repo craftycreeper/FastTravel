@@ -24,12 +24,14 @@
 
 package net.minebot.fasttravel;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.minebot.fasttravel.data.FastTravelSign;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.BlockFace;
@@ -37,10 +39,12 @@ import org.bukkit.command.CommandSender;
 
 public class FastTravelUtil {
 
+    private static Material[] safeBlocks = {Material.AIR, Material.SIGN, Material.SIGN_POST};
+
 	public static boolean isFTSign(Block block) {
 		if (block == null)
 			return false;
-		if (block.getTypeId() != 63 && block.getTypeId() != 68)
+		if (block.getType() != Material.SIGN && block.getType() != Material.SIGN_POST)
 			return false;
 		String[] lines = ((Sign) block.getState()).getLines();
 		String line1 = ChatColor.stripColor(lines[0]);
@@ -92,9 +96,9 @@ public class FastTravelUtil {
 		loc.setY(y + 2);
 		Block block2 = loc.getWorld().getBlockAt(loc);
 		loc.setY(y);
-		int id1 = block1.getTypeId();
-		int id2 = block2.getTypeId();
-		if ((id1 == 0 || id1 == 63 || id1 == 68) && (id2 == 0 || id2 == 63 || id2 == 68))
+		Material mat1 = block1.getType();
+		Material mat2 = block2.getType();
+		if ((Arrays.asList(safeBlocks).contains(mat1)) && (Arrays.asList(safeBlocks).contains(mat2)))
 			return true;
 		return false;
 	}
