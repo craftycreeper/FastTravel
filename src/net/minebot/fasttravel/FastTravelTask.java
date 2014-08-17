@@ -46,11 +46,12 @@ public class FastTravelTask implements Runnable {
 		this.sign = sign;
 	}
 
+    @Override
 	public void run() {
 		plugin.playersWarmingUp.remove(name);
 
 		// Double check to make sure they didn't log off...
-		if (!plugin.getServer().getOfflinePlayer(name).isOnline()) {
+		if (!player.isOnline()) {
 			return;
 		}
 
