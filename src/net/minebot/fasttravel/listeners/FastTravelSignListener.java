@@ -24,13 +24,10 @@
 
 package net.minebot.fasttravel.listeners;
 
-import java.util.regex.Pattern;
-
 import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelDB;
-
+import net.minebot.fasttravel.data.FastTravelSign;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -40,6 +37,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.regex.Pattern;
 
 public class FastTravelSignListener implements Listener {
 

@@ -24,14 +24,13 @@
 
 package net.minebot.fasttravel.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minebot.fasttravel.FastTravelUtil;
-
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.material.Sign;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FastTravelSign implements Comparable<FastTravelSign> {
 

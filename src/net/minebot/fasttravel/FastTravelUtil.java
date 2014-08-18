@@ -24,18 +24,17 @@
 
 package net.minebot.fasttravel;
 
-import java.util.Arrays;
-import java.util.List;
-
 import net.minebot.fasttravel.data.FastTravelSign;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class FastTravelUtil {
 

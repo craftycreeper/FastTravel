@@ -24,23 +24,23 @@
 
 package net.minebot.fasttravel;
 
+import net.milkbowl.vault.economy.Economy;
+import net.minebot.fasttravel.commands.*;
+import net.minebot.fasttravel.data.FastTravelDB;
+import net.minebot.fasttravel.listeners.FastTravelBlockListener;
+import net.minebot.fasttravel.listeners.FastTravelEntityListener;
+import net.minebot.fasttravel.listeners.FastTravelPlayerListener;
+import net.minebot.fasttravel.listeners.FastTravelSignListener;
+import net.minebot.fasttravel.task.FastTravelTaskExecutor;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import net.milkbowl.vault.economy.Economy;
-
-import net.minebot.fasttravel.commands.*;
-import net.minebot.fasttravel.data.FastTravelDB;
-import net.minebot.fasttravel.listeners.*;
-
-import net.minebot.fasttravel.task.FastTravelTask;
-import net.minebot.fasttravel.task.FastTravelTaskExecutor;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.configuration.InvalidConfigurationException;
 
 public class FastTravelSignsPlugin extends JavaPlugin {
 

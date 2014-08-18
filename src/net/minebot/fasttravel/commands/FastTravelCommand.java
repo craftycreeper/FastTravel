@@ -24,15 +24,11 @@
 
 package net.minebot.fasttravel.commands;
 
-import java.util.HashMap;
-import java.util.List;
-
 import net.minebot.fasttravel.FastTravelSignsPlugin;
-import net.minebot.fasttravel.task.FastTravelTask;
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelDB;
-
+import net.minebot.fasttravel.data.FastTravelSign;
+import net.minebot.fasttravel.task.FastTravelTask;
 import net.minebot.fasttravel.task.FastTravelTaskExecutor;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -40,6 +36,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class FastTravelCommand implements CommandExecutor {
 

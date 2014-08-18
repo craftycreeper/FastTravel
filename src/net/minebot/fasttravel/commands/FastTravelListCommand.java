@@ -1,16 +1,15 @@
 package net.minebot.fasttravel.commands;
 
-import java.util.List;
-
 import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelDB;
-
+import net.minebot.fasttravel.data.FastTravelSign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class FastTravelListCommand implements CommandExecutor {
 

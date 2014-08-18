@@ -27,7 +27,6 @@ package net.minebot.fasttravel.commands;
 import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelDB;
 import net.minebot.fasttravel.data.FastTravelSign;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

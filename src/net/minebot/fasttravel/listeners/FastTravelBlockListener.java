@@ -25,22 +25,22 @@
 package net.minebot.fasttravel.listeners;
 
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelDB;
-
+import net.minebot.fasttravel.data.FastTravelSign;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
-//import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
+
+//import org.bukkit.block.BlockFace;
 //import org.bukkit.event.block.BlockPlaceEvent;
 //import org.bukkit.material.Attachable;
 //import org.bukkit.material.MaterialData;
-import org.bukkit.block.Sign;
 
 public class FastTravelBlockListener implements Listener {
 

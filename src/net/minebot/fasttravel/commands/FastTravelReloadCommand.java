@@ -1,12 +1,11 @@
 package net.minebot.fasttravel.commands;
 
+import net.minebot.fasttravel.FastTravelSignsPlugin;
+import net.minebot.fasttravel.FastTravelUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import net.minebot.fasttravel.FastTravelSignsPlugin;
-import net.minebot.fasttravel.FastTravelUtil;
 
 public class FastTravelReloadCommand implements CommandExecutor {
 	private FastTravelSignsPlugin plugin;
