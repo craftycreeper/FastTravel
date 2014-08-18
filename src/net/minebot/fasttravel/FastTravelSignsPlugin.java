@@ -100,6 +100,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		}
 		getConfig().addDefault("cooldown", 0);
 		getConfig().addDefault("warmup", 0);
+        getConfig().addDefault("interupt on move", true);
 		getConfig().addDefault("economy.enabled", false);
 		getConfig().addDefault("economy.default-price", 0);
         getConfig().addDefault("metrics.enabled", true);

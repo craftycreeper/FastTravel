@@ -24,6 +24,7 @@
 
 package net.minebot.fasttravel.listeners;
 
+import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelDB;
 import net.minebot.fasttravel.data.FastTravelSign;
@@ -36,12 +37,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.HashMap;
 
 public class FastTravelPlayerListener implements Listener {
 
 	private HashMap<String, Long> interactLast = new HashMap<String, Long>();
+    private FastTravelSignsPlugin plugin;
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event) {
@@ -91,5 +94,17 @@ public class FastTravelPlayerListener implements Listener {
 		}
 
 	}
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerMove(PlayerMoveEvent event){
+        if (event.isCancelled() || plugin.getConfig().getInt("warmup") == 0 || plugin.getConfig().getBoolean("interupt on move")){
+            return;
+        }
+
+        if (plugin.playersWarmingUp.contains(event.getPlayer().getName()));{
+            plugin.playersWarmingUp.remove(event.getPlayer().getName());
+            FastTravelUtil.sendFTMessage(event.getPlayer(), "Teleport aborted, don't move next time!");
+        }
+    }
 
 }
