@@ -38,7 +38,9 @@ import java.util.List;
 
 public class FastTravelUtil {
 
-    private static Material[] safeBlocks = {Material.AIR, Material.SIGN, Material.SIGN_POST};
+    private static Material[] safeBlocks = {Material.AIR, Material.SIGN, Material.SIGN_POST, Material.TORCH, Material.REDSTONE_TORCH_ON,
+                                            Material.REDSTONE_TORCH_OFF, Material.REDSTONE, Material.LONG_GRASS, Material.YELLOW_FLOWER,
+                                            Material.CROPS, Material.DEAD_BUSH};
 
 	public static boolean isFTSign(Block block) {
 		if (block == null)
