@@ -60,6 +60,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		// Load config and etc
 		dataInit();
         FastTravelTaskExecutor.init();
+        metricsInit();
 
 		playersWarmingUp = new ArrayList<String>();
 
@@ -82,7 +83,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		getLogger().info("Enabled.");
 	}
 
-	public void onDisable() {
+    public void onDisable() {
 		FastTravelDB.save();
 
 		getLogger().info("Disabled.");
@@ -101,6 +102,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		getConfig().addDefault("warmup", 0);
 		getConfig().addDefault("economy.enabled", false);
 		getConfig().addDefault("economy.default-price", 0);
+        getConfig().addDefault("metrics.enabled", true);
 		getConfig().options().copyDefaults(true);
 		try {
 			getConfig().save(confFile);
@@ -138,5 +140,20 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 	public Economy getEconomy() {
 		return economy;
 	}
+
+    private void metricsInit() {
+        if (!getConfig().getBoolean("metrics.enabled")){
+            getLogger().info("Metrics disabled");
+            return;
+        } else {
+            try {
+                Metrics metrics = new Metrics(this);
+                metrics.start();
+            } catch (IOException e) {
+                getLogger().info("Could not load Metrics");
+            }
+        }
+
+    }
 
 }
