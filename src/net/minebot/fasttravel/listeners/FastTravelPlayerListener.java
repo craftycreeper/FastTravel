@@ -97,7 +97,7 @@ public class FastTravelPlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerMove(PlayerMoveEvent event){
-        if (event.isCancelled() || plugin.getConfig().getInt("warmup") == 0 || plugin.getConfig().getBoolean("interupt on move")){
+        if (event.isCancelled() || plugin.getConfig().getInt("warmup") == 0 || plugin.getConfig().getBoolean("interrupt on move")){
             return;
         }
 
