@@ -28,11 +28,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
-import net.minebot.fasttravel.FastTravelTask;
+import net.minebot.fasttravel.task.FastTravelTask;
 import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelDB;
 
+import net.minebot.fasttravel.task.FastTravelTaskExecutor;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -44,6 +45,8 @@ public class FastTravelCommand implements CommandExecutor {
 
 	private HashMap<String, Long> cooldowns = new HashMap<String, Long>();
 	private FastTravelSignsPlugin plugin;
+
+    private FastTravelTaskExecutor executor;
 
 	public FastTravelCommand(FastTravelSignsPlugin instance) {
 		plugin = instance;
@@ -150,7 +153,8 @@ public class FastTravelCommand implements CommandExecutor {
 				plugin.getServer().getScheduler()
 						.scheduleSyncDelayedTask(plugin, traveltask, warmup * 20);
 			} else {
-				traveltask.run();
+				//traveltask.run();
+                executor.getExecutor().execute(traveltask);
 			}
 
 			if (cooldownLength > 0)

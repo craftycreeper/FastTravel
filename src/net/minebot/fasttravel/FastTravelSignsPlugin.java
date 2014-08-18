@@ -35,6 +35,8 @@ import net.minebot.fasttravel.commands.*;
 import net.minebot.fasttravel.data.FastTravelDB;
 import net.minebot.fasttravel.listeners.*;
 
+import net.minebot.fasttravel.task.FastTravelTask;
+import net.minebot.fasttravel.task.FastTravelTaskExecutor;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -57,6 +59,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
 		// Load config and etc
 		dataInit();
+        FastTravelTaskExecutor.init();
 
 		playersWarmingUp = new ArrayList<String>();
 
