@@ -53,7 +53,6 @@
     </dependencies>
 
     <build>
-        <defaultGoal>clean install</defaultGoal>
         <finalName>${project.name}-${project.version}</finalName>
         <sourceDirectory>src/main/java</sourceDirectory>
         <resources>
