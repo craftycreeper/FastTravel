@@ -12,6 +12,19 @@
 
     <packaging>jar</packaging>
 
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Releases</name>
+            <url>http://nexus.germanspacebuild.de:8081/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Snapshots</name>
+            <url>http://nexus.germanspacebuild.de:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <repositories>
         <repository>
             <id>bukkit-repo</id>
@@ -36,11 +49,11 @@
             <artifactId>VaultAPI</artifactId>
             <version>1.4</version>
             <scope>provided</scope>
-            <type>jar</type>
         </dependency>
     </dependencies>
 
     <build>
+        <defaultGoal>clean install</defaultGoal>
         <finalName>${project.name}-${project.version}</finalName>
         <sourceDirectory>src/main/java</sourceDirectory>
         <resources>
