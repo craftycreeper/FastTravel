@@ -95,9 +95,11 @@ public class FastTravelPlayerListener implements Listener {
 
 	}
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    /*@EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerMove(PlayerMoveEvent event){
-        if (event.isCancelled() || plugin.getConfig().getInt("warmup") == 0 || plugin.getConfig().getBoolean("interrupt on move")){
+        if (event.isCancelled() || plugin.getConfig().getInt("warmup") == 0 ||
+            plugin.getConfig().getBoolean("interrupt on move") ||
+            event.getPlayer().hasPermission("fasttravelsigns.overrides.interrupt")){
             return;
         }
 
@@ -105,6 +107,6 @@ public class FastTravelPlayerListener implements Listener {
             plugin.playersWarmingUp.remove(event.getPlayer().getName());
             FastTravelUtil.sendFTMessage(event.getPlayer(), "Teleport aborted, don't move next time!");
         }
-    }
+    }*/
 
 }
