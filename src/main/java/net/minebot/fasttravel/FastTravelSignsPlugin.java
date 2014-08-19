@@ -44,7 +44,6 @@ import java.util.ArrayList;
 
 public class FastTravelSignsPlugin extends JavaPlugin {
 
-    //Just adding a Line for maven test
 	public static File dataDir = new File("plugins/FastTravelSigns");
 
 	private Economy economy = null;
