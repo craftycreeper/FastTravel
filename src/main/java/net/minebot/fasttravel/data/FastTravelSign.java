@@ -32,6 +32,7 @@ import org.bukkit.material.Sign;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class FastTravelSign implements Comparable<FastTravelSign> {
 
 	private String name, creator;
@@ -41,6 +42,12 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 	private boolean automatic; // Is this sign "always on"?
 	private List<String> players;
 
+    /**
+     * Constructor for sign without price
+     * @param name name of sign
+     * @param creatorname name of creator
+     * @param block location of sign
+     */
 	public FastTravelSign(String name, String creatorname, Block block) {
 		this.name = name;
 		this.creator = creatorname;
@@ -55,6 +62,16 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 		tploc = location.clone();
 	}
 
+    /**
+     * Constructor for sign with price
+     * @param name name of sign
+     * @param creatorname name of creator
+     * @param price price for teleport
+     * @param location location of sign
+     * @param tpLoc teleport destination
+     * @param automatic accessible for all players
+     * @param players players that can use this sign
+     */
 	public FastTravelSign(String name, String creatorname, double price, Location location, Location tpLoc,
 			boolean automatic, List<String> players) {
 		this.name = name;
@@ -66,62 +83,114 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 		this.tploc = tpLoc;
 	}
 
+    /**
+     * Gets name of the sign
+     * @return Name
+     */
 	public String getName() {
 		return name;
 	}
 
+    /**
+     * Gets name of the creator
+     * @return creator
+     */
 	public String getCreator() {
 		return creator;
 	}
 
+    /**
+     * Gets the price for teleport
+     * @return price
+     */
 	public double getPrice() {
 		return price;
 	}
 
+    /**
+     * Sets price for teleport
+     * @param price price
+     */
 	public void setPrice(double price) {
 		this.price = price;
 		FastTravelDB.save();
 	}
 
+    /**
+     * Gets the location of the sign     *
+     * @return Location
+     */
 	public Location getSignLocation() {
 		return location;
 	}
 
+    /**
+     * Stets location of the sign
+     * @param newSignLoc Location of sign
+     */
 	public void setSignLocation(Location newSignLoc) {
 		location = newSignLoc.clone();
 		FastTravelDB.save();
 	}
 
+    /**
+     * Sets destination for teleport
+     * @param newTPPoint Destination for teleport
+     */
 	public void setTPLocation(Location newTPPoint) {
 		tploc = newTPPoint.clone();
 		FastTravelDB.save();
 	}
 
+    /**
+     * Gets destination for teleport
+     * @return Location where the player is teleported to
+     */
 	public Location getTPLocation() {
 		return tploc;
 	}
 
+    /**
+     * Add player to sign
+     * @param player player to add
+     */
 	public void addPlayer(String player) {
 		if (!players.contains(player))
 			players.add(player);
 		FastTravelDB.save();
 	}
 
+    /**
+     * Remove player from sign
+     * @param player player to remove
+     */
 	public void removePlayer(String player) {
 		if (players.contains(player))
 			players.remove(player);
 		FastTravelDB.save();
 	}
 
+    /**
+     * Remove all players from sign
+     */
 	public void removeAllPlayers() {
 		players.clear();
 		FastTravelDB.save();
 	}
 
+    /**
+     * Gets all players that can use this sign
+     * @return Players that are allowed to use this sign
+     */
 	public List<String> getPlayers() {
 		return players;
 	}
 
+    /**
+     * Is sign already found by player
+     * @param player player to check
+     * @return found by player
+     */
 	public boolean foundBy(String player) {
 		return players.contains(player);
 	}
@@ -130,10 +199,18 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 		return this.name.toLowerCase().compareTo(o.getName().toLowerCase());
 	}
 
+    /**
+     * Is sign usable for all player by default?
+     * @return
+     */
 	public boolean isAutomatic() {
 		return automatic;
 	}
 
+    /**
+     * Sets sign automatic/manuel
+     * @param automatic is automatic
+     */
 	public void setAutomatic(boolean automatic) {
 		this.automatic = automatic;
 		FastTravelDB.save();

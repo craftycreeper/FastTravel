@@ -31,6 +31,7 @@ import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.task.FastTravelTask;
 import net.minebot.fasttravel.task.FastTravelTaskExecutor;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -126,14 +127,14 @@ public class FastTravelCommand implements CommandExecutor {
 			// Check for economy support, and make sure player has money
 			if (plugin.getEconomy() != null && ftsign.getPrice() > 0
 					&& !player.hasPermission("fasttravelsigns.overrides.price")) {
-				if (!plugin.getEconomy().has(player.getName(), ftsign.getPrice())) {
+				if (!plugin.getEconomy().has(((OfflinePlayer) player), ftsign.getPrice())) {
 					FastTravelUtil.sendFTMessage(player,
 							"You lack the money to travel there (Would cost "
 									+ plugin.getEconomy().format(ftsign.getPrice()) + ")");
 					return true;
 				} else {
 					// Charge player
-					plugin.getEconomy().withdrawPlayer(player.getName(), ftsign.getPrice());
+					plugin.getEconomy().withdrawPlayer(((OfflinePlayer) player), ftsign.getPrice());
 					FastTravelUtil.sendFTMessage(player, "You have been charged "
 							+ plugin.getEconomy().format(ftsign.getPrice()));
 				}

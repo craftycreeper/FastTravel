@@ -37,7 +37,7 @@ public class FastTravelAutoCommand implements CommandExecutor {
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		
-		if (sender instanceof Player && !((Player) sender).hasPermission("fasttravelsigns.auto")) {
+		if (sender instanceof Player && !sender.hasPermission("fasttravelsigns.auto")) {
 			return false;
 		}
 		
