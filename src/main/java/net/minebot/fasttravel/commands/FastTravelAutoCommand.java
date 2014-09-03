@@ -27,8 +27,8 @@
 package net.minebot.fasttravel.commands;
 
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FastTravelDB;
 import net.minebot.fasttravel.data.FastTravelSign;
+import net.minebot.fasttravel.data.FastTravelSignDB;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -46,10 +46,10 @@ public class FastTravelAutoCommand implements CommandExecutor {
 		if (args.length == 0) {
 			FastTravelUtil.sendFTMessage(sender,
 					"You need to specify a fast travel sign.");
-		} else if (FastTravelDB.getSign(args[0]) == null) {
+		} else if (FastTravelSignDB.getSign(args[0]) == null) {
 			FastTravelUtil.sendFTMessage(sender, "No fast travel sign exists with that name.");
 		} else {
-			FastTravelSign sign = FastTravelDB.getSign(args[0]);
+			FastTravelSign sign = FastTravelSignDB.getSign(args[0]);
 			
 			if (!sign.isAutomatic()) {
 				sign.setAutomatic(true);

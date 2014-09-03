@@ -28,8 +28,8 @@ package net.minebot.fasttravel.commands;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FastTravelDB;
 import net.minebot.fasttravel.data.FastTravelSign;
+import net.minebot.fasttravel.data.FastTravelSignDB;
 import net.minebot.fasttravel.task.FastTravelTask;
 import net.minebot.fasttravel.task.FastTravelTaskExecutor;
 import org.bukkit.ChatColor;
@@ -74,7 +74,7 @@ public class FastTravelCommand implements CommandExecutor {
 		if (args.length == 0) {
 			// Send a list
 			FastTravelUtil.sendFTMessage(player, "Your travel points:");
-			List<FastTravelSign> usigns = FastTravelDB.getSignsFor(player.getName());
+			List<FastTravelSign> usigns = FastTravelSignDB.getSignsFor(player);
 			if (usigns == null || usigns.size() == 0) {
 				FastTravelUtil.sendFTMessage(player,
 						"None. Find [FastTravel] signs and right click them to activate.");
@@ -105,7 +105,7 @@ public class FastTravelCommand implements CommandExecutor {
 			}
 
 			// Time to travel. Check if the requested sign exists.
-			FastTravelSign ftsign = FastTravelDB.getSign(args[0]);
+			FastTravelSign ftsign = FastTravelSignDB.getSign(args[0]);
 
 			if (ftsign == null) {
 				FastTravelUtil.sendFTMessage(player, "That travel point does not exist.");
@@ -113,7 +113,7 @@ public class FastTravelCommand implements CommandExecutor {
 			}
 
 			boolean allPoints = player.hasPermission("fasttravelsigns.overrides.allpoints");
-			if (!(ftsign.isAutomatic() || ftsign.foundBy(player.getName())) && !allPoints) {
+			if (!(ftsign.isAutomatic() || ftsign.foundBy(player)) && !allPoints) {
 				FastTravelUtil.sendFTMessage(player, "You haven't found that travel point yet.");
 				return true;
 			}

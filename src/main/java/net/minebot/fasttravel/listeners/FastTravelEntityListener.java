@@ -26,8 +26,8 @@
 
 package net.minebot.fasttravel.listeners;
 
-import net.minebot.fasttravel.data.FastTravelDB;
 import net.minebot.fasttravel.data.FastTravelSign;
+import net.minebot.fasttravel.data.FastTravelSignDB;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -41,7 +41,7 @@ public class FastTravelEntityListener implements Listener {
 			return;
 
 		// Prevent signs from being exploded
-		for (FastTravelSign sign : FastTravelDB.getAllSigns()) {
+		for (FastTravelSign sign : FastTravelSignDB.getAllSigns()) {
 			if (event.blockList().contains(sign.getSignLocation().getBlock())) {
 				event.blockList().clear();
 				return;

@@ -28,7 +28,7 @@ package net.minebot.fasttravel;
 
 import net.milkbowl.vault.economy.Economy;
 import net.minebot.fasttravel.commands.*;
-import net.minebot.fasttravel.data.FastTravelDB;
+import net.minebot.fasttravel.data.FastTravelSignDB;
 import net.minebot.fasttravel.listeners.FastTravelBlockListener;
 import net.minebot.fasttravel.listeners.FastTravelEntityListener;
 import net.minebot.fasttravel.listeners.FastTravelPlayerListener;
@@ -66,6 +66,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
 		playersWarmingUp = new ArrayList<String>();
 
+
 		// Events
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new FastTravelBlockListener(), this);
@@ -81,12 +82,14 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		getCommand("ftsetpoint").setExecutor(new FastTravelSetpointCommand());
 		getCommand("ftreload").setExecutor(new FastTravelReloadCommand(this));
 		getCommand("ftauto").setExecutor(new FastTravelAutoCommand());
+        getCommand("ftclear").setExecutor(new FastTravelClearCommand(this));
+        getCommand("ftremove").setExecutor(new FastTravelRemoveCommand(this));
 
 		getLogger().info("Enabled.");
 	}
 
     public void onDisable() {
-		FastTravelDB.save();
+		FastTravelSignDB.save();
 
 		getLogger().info("Disabled.");
 	}
@@ -119,7 +122,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 			getLogger().info("Economy support not enabled.");
 
 		// Load signs database
-		FastTravelDB.init(this, dataDir + "/signs.yml");
+		FastTravelSignDB.init(this, dataDir + "/signs.yml");
 	}
 
 	public void setupEconomy() {

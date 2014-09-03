@@ -28,8 +28,8 @@ package net.minebot.fasttravel.commands;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FastTravelDB;
 import net.minebot.fasttravel.data.FastTravelSign;
+import net.minebot.fasttravel.data.FastTravelSignDB;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -63,7 +63,7 @@ public class FastTravelPriceCommand implements CommandExecutor {
 			return true;
 		}
 
-		FastTravelSign sign = FastTravelDB.getSign(args[0]);
+		FastTravelSign sign = FastTravelSignDB.getSign(args[0]);
 		if (sign == null) {
 			FastTravelUtil.sendFTMessage(sender, "No fast travel sign exists with that name.");
 		} else if (args.length == 1) {

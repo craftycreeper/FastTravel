@@ -31,12 +31,13 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
-public class FastTravelDB {
+public class FastTravelSignDB {
 
 	private static FastTravelSignsPlugin plugin;
 
@@ -45,8 +46,8 @@ public class FastTravelDB {
 	private static String saveFile;
 
 	public static void init(FastTravelSignsPlugin plugin, String saveFile) {
-		FastTravelDB.plugin = plugin;
-		FastTravelDB.saveFile = saveFile;
+		FastTravelSignDB.plugin = plugin;
+		FastTravelSignDB.saveFile = saveFile;
 
 		signs = new HashMap<String, FastTravelSign>();
 
@@ -64,12 +65,21 @@ public class FastTravelDB {
 		}
 
 		for (String signName : signYAML.getKeys(false)) {
-			String creator = signYAML.getString(signName + ".creator");
+			Player creator = plugin.getServer().getPlayer(signYAML.getString(signName + ".creator"));
 			World locWorld = plugin.getServer().getWorld(
 					signYAML.getString(signName + ".signloc.world"));
 			World tpLocWorld = plugin.getServer().getWorld(
 					signYAML.getString(signName + ".tploc.world"));
-			List<String> signPlayers = signYAML.getStringList(signName + ".players");
+			List<String> signPlayersName = signYAML.getStringList(signName + ".players");
+            List<Player> signPlayers = new ArrayList<Player>();
+            for (String player : signPlayersName) {
+                try {
+                    signPlayers.add(plugin.getServer().getPlayer(player));
+                } catch (Exception e){
+                    plugin.getLogger().info(player + " is still safe by name, changing to UUID.");
+                    signPlayers.add(plugin.getServer().getPlayer(player));
+                }
+            }
 
 			if (creator == null || locWorld == null || tpLocWorld == null) {
 				plugin.getLogger()
@@ -92,7 +102,7 @@ public class FastTravelDB {
 			boolean automatic = signYAML.getBoolean(signName + ".automatic", false);
 
 			signs.put(signName.toLowerCase(), new FastTravelSign(signName, creator, price, location, tploc,
-					automatic, signPlayers));
+                    automatic, signPlayers));
 		}
 
 		plugin.getLogger().info("Loaded " + signs.size() + " fast travel signs.");
@@ -140,7 +150,7 @@ public class FastTravelDB {
 			return null;
 	}
 
-	public static List<FastTravelSign> getSignsFor(String player) {
+	public static List<FastTravelSign> getSignsFor(Player player) {
 		List<FastTravelSign> playerSigns = new ArrayList<FastTravelSign>();
 		for (FastTravelSign sign : signs.values()) {
 			if (sign.isAutomatic() || sign.foundBy(player))

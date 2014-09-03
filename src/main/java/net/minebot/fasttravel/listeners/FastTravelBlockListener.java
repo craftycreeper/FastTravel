@@ -27,8 +27,8 @@
 package net.minebot.fasttravel.listeners;
 
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FastTravelDB;
 import net.minebot.fasttravel.data.FastTravelSign;
+import net.minebot.fasttravel.data.FastTravelSignDB;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -68,7 +68,7 @@ public class FastTravelBlockListener implements Listener {
 		String[] lines = sign.getLines();
 		String signName = ChatColor.stripColor(lines[1]);
 
-		FastTravelSign ftsign = FastTravelDB.getSign(signName);
+		FastTravelSign ftsign = FastTravelSignDB.getSign(signName);
 		if (ftsign == null)
 			return;
 
@@ -87,7 +87,7 @@ public class FastTravelBlockListener implements Listener {
 		}
 
 		// Now we do the removal.
-		FastTravelDB.removeSign(ftsign.getName());
+		FastTravelSignDB.removeSign(ftsign.getName());
 
 		FastTravelUtil.sendFTMessage(player, ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE
 				+ " has been removed.");

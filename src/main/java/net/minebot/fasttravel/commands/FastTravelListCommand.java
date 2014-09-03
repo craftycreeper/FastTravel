@@ -28,8 +28,8 @@ package net.minebot.fasttravel.commands;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FastTravelDB;
 import net.minebot.fasttravel.data.FastTravelSign;
+import net.minebot.fasttravel.data.FastTravelSignDB;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -51,7 +51,7 @@ public class FastTravelListCommand implements CommandExecutor {
 			return false;
 		}
 
-		List<FastTravelSign> signs = FastTravelDB.getAllSigns();
+		List<FastTravelSign> signs = FastTravelSignDB.getAllSigns();
 		if (signs.size() == 0) {
 			FastTravelUtil.sendFTMessage(sender, "The signs database is empty.");
 		} else {

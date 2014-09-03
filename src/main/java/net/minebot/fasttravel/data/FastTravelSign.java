@@ -29,6 +29,7 @@ package net.minebot.fasttravel.data;
 import net.minebot.fasttravel.FastTravelUtil;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.material.Sign;
 
 import java.util.ArrayList;
@@ -37,12 +38,13 @@ import java.util.List;
 
 public class FastTravelSign implements Comparable<FastTravelSign> {
 
-	private String name, creator;
+	private String name;
+    private Player creator;
 	private double price;
 	private Location location;
 	private Location tploc;
 	private boolean automatic; // Is this sign "always on"?
-	private List<String> players;
+    private List<Player> players;
 
     /**
      * Constructor for sign without price
@@ -50,12 +52,12 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
      * @param creatorname name of creator
      * @param block location of sign
      */
-	public FastTravelSign(String name, String creatorname, Block block) {
+	public FastTravelSign(String name, Player creatorname, Block block) {
 		this.name = name;
 		this.creator = creatorname;
 
 		price = 0;
-		players = new ArrayList<String>();
+		players = new ArrayList<Player>();
 		setAutomatic(false);
 
 		location = block.getLocation();
@@ -74,8 +76,8 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
      * @param automatic accessible for all players
      * @param players players that can use this sign
      */
-	public FastTravelSign(String name, String creatorname, double price, Location location, Location tpLoc,
-			boolean automatic, List<String> players) {
+	public FastTravelSign(String name, Player creatorname, double price, Location location, Location tpLoc,
+			boolean automatic, List<Player> players) {
 		this.name = name;
 		this.creator = creatorname;
 		this.price = price;
@@ -97,7 +99,7 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
      * Gets name of the creator
      * @return creator
      */
-	public String getCreator() {
+	public Player getCreator() {
 		return creator;
 	}
 
@@ -115,7 +117,7 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
      */
 	public void setPrice(double price) {
 		this.price = price;
-		FastTravelDB.save();
+		FastTravelSignDB.save();
 	}
 
     /**
@@ -132,7 +134,7 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
      */
 	public void setSignLocation(Location newSignLoc) {
 		location = newSignLoc.clone();
-		FastTravelDB.save();
+		FastTravelSignDB.save();
 	}
 
     /**
@@ -141,7 +143,7 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
      */
 	public void setTPLocation(Location newTPPoint) {
 		tploc = newTPPoint.clone();
-		FastTravelDB.save();
+		FastTravelSignDB.save();
 	}
 
     /**
@@ -156,20 +158,20 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
      * Add player to sign
      * @param player player to add
      */
-	public void addPlayer(String player) {
+	public void addPlayer(Player player) {
 		if (!players.contains(player))
 			players.add(player);
-		FastTravelDB.save();
+		FastTravelSignDB.save();
 	}
 
     /**
      * Remove player from sign
      * @param player player to remove
      */
-	public void removePlayer(String player) {
+	public void removePlayer(Player player) {
 		if (players.contains(player))
 			players.remove(player);
-		FastTravelDB.save();
+		FastTravelSignDB.save();
 	}
 
     /**
@@ -177,14 +179,14 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
      */
 	public void removeAllPlayers() {
 		players.clear();
-		FastTravelDB.save();
+		FastTravelSignDB.save();
 	}
 
     /**
      * Gets all players that can use this sign
      * @return Players that are allowed to use this sign
      */
-	public List<String> getPlayers() {
+	public List<Player> getPlayers() {
 		return players;
 	}
 
@@ -193,8 +195,8 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
      * @param player player to check
      * @return found by player
      */
-	public boolean foundBy(String player) {
-		return players.contains(player);
+	public boolean foundBy(Player player) {
+		return players.contains(player.getUniqueId());
 	}
 
 	public int compareTo(FastTravelSign o) {
@@ -215,6 +217,6 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
      */
 	public void setAutomatic(boolean automatic) {
 		this.automatic = automatic;
-		FastTravelDB.save();
+		FastTravelSignDB.save();
 	}
 }

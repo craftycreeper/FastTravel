@@ -28,8 +28,8 @@ package net.minebot.fasttravel.listeners;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FastTravelDB;
 import net.minebot.fasttravel.data.FastTravelSign;
+import net.minebot.fasttravel.data.FastTravelSignDB;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -79,7 +79,7 @@ public class FastTravelSignListener implements Listener {
 		}
 
 		// Check for existing sign with this name
-		if (FastTravelDB.getSign(lines[1]) != null) {
+		if (FastTravelSignDB.getSign(lines[1]) != null) {
 			dropSign(sign);
 			FastTravelUtil.sendFTMessage(player, "There is already a travel point named "
 					+ ChatColor.AQUA + lines[1] + ChatColor.WHITE + ".");
@@ -96,7 +96,7 @@ public class FastTravelSignListener implements Listener {
 		}
 
 		else {
-			FastTravelSign newFTSign = new FastTravelSign(lines[1], player.getName(), sign);
+			FastTravelSign newFTSign = new FastTravelSign(lines[1], player, sign);
 
 			// Economy support - set default price
 			if (plugin.getEconomy() != null) {
@@ -106,12 +106,12 @@ public class FastTravelSignListener implements Listener {
 				newFTSign.setPrice(defPrice);
 			}
 
-			FastTravelDB.addSign(newFTSign);
+			FastTravelSignDB.addSign(newFTSign);
 
 			FastTravelUtil.sendFTMessage(player, "New travel point " + ChatColor.AQUA + lines[1]
 					+ ChatColor.WHITE + " created.");
 
-			newFTSign.addPlayer(player.getName());
+			newFTSign.addPlayer(player);
 
 			// Colorize sign
 			event.setLine(0, ChatColor.DARK_PURPLE + "[FastTravel]");

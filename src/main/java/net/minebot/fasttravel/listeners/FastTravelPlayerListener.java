@@ -28,8 +28,8 @@ package net.minebot.fasttravel.listeners;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
-import net.minebot.fasttravel.data.FastTravelDB;
 import net.minebot.fasttravel.data.FastTravelSign;
+import net.minebot.fasttravel.data.FastTravelSignDB;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -39,7 +39,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.HashMap;
 
@@ -65,7 +64,7 @@ public class FastTravelPlayerListener implements Listener {
 		String[] lines = sign.getLines();
 		String line1 = ChatColor.stripColor(lines[1]);
 
-		FastTravelSign ftsign = FastTravelDB.getSign(line1);
+		FastTravelSign ftsign = FastTravelSignDB.getSign(line1);
 		if (ftsign == null)
 			return;
 
@@ -85,11 +84,11 @@ public class FastTravelPlayerListener implements Listener {
 		// Now that the checks are done - see if the user has the sign, and
 		// if not, add it.
 
-		if (ftsign.foundBy(player.getName())) {
+		if (ftsign.foundBy(player)) {
 			FastTravelUtil.sendFTMessage(player, "You have already added travel point "
 					+ ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE + ".");
 		} else {
-			ftsign.addPlayer(player.getName());
+			ftsign.addPlayer(player);
 			FastTravelUtil.sendFTMessage(player,
 					"Travel point " + ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE
 							+ " added!");
