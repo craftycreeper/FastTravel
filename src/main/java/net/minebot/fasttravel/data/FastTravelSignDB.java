@@ -43,6 +43,8 @@ public class FastTravelSignDB {
 
 	private static Map<String, FastTravelSign> signs;
 
+    //private static List<FastTravelSign> signs;
+
 	private static String saveFile;
 
 	public static void init(FastTravelSignsPlugin plugin, String saveFile) {
@@ -66,6 +68,7 @@ public class FastTravelSignDB {
 
 		for (String signName : signYAML.getKeys(false)) {
 			Player creator = plugin.getServer().getPlayer(signYAML.getString(signName + ".creator"));
+            int range = signYAML.getInt(signName + ".range");
 			World locWorld = plugin.getServer().getWorld(
 					signYAML.getString(signName + ".signloc.world"));
 			World tpLocWorld = plugin.getServer().getWorld(
@@ -76,7 +79,7 @@ public class FastTravelSignDB {
                 try {
                     signPlayers.add(plugin.getServer().getPlayer(player));
                 } catch (Exception e){
-                    plugin.getLogger().info(player + " is still safe by name, changing to UUID.");
+                    plugin.getLogger().info(player + " is still safed by name, changing to UUID.");
                     signPlayers.add(plugin.getServer().getPlayer(player));
                 }
             }
@@ -102,7 +105,7 @@ public class FastTravelSignDB {
 			boolean automatic = signYAML.getBoolean(signName + ".automatic", false);
 
 			signs.put(signName.toLowerCase(), new FastTravelSign(signName, creator, price, location, tploc,
-                    automatic, signPlayers));
+                    automatic, range, signPlayers));
 		}
 
 		plugin.getLogger().info("Loaded " + signs.size() + " fast travel signs.");
@@ -128,6 +131,7 @@ public class FastTravelSignDB {
 			signYAML.set(signName + ".automatic", sign.isAutomatic());
 			signYAML.set(signName + ".players", sign.getPlayers());
 			signYAML.set(signName + ".price", sign.getPrice());
+            signYAML.set(signName + ".range", sign.getRange());
 		}
 
 		try {

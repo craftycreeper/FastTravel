@@ -4,6 +4,7 @@ import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelSignDB;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -41,7 +42,7 @@ public class FastTravelRemoveCommand implements CommandExecutor {
             }
 
             FastTravelUtil.sendFTMessage(plugin.getServer().getPlayer(player),
-                    "You have been removed from FastTravel: " + signRaw.getName());
+                    "You have been removed from FastTravel: " + ChatColor.AQUA + signRaw.getName());
 
             signRaw.removePlayer(plugin.getServer().getPlayer(player));
         }

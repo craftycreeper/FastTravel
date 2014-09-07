@@ -4,6 +4,7 @@ import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelSignDB;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -36,7 +37,7 @@ public class FastTravelClearCommand implements CommandExecutor {
             FastTravelSign sign = FastTravelSignDB.getSign(args[0]);
             List<Player> players = sign.getPlayers();
             for (Player player : players) {
-                    FastTravelUtil.sendFTMessage(player, "You have been remove from a sign.");
+                    FastTravelUtil.sendFTMessage(player, "You have been remove from FastTravel: " + ChatColor.AQUA + sign.getName());
             }
             sign.removeAllPlayers();
             return true;

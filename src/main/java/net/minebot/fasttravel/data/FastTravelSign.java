@@ -41,6 +41,7 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 	private String name;
     private Player creator;
 	private double price;
+    private int range;
 	private Location location;
 	private Location tploc;
 	private boolean automatic; // Is this sign "always on"?
@@ -57,6 +58,7 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 		this.creator = creatorname;
 
 		price = 0;
+        range = -1;
 		players = new ArrayList<Player>();
 		setAutomatic(false);
 
@@ -77,10 +79,11 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
      * @param players players that can use this sign
      */
 	public FastTravelSign(String name, Player creatorname, double price, Location location, Location tpLoc,
-			boolean automatic, List<Player> players) {
+			boolean automatic,int range, List<Player> players) {
 		this.name = name;
 		this.creator = creatorname;
 		this.price = price;
+        this.range= range;
 		this.players = players;
 		this.setAutomatic(automatic);
 		this.location = location;
@@ -219,4 +222,12 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 		this.automatic = automatic;
 		FastTravelSignDB.save();
 	}
+
+    public void setRange(int range){
+        this.range = range;
+    }
+
+    public int getRange(){
+        return this.range;
+    }
 }

@@ -84,6 +84,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		getCommand("ftauto").setExecutor(new FastTravelAutoCommand());
         getCommand("ftclear").setExecutor(new FastTravelClearCommand(this));
         getCommand("ftremove").setExecutor(new FastTravelRemoveCommand(this));
+        getCommand("ftsetrange").setExecutor(new FastTravelSetRangeCommand());
 
 		getLogger().info("Enabled.");
 	}
@@ -105,7 +106,8 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		}
 		getConfig().addDefault("cooldown", 0);
 		getConfig().addDefault("warmup", 0);
-        getConfig().addDefault("interrupt on move", true);
+        //getConfig().addDefault("interrupt on move", true);
+        getConfig().addDefault("use range", true);
 		getConfig().addDefault("economy.enabled", false);
 		getConfig().addDefault("economy.default-price", 0);
         getConfig().addDefault("metrics.enabled", true);

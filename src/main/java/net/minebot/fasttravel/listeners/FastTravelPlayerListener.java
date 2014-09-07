@@ -39,8 +39,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class FastTravelPlayerListener implements Listener {
 
@@ -96,18 +98,18 @@ public class FastTravelPlayerListener implements Listener {
 
 	}
 
-    /*@EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerMove(PlayerMoveEvent event){
-        if (event.isCancelled() || plugin.getConfig().getInt("warmup") == 0 ||
-            plugin.getConfig().getBoolean("interrupt on move") ||
-            event.getPlayer().hasPermission("fasttravelsigns.overrides.interrupt")){
-            return;
+        Player p = event.getPlayer();
+        List<FastTravelSign> signs = FastTravelSignDB.getAllSigns();
+
+        for (FastTravelSign sign : signs){
+            if (!sign.foundBy(p) && sign.getSignLocation().distance(p.getLocation()) <= sign.getRange()){
+                sign.addPlayer(p);
+                FastTravelUtil.sendFTMessage(p, "You have found FastTravel: " + ChatColor.AQUA + sign.getName());
+            }
         }
 
-        if (plugin.playersWarmingUp.contains(event.getPlayer().getName()));{
-            plugin.playersWarmingUp.remove(event.getPlayer().getName());
-            FastTravelUtil.sendFTMessage(event.getPlayer(), "Teleport aborted, don't move next time!");
-        }
-    }*/
+    }
 
 }
