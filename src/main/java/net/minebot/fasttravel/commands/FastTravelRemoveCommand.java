@@ -20,7 +20,6 @@ public class FastTravelRemoveCommand implements CommandExecutor {
         this.plugin = plugin;
     }
 
-    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!sender.hasPermission("fasttravelsigns.remove")){
             FastTravelUtil.sendFTMessage(sender, "You don't have permission to do that");

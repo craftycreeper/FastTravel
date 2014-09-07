@@ -14,7 +14,6 @@ public class FastTravelSetRangeCommand implements CommandExecutor {
 
     private static int range;
 
-    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!sender.hasPermission("fasttravelsigns.range")){
             FastTravelUtil.sendFTMessage(sender, "You don't have permission to do this");

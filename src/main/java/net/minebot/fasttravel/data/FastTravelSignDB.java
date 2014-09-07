@@ -114,10 +114,11 @@ public class FastTravelSignDB {
 
 	public static void save() {
 		YamlConfiguration signYAML = new YamlConfiguration();
+        List<Player> players;
 		for (String signName : signs.keySet()) {
 			FastTravelSign sign = signs.get(signName);
 			signName = sign.getName();
-			signYAML.set(signName + ".creator", sign.getCreator());
+			signYAML.set(signName + ".creator", sign.getCreator().getUniqueId().toString());
 			signYAML.set(signName + ".signloc.world", sign.getSignLocation().getWorld().getName());
 			signYAML.set(signName + ".signloc.x", sign.getSignLocation().getX());
 			signYAML.set(signName + ".signloc.y", sign.getSignLocation().getY());
@@ -129,7 +130,12 @@ public class FastTravelSignDB {
 			signYAML.set(signName + ".tploc.z", sign.getTPLocation().getZ());
 			signYAML.set(signName + ".tploc.yaw", (double) sign.getTPLocation().getYaw());
 			signYAML.set(signName + ".automatic", sign.isAutomatic());
-			signYAML.set(signName + ".players", sign.getPlayers());
+
+            players = sign.getPlayers();
+            for (Player player : players){
+                signYAML.set(signName + ".players", player.getUniqueId().toString());
+            }
+
 			signYAML.set(signName + ".price", sign.getPrice());
             signYAML.set(signName + ".range", sign.getRange());
 		}

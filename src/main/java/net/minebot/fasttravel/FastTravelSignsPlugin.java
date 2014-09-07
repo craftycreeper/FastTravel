@@ -82,9 +82,9 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		getCommand("ftsetpoint").setExecutor(new FastTravelSetpointCommand());
 		getCommand("ftreload").setExecutor(new FastTravelReloadCommand(this));
 		getCommand("ftauto").setExecutor(new FastTravelAutoCommand());
-        getCommand("ftclear").setExecutor(new FastTravelClearCommand(this));
-        getCommand("ftremove").setExecutor(new FastTravelRemoveCommand(this));
-        getCommand("ftsetrange").setExecutor(new FastTravelSetRangeCommand());
+        //getCommand("ftclear").setExecutor(new FastTravelClearCommand()); //TODO: Repair NullPointerEx
+        //getCommand("ftremove").setExecutor(new FastTravelRemoveCommand(this));
+        //getCommand("ftsetrange").setExecutor(new FastTravelSetRangeCommand());
 
 		getLogger().info("Enabled.");
 	}
@@ -157,6 +157,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
             try {
                 Metrics metrics = new Metrics(this);
                 metrics.start();
+                getLogger().info("Metrics enabled");
             } catch (IOException e) {
                 getLogger().info("Could not load Metrics");
             }

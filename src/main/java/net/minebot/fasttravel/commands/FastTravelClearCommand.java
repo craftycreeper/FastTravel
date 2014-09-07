@@ -17,22 +17,15 @@ import java.util.List;
  */
 public class FastTravelClearCommand implements CommandExecutor {
 
-    private FastTravelSignsPlugin instance;
-
-    public FastTravelClearCommand(FastTravelSignsPlugin instance){
-        this.instance = instance;
-    }
-
-    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!((Player) sender).hasPermission("fasttravelsigns.clear")){
             FastTravelUtil.sendFTMessage(sender, "You don't have permission to do this.");
             return false;
         }
         if (args.length == 0){
-            FastTravelUtil.sendFTMessage(sender, "You have to specify a sign to clear.");
+            FastTravelUtil.sendFTMessage(sender, "You have to specify a FastTravel to clear.");
         } else if (FastTravelSignDB.getSign(args[0]) == null){
-            FastTravelUtil.sendFTMessage(sender, "Sign does not exist.");
+            FastTravelUtil.sendFTMessage(sender, "FastTravel does not exist.");
         } else {
             FastTravelSign sign = FastTravelSignDB.getSign(args[0]);
             List<Player> players = sign.getPlayers();
