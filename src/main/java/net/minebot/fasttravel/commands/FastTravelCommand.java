@@ -30,6 +30,7 @@ import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelSignDB;
+import net.minebot.fasttravel.event.FastTravelEvent;
 import net.minebot.fasttravel.task.FastTravelTask;
 import net.minebot.fasttravel.task.FastTravelTaskExecutor;
 import org.bukkit.ChatColor;
@@ -155,8 +156,7 @@ public class FastTravelCommand implements CommandExecutor {
 				plugin.getServer().getScheduler()
 						.scheduleSyncDelayedTask(plugin, traveltask, warmup * 20);
 			} else {
-				//traveltask.run();
-                executor.getExecutor().execute(traveltask);
+                plugin.getServer().getPluginManager().callEvent(new FastTravelEvent(player, ftsign));
 			}
 
 			if (cooldownLength > 0)

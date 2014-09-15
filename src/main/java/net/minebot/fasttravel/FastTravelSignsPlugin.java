@@ -29,10 +29,7 @@ package net.minebot.fasttravel;
 import net.milkbowl.vault.economy.Economy;
 import net.minebot.fasttravel.commands.*;
 import net.minebot.fasttravel.data.FastTravelSignDB;
-import net.minebot.fasttravel.listeners.FastTravelBlockListener;
-import net.minebot.fasttravel.listeners.FastTravelEntityListener;
-import net.minebot.fasttravel.listeners.FastTravelPlayerListener;
-import net.minebot.fasttravel.listeners.FastTravelSignListener;
+import net.minebot.fasttravel.listeners.*;
 import net.minebot.fasttravel.task.FastTravelTaskExecutor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.plugin.PluginManager;
@@ -73,6 +70,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		pm.registerEvents(new FastTravelEntityListener(), this);
 		pm.registerEvents(new FastTravelSignListener(this), this);
 		pm.registerEvents(new FastTravelPlayerListener(), this);
+        pm.registerEvents(new FastTravelListener(this), this);
 
 		// commands
 		getCommand("ft").setExecutor(new FastTravelCommand(this));
