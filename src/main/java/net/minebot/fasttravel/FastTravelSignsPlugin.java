@@ -80,9 +80,9 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		getCommand("ftsetpoint").setExecutor(new FastTravelSetpointCommand());
 		getCommand("ftreload").setExecutor(new FastTravelReloadCommand(this));
 		getCommand("ftauto").setExecutor(new FastTravelAutoCommand());
-        //getCommand("ftclear").setExecutor(new FastTravelClearCommand()); //TODO: Repair NullPointerEx
-        //getCommand("ftremove").setExecutor(new FastTravelRemoveCommand(this));
-        //getCommand("ftsetrange").setExecutor(new FastTravelSetRangeCommand());
+        getCommand("ftclear").setExecutor(new FastTravelClearCommand());
+        getCommand("ftremove").setExecutor(new FastTravelRemoveCommand(this));
+        getCommand("ftsetrange").setExecutor(new FastTravelSetRangeCommand());
 
 		getLogger().info("Enabled.");
 	}
