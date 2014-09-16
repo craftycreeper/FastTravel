@@ -1,6 +1,6 @@
 name: FastTravelSigns
 main: net.minebot.fasttravel.FastTravelSignsPlugin
-version: 0.8
+version: 0.8.1
 permissions:
     fasttravelsigns.use:
         description: Allows users to find travel points and use them with /ft.
@@ -55,6 +55,9 @@ permissions:
         default: op
     fasttravelsigns.range:
         description: Allows use of /ftrange command.
+        default: op
+    fasttravelsigns.update:
+        description: Sends player info if an update is available.
         default: op
 commands:
     ft:

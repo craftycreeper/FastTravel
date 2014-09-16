@@ -39,6 +39,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.HashMap;
@@ -110,6 +111,13 @@ public class FastTravelPlayerListener implements Listener {
             }
         }
 
+    }
+
+    public void onPlayerJoin(PlayerJoinEvent event){
+        if (event.getPlayer().hasPermission("fasttravelsigns.update") && FastTravelSignsPlugin.updateFound){
+            FastTravelUtil.sendFTMessage(event.getPlayer(), "Update found! You are using " + ChatColor.YELLOW +
+                    FastTravelUtil.curVersion + ChatColor.WHITE + " new version: " + ChatColor.YELLOW + FastTravelUtil.newVersion);
+        }
     }
 
 }

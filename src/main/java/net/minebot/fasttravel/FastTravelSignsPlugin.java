@@ -31,6 +31,7 @@ import net.minebot.fasttravel.commands.*;
 import net.minebot.fasttravel.data.FastTravelSignDB;
 import net.minebot.fasttravel.listeners.*;
 import net.minebot.fasttravel.task.FastTravelTaskExecutor;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -47,6 +48,8 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
 	private Economy economy = null;
 
+    public static boolean updateFound;
+
 	// Players in transit - put here for now. Should find a better place later.
 	public ArrayList<String> playersWarmingUp;
 
@@ -60,6 +63,12 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		dataInit();
         FastTravelTaskExecutor.init();
         metricsInit();
+        updateFound = FastTravelUtil.checkUpdate(this);
+
+        if (updateFound){
+            getLogger().info("Update found! You are using " +
+                    FastTravelUtil.curVersion + " new version: " + FastTravelUtil.newVersion);
+        }
 
 		playersWarmingUp = new ArrayList<String>();
 

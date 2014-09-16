@@ -34,7 +34,13 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginDescriptionFile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,6 +49,9 @@ public class FastTravelUtil {
     private static Material[] safeBlocks = {Material.AIR, Material.SIGN, Material.SIGN_POST, Material.TORCH, Material.REDSTONE_TORCH_ON,
                                             Material.REDSTONE_TORCH_OFF, Material.REDSTONE, Material.LONG_GRASS, Material.YELLOW_FLOWER,
                                             Material.CROPS, Material.DEAD_BUSH};
+
+    public static String newVersion;
+    public static String curVersion;
 
 	public static boolean isFTSign(Block block) {
 		if (block == null)
@@ -105,6 +114,36 @@ public class FastTravelUtil {
 			return true;
 		return false;
 	}
+
+    /**
+     *
+     * @param plugin This plugin
+     * @return true if update, available false if not
+     */
+    public static boolean checkUpdate(FastTravelSignsPlugin plugin){
+            try {
+                URL verfile = new URL("http://germanspacebuild.de/FastTravelSigns_Version.txt");
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(verfile.openStream()));
+                String newVersion = in.readLine();
+                in.close();
+                String oldVersion = plugin.getDescription().getVersion();
+
+                FastTravelUtil.newVersion = newVersion;
+                FastTravelUtil.curVersion = oldVersion;
+
+                if (newVersion == oldVersion){
+                    return false;
+                } else {
+                    return true;
+                }
+
+            } catch (IOException ex) {
+                // Ignore any problems that may happen
+            }
+        plugin.getLogger().info("Could not check for Updates");
+        return false;
+    }
 
 	public static int getYawForFace(BlockFace face) {
 		int dir;
