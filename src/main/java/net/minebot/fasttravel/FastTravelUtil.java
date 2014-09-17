@@ -50,8 +50,8 @@ public class FastTravelUtil {
                                             Material.REDSTONE_TORCH_OFF, Material.REDSTONE, Material.LONG_GRASS, Material.YELLOW_FLOWER,
                                             Material.CROPS, Material.DEAD_BUSH};
 
-    private static String newVersion;
-    private static String curVersion;
+    public static String newVersion;
+    public static String curVersion;
 
     /**
      * Checks if block is a FasTravelSign
