@@ -46,6 +46,9 @@ import java.util.List;
 
 public class FastTravelUtil {
 
+    /**
+     * Blocks that are safe to be traveled to
+     */
     public static Material[] safeBlocks = {Material.AIR, Material.SIGN, Material.SIGN_POST, Material.TORCH, Material.REDSTONE_TORCH_ON,
                                             Material.REDSTONE_TORCH_OFF, Material.REDSTONE, Material.LONG_GRASS, Material.YELLOW_FLOWER,
                                             Material.CROPS, Material.DEAD_BUSH};
@@ -122,7 +125,7 @@ public class FastTravelUtil {
 
     /**
      * Checks if location is safe.
-     * @param loc Location to safe
+     * @param loc Location to check
      * @return Is the location safe
      */
 	public static boolean safeLocation(Location loc) {
