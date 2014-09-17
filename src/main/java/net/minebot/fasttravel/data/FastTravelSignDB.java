@@ -37,6 +37,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
+@SuppressWarnings("deprecation")
 public class FastTravelSignDB {
 
 	private static FastTravelSignsPlugin plugin;

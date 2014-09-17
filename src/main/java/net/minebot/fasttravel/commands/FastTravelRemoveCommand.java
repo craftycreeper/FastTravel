@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 /**
  * Created by oneill011990 on 03.09.2014.
  */
+@SuppressWarnings("deprecation")
 public class FastTravelRemoveCommand implements CommandExecutor {
 
     private FastTravelSignsPlugin plugin;

@@ -116,10 +116,12 @@ public class FastTravelUtil {
 	}
 
     /**
+     * Method that checks for plugin updates
      *
      * @param plugin This plugin
-     * @return true if update, available false if not
+     * @return true if update available, false if not
      */
+    //TODO: make this work and fin mistake
     public static boolean checkUpdate(FastTravelSignsPlugin plugin){
             try {
                 URL verfile = new URL("http://germanspacebuild.de/FastTravelSigns_Version.txt");
@@ -138,7 +140,8 @@ public class FastTravelUtil {
                     return true;
                 }
 
-            } catch (IOException ex) {
+            } catch (IOException e) {
+                e.printStackTrace();
                 // Ignore any problems that may happen
             }
         plugin.getLogger().info("Could not check for Updates");
