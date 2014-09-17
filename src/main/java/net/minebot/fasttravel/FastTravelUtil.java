@@ -46,7 +46,7 @@ import java.util.List;
 
 public class FastTravelUtil {
 
-    private static Material[] safeBlocks = {Material.AIR, Material.SIGN, Material.SIGN_POST, Material.TORCH, Material.REDSTONE_TORCH_ON,
+    public static Material[] safeBlocks = {Material.AIR, Material.SIGN, Material.SIGN_POST, Material.TORCH, Material.REDSTONE_TORCH_ON,
                                             Material.REDSTONE_TORCH_OFF, Material.REDSTONE, Material.LONG_GRASS, Material.YELLOW_FLOWER,
                                             Material.CROPS, Material.DEAD_BUSH};
 
@@ -71,6 +71,11 @@ public class FastTravelUtil {
 	}
 
 
+    /**
+     * Checks if lines belong to a FastTravelSign
+     * @param lines Line to check
+     * @return Belong to FAstTravelSign or not
+     */
 	public static boolean isFTSign(String[] lines) {
 		String line1 = ChatColor.stripColor(lines[0]);
 		if (line1.equalsIgnoreCase("[fasttravel]") || line1.equalsIgnoreCase("[ft]"))
