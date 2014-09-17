@@ -50,9 +50,14 @@ public class FastTravelUtil {
                                             Material.REDSTONE_TORCH_OFF, Material.REDSTONE, Material.LONG_GRASS, Material.YELLOW_FLOWER,
                                             Material.CROPS, Material.DEAD_BUSH};
 
-    public static String newVersion;
-    public static String curVersion;
+    private static String newVersion;
+    private static String curVersion;
 
+    /**
+     * Checks if block is a FasTravelSign
+     * @param block Block to check
+     * @return Is FastTravelSign or not
+     */
 	public static boolean isFTSign(Block block) {
 		if (block == null)
 			return false;
@@ -65,6 +70,7 @@ public class FastTravelUtil {
 		return false;
 	}
 
+
 	public static boolean isFTSign(String[] lines) {
 		String line1 = ChatColor.stripColor(lines[0]);
 		if (line1.equalsIgnoreCase("[fasttravel]") || line1.equalsIgnoreCase("[ft]"))
@@ -72,6 +78,14 @@ public class FastTravelUtil {
 		return false;
 	}
 
+    /**
+     * Send message to player
+     *
+     * Send a message to a player with FastTravel prefix
+     *
+     * @param sender Player to send message to
+     * @param mess Message to send
+     */
 	public static void sendFTMessage(CommandSender sender, String mess) {
 		sender.sendMessage(ChatColor.LIGHT_PURPLE + "[FastTravel]" + ChatColor.WHITE + " " + mess);
 	}
@@ -101,6 +115,11 @@ public class FastTravelUtil {
 			sendFTMessage(sender, pointstr);
 	}
 
+    /**
+     * Checks if location is safe.
+     * @param loc Location to safe
+     * @return Is the location safe
+     */
 	public static boolean safeLocation(Location loc) {
 		double y = loc.getY();
 		loc.setY(y + 1);
@@ -121,7 +140,7 @@ public class FastTravelUtil {
      * @param plugin This plugin
      * @return true if update available, false if not
      */
-    //TODO: make this work and fin mistake
+    //TODO: make this work and find mistake
     public static boolean checkUpdate(FastTravelSignsPlugin plugin){
             try {
                 URL verfile = new URL("http://germanspacebuild.de/FastTravelSigns_Version.txt");
