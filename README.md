@@ -1,4 +1,4 @@
-## FastTravelSigns ###
+### FastTravelSigns ###
 
 **The Simple Exploration and RPG-friendly teleportation plugin for [Bukkit](http://bukkit.org)!**
 
