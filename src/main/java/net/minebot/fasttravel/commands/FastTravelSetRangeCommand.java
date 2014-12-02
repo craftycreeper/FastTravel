@@ -23,7 +23,7 @@ public class FastTravelSetRangeCommand implements CommandExecutor {
             return false;
         }
 
-        FastTravelSign sign = FastTravelSignDB.getSign(args[1]);
+        FastTravelSign sign = FastTravelSignDB.getSign(args[0]);
         try {
             range = Integer.parseInt(args[1]);
         } catch (NumberFormatException e){
