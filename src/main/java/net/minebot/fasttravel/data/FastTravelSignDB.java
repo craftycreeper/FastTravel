@@ -66,7 +66,7 @@ public class FastTravelSignDB {
 		}
 
 		for (String signName : signYAML.getKeys(false)) {
-			Player creator = plugin.getServer().getPlayer(signYAML.getString(signName + ".creator"));
+			Player creator = plugin.getServer().getPlayer(UUID.fromString(signYAML.getString(signName + ".creator")));
             int range = signYAML.getInt(signName + ".range");
 			World locWorld = plugin.getServer().getWorld(
 					signYAML.getString(signName + ".signloc.world"));
