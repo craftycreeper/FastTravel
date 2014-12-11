@@ -41,7 +41,7 @@ public class FastTravelReloadCommand implements CommandExecutor {
 	}
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (sender instanceof Player && !((Player) sender).hasPermission("fasttravelsigns.reload")) {
+		if (sender instanceof Player && !(sender.hasPermission("fasttravelsigns.reload"))) {
 			return false;
 		}
 

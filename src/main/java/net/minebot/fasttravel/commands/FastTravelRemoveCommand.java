@@ -24,7 +24,7 @@ public class FastTravelRemoveCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!sender.hasPermission("fasttravelsigns.remove")){
             FastTravelUtil.sendFTMessage(sender, "You don't have permission to do that");
-        } else if (args.length <= 1 || args[0] == null || args[1] == null) {
+        } else if (args.length == 0 || args[0] == null || args[1] == null) {
             FastTravelUtil.sendFTMessage(sender, "Invalid arguments.");
         } else {
             String sign = args[0];

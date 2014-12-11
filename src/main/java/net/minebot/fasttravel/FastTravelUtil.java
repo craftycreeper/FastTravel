@@ -168,7 +168,6 @@ public class FastTravelUtil {
                 }
 
             } catch (IOException e) {
-                e.printStackTrace();
                 // Ignore any problems that may happen
             }
         plugin.getLogger().info("Could not check for Updates");

@@ -18,7 +18,7 @@ import java.util.List;
 public class FastTravelClearCommand implements CommandExecutor {
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (!((Player) sender).hasPermission("fasttravelsigns.clear")){
+        if (!sender.hasPermission("fasttravelsigns.clear")){
             FastTravelUtil.sendFTMessage(sender, "You don't have permission to do this.");
             return false;
         }
@@ -30,7 +30,7 @@ public class FastTravelClearCommand implements CommandExecutor {
             FastTravelSign sign = FastTravelSignDB.getSign(args[0]);
             List<Player> players = sign.getPlayers();
             for (Player player : players) {
-                    FastTravelUtil.sendFTMessage(player, "You have been remove from FastTravel: " + ChatColor.AQUA + sign.getName());
+                    FastTravelUtil.sendFTMessage(player, "You have been removed from FastTravel: " + ChatColor.AQUA + sign.getName());
             }
             sign.removeAllPlayers();
             return true;
