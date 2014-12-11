@@ -44,8 +44,6 @@ public class FastTravelSignDB {
 
 	private static Map<String, FastTravelSign> signs;
 
-    //private static List<FastTravelSign> signs;
-
 	private static String saveFile;
 
 	public static void init(FastTravelSignsPlugin plugin, String saveFile) {
@@ -74,22 +72,9 @@ public class FastTravelSignDB {
 					signYAML.getString(signName + ".signloc.world"));
 			World tpLocWorld = plugin.getServer().getWorld(
 					signYAML.getString(signName + ".tploc.world"));
-			List<String> signPlayersName = signYAML.getStringList(signName + ".players");
             List<Player> signPlayers = new ArrayList<Player>();
-            for (String player : signPlayersName) {
-                try {
-                    signPlayers.add(plugin.getServer().getPlayer(player));
-                } catch (Exception e){
-                    plugin.getLogger().info(player + " is still safed by name, changing to UUID.");
-                    signPlayers.add(plugin.getServer().getPlayer(player));
-                }
-            }
 
-			if (creator == null || locWorld == null || tpLocWorld == null) {
-				plugin.getLogger()
-						.warning("Could not load sign '" + signName + "' - missing data!");
-				continue;
-			}
+			checkMissing(signName, creator, locWorld, tpLocWorld);
 
 			double price = signYAML.getDouble(signName + ".price", 0.0);
 
@@ -184,22 +169,19 @@ public class FastTravelSignDB {
 		save();
 	}
 
-	// Load/save
-	/*
-	 * public void load() { try { File savefile = new File(savePath);
-	 * ObjectInputStream ois = new ObjectInputStream(new
-	 * FileInputStream(savefile)); Object readobj = ois.readObject();
-	 * ois.close();
-	 * 
-	 * FastTravelDBSave saveData = (FastTravelDBSave)readobj; this.signs =
-	 * saveData.signs; this.userSigns = saveData.userSigns; } catch(Exception
-	 * e){ e.printStackTrace(); } }
-	 * 
-	 * public void save() { FastTravelDBSave saveData = new
-	 * FastTravelDBSave(signs, userSigns); try { File savefile = new
-	 * File(savePath); ObjectOutputStream oos = new ObjectOutputStream(new
-	 * FileOutputStream(savefile)); oos.writeObject(saveData); oos.flush();
-	 * oos.close(); } catch(Exception e){ e.printStackTrace(); } }
-	 */
+	private static void checkMissing(String signName, Player creator, World locWorld, World tplocWorld){
+
+		if (creator == null){
+			plugin.getLogger()
+					.warning("Could not load sign '" + signName + "' - missing creator!");
+		} else if (locWorld == null) {
+			plugin.getLogger()
+					.warning("Could not load sign '" + signName + "' - missing world sign is in!");
+		} else if (tplocWorld == null) {
+			plugin.getLogger()
+					.warning("Could not load sign '" + signName + "' - missing world to travel to!");
+		}
+
+	}
 
 }

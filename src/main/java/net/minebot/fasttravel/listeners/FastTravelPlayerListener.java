@@ -105,11 +105,15 @@ public class FastTravelPlayerListener implements Listener {
         List<FastTravelSign> signs = FastTravelSignDB.getAllSigns();
 
         for (FastTravelSign sign : signs){
-            if (!sign.foundBy(p) && sign.getSignLocation().distance(p.getLocation()) <= sign.getRange()){
+			if (sign.foundBy(p)){
+
+			} else if (sign.getSignLocation().distance(p.getLocation()) <= sign.getRange()){
                 sign.addPlayer(p);
                 FastTravelUtil.sendFTMessage(p, "You have found FastTravel: " + ChatColor.AQUA + sign.getName());
             }
         }
+
+		signs.clear();
 
     }
 

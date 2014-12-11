@@ -66,7 +66,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		// Load config and etc
 		dataInit();
         FastTravelTaskExecutor.init();
-        metricsInit();
+        //metricsInit();
         updateFound = FastTravelUtil.checkUpdate(this);
         config = getConfig();
 
@@ -163,22 +163,6 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
     public static Configuration getConfiguration() {
         return config;
-    }
-
-    private void metricsInit() {
-        if (!getConfig().getBoolean("metrics.enabled")){
-            getLogger().info("Metrics disabled");
-            return;
-        } else {
-            try {
-                Metrics metrics = new Metrics(this);
-                metrics.start();
-                getLogger().info("Metrics enabled");
-            } catch (IOException e) {
-                getLogger().info("Could not load Metrics");
-            }
-        }
-
     }
 
 }

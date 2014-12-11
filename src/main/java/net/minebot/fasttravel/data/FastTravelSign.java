@@ -199,7 +199,7 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
      * @return found by player
      */
 	public boolean foundBy(Player player) {
-		return players.contains(player.getUniqueId());
+		return players.contains(player);
 	}
 
 	public int compareTo(FastTravelSign o) {
