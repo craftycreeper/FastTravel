@@ -59,6 +59,9 @@ permissions:
     fasttravelsigns.update:
         description: Sends player info if an update is available.
         default: op
+    fasttravelsigns.save:
+        description: Saves signs to file and reloads database and configuration.
+        default: op
 commands:
     ft:
         description: Obtain list of travel points and warp to them
@@ -111,3 +114,8 @@ commands:
         permission: fasttravelsigns.range
         usage: |
             /ftsetrange [travelpoint] [range]
+    ftsave:
+        description: Saves signs to file and reloads database and configuration
+        permission: fasttravelsigns.save
+        usage: |
+            /ftsave

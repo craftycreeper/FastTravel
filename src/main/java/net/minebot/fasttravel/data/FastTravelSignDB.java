@@ -74,8 +74,6 @@ public class FastTravelSignDB {
 					signYAML.getString(signName + ".tploc.world"));
             List<Player> signPlayers = new ArrayList<Player>();
 
-			checkMissing(signName, creator, locWorld, tpLocWorld);
-
 			double price = signYAML.getDouble(signName + ".price", 0.0);
 
 			Location location = new Location(locWorld, signYAML.getDouble(signName + ".signloc.x"),
@@ -90,11 +88,16 @@ public class FastTravelSignDB {
 			
 			boolean automatic = signYAML.getBoolean(signName + ".automatic", false);
 
+			if (!checkMissing(signName, creator, locWorld, tpLocWorld)){
+				continue;
+			}
+
 			signs.put(signName.toLowerCase(), new FastTravelSign(signName, creator, price, location, tploc,
                     automatic, range, signPlayers));
 		}
 
 		plugin.getLogger().info("Loaded " + signs.size() + " fast travel signs.");
+		save();
 
 	}
 
@@ -169,18 +172,22 @@ public class FastTravelSignDB {
 		save();
 	}
 
-	private static void checkMissing(String signName, Player creator, World locWorld, World tplocWorld){
+	private static boolean checkMissing(String signName, Player creator, World locWorld, World tplocWorld){
 
 		if (creator == null){
 			plugin.getLogger()
 					.warning("Could not load sign '" + signName + "' - missing creator!");
+			return false;
 		} else if (locWorld == null) {
 			plugin.getLogger()
 					.warning("Could not load sign '" + signName + "' - missing world sign is in!");
+			return false;
 		} else if (tplocWorld == null) {
 			plugin.getLogger()
 					.warning("Could not load sign '" + signName + "' - missing world to travel to!");
+			return false;
 		}
+		return true;
 
 	}
 

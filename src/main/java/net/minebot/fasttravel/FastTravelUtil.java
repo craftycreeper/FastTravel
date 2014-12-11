@@ -150,6 +150,7 @@ public class FastTravelUtil {
      */
     //TODO: make this work and find mistake
     public static boolean checkUpdate(FastTravelSignsPlugin plugin){
+		Exception exception;
             try {
                 URL verfile = new URL("http://germanspacebuild.de/FastTravelSigns_Version.txt");
                 BufferedReader in = new BufferedReader(
@@ -168,9 +169,9 @@ public class FastTravelUtil {
                 }
 
             } catch (IOException e) {
-                // Ignore any problems that may happen
+                exception = e;
             }
-        plugin.getLogger().info("Could not check for Updates");
+        plugin.getLogger().info("Could not check for Updates: " + exception.getCause());
         return false;
     }
 
