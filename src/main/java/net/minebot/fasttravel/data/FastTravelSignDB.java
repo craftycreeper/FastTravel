@@ -93,9 +93,9 @@ public class FastTravelSignDB {
 			
 			boolean automatic = signYAML.getBoolean(signName + ".automatic", false);
 
-			/*if (!checkMissing(signName, creator, locWorld, tpLocWorld)){
+			if (!checkMissing(signName, creator, locWorld, tpLocWorld)){
 				continue;
-			}*/
+			}
 
 			signs.put(signName.toLowerCase(), new FastTravelSign(signName, creator, price, location, tploc,
                     automatic, range, signPlayers));
@@ -177,9 +177,9 @@ public class FastTravelSignDB {
 		save();
 	}
 
-	private static boolean checkMissing(String signName, Player creator, World locWorld, World tplocWorld){
+	private static boolean checkMissing(String signName, UUID creator, World locWorld, World tplocWorld){
 
-		if (creator == null){
+		if (Bukkit.getServer().getOfflinePlayer(creator) == null){
 			plugin.getLogger()
 					.warning("Could not load sign '" + signName + "' - missing creator!");
 			return false;
