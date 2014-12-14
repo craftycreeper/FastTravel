@@ -27,6 +27,7 @@
 package net.minebot.fasttravel.data;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -37,7 +38,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
-@SuppressWarnings("deprecation")
 public class FastTravelSignDB {
 
 	private static FastTravelSignsPlugin plugin;
@@ -66,13 +66,18 @@ public class FastTravelSignDB {
 		}
 
 		for (String signName : signYAML.getKeys(false)) {
-			Player creator = plugin.getServer().getPlayer(UUID.fromString(signYAML.getString(signName + ".creator")));
+			UUID creator = UUID.fromString(signYAML.getString(signName + ".creator"));
             int range = signYAML.getInt(signName + ".range");
 			World locWorld = plugin.getServer().getWorld(
 					signYAML.getString(signName + ".signloc.world"));
 			World tpLocWorld = plugin.getServer().getWorld(
 					signYAML.getString(signName + ".tploc.world"));
-            List<Player> signPlayers = new ArrayList<Player>();
+            List<UUID> signPlayers = new ArrayList<UUID>();
+			List<String> filePlayers = signYAML.getStringList(signName + ".players");
+
+			for (String filePlayer : filePlayers) {
+				UUID.fromString(filePlayer);
+			}
 
 			double price = signYAML.getDouble(signName + ".price", 0.0);
 
@@ -88,9 +93,9 @@ public class FastTravelSignDB {
 			
 			boolean automatic = signYAML.getBoolean(signName + ".automatic", false);
 
-			if (!checkMissing(signName, creator, locWorld, tpLocWorld)){
+			/*if (!checkMissing(signName, creator, locWorld, tpLocWorld)){
 				continue;
-			}
+			}*/
 
 			signs.put(signName.toLowerCase(), new FastTravelSign(signName, creator, price, location, tploc,
                     automatic, range, signPlayers));
@@ -103,11 +108,11 @@ public class FastTravelSignDB {
 
 	public static void save() {
 		YamlConfiguration signYAML = new YamlConfiguration();
-        List<Player> players;
+        List<UUID> players;
 		for (String signName : signs.keySet()) {
 			FastTravelSign sign = signs.get(signName);
 			signName = sign.getName();
-			signYAML.set(signName + ".creator", sign.getCreator().getUniqueId().toString());
+			signYAML.set(signName + ".creator", sign.getCreator().toString());
 			signYAML.set(signName + ".signloc.world", sign.getSignLocation().getWorld().getName());
 			signYAML.set(signName + ".signloc.x", sign.getSignLocation().getX());
 			signYAML.set(signName + ".signloc.y", sign.getSignLocation().getY());
@@ -121,8 +126,8 @@ public class FastTravelSignDB {
 			signYAML.set(signName + ".automatic", sign.isAutomatic());
 
             players = sign.getPlayers();
-            for (Player player : players){
-                signYAML.set(signName + ".players", player.getUniqueId().toString());
+            for (UUID player : players){
+                signYAML.set(signName + ".players", player.toString());
             }
 
 			signYAML.set(signName + ".price", sign.getPrice());
@@ -152,7 +157,7 @@ public class FastTravelSignDB {
 	public static List<FastTravelSign> getSignsFor(Player player) {
 		List<FastTravelSign> playerSigns = new ArrayList<FastTravelSign>();
 		for (FastTravelSign sign : signs.values()) {
-			if (sign.isAutomatic() || sign.foundBy(player))
+			if (sign.isAutomatic() || sign.foundBy(player.getUniqueId()))
 				playerSigns.add(sign);
 		}
 		Collections.sort(playerSigns);

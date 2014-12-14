@@ -104,49 +104,4 @@ public class FastTravelBlockListener implements Listener {
 		}
 	}
 
-	/*
-	 * Outdated: we no longer worry about block placement. Kept here in case I
-	 * change my mind.
-	 */
-
-	/*
-	 * public void onBlockPlace(BlockPlaceEvent event) { if
-	 * (event.isCancelled()) return;
-	 * 
-	 * Block block = event.getBlock(); Player player = event.getPlayer();
-	 * 
-	 * Sign sign = attachedSign(block, placeFaces);
-	 * 
-	 * //Check above too... slow, but necessary //TODO: Make this configurable?
-	 * if (sign == null) { Block bbelow =
-	 * block.getWorld().getBlockAt(block.getX(), block.getY() - 1,
-	 * block.getZ()); sign = attachedSign(bbelow, placeFaces); } if (sign ==
-	 * null) return;
-	 * 
-	 * String[] lines = sign.getLines();
-	 * 
-	 * if (!FastTravel.db.signExists(lines[1])) return;
-	 * 
-	 * //No placing around signs FastTravelUtil.sendFTMessage(player,
-	 * "You can't place blocks around an existing travel point.");
-	 * 
-	 * event.setCancelled(true); }
-	 */
-
-	/*
-	 * private static final BlockFace[] breakFaces = {BlockFace.UP,
-	 * BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH,
-	 * BlockFace.SELF}; private static final BlockFace[] placeFaces =
-	 * {BlockFace.UP, BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST,
-	 * BlockFace.SOUTH, BlockFace.NORTH_EAST, BlockFace.NORTH_WEST,
-	 * BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST, BlockFace.SELF};
-	 */
-
-	/*
-	 * private Sign attachedSign(Block block, BlockFace[] faceList) { for
-	 * (BlockFace bf : faceList) { Block face = block.getRelative(bf); if
-	 * (FastTravelUtil.isFTSign(face)) { Sign sign = (Sign)face.getState();
-	 * return sign; } } return null; }
-	 */
-
 }

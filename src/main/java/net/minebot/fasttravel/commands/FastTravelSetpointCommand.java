@@ -42,7 +42,7 @@ public class FastTravelSetpointCommand implements CommandExecutor {
 		if (!(sender instanceof Player)) {
 			return false;
 		}
-		if (!((Player) sender).hasPermission("fasttravelsigns.setpoint")) {
+		if (!(sender.hasPermission("fasttravelsigns.setpoint"))) {
 			return false;
 		}
 		if (args.length == 0) {

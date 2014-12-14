@@ -4,6 +4,7 @@ import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelSignDB;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by oneill011990 on 02.09.2014.
@@ -28,9 +30,9 @@ public class FastTravelClearCommand implements CommandExecutor {
             FastTravelUtil.sendFTMessage(sender, "FastTravel does not exist.");
         } else {
             FastTravelSign sign = FastTravelSignDB.getSign(args[0]);
-            List<Player> players = sign.getPlayers();
-            for (Player player : players) {
-                    FastTravelUtil.sendFTMessage(player, "You have been removed from FastTravel: " + ChatColor.AQUA + sign.getName());
+            List<UUID> players = sign.getPlayers();
+            for (UUID player : players) {
+                    FastTravelUtil.sendFTMessage(Bukkit.getServer().getPlayer(player), "You have been removed from FastTravel: " + ChatColor.AQUA + sign.getName());
             }
             sign.removeAllPlayers();
             return true;

@@ -67,7 +67,7 @@ public class FastTravelCommand implements CommandExecutor {
 			return true;
 		}
 
-		if (plugin.playersWarmingUp.contains(player.getName())) {
+		if (plugin.playersWarmingUp.contains(player.getUniqueId())) {
 			FastTravelUtil.sendFTMessage(player, "You are already preparing to travel.");
 			return true;
 		}
@@ -114,7 +114,7 @@ public class FastTravelCommand implements CommandExecutor {
 			}
 
 			boolean allPoints = player.hasPermission("fasttravelsigns.overrides.allpoints");
-			if (!(ftsign.isAutomatic() || ftsign.foundBy(player)) && !allPoints) {
+			if (!(ftsign.isAutomatic() || ftsign.foundBy(player.getUniqueId())) && !allPoints) {
 				FastTravelUtil.sendFTMessage(player, "You haven't found that travel point yet.");
 				return true;
 			}
@@ -152,7 +152,7 @@ public class FastTravelCommand implements CommandExecutor {
 				FastTravelUtil.sendFTMessage(player,
 						"Travelling to " + ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE
 								+ " in " + warmup + " seconds.");
-				plugin.playersWarmingUp.add(player.getName());
+				plugin.playersWarmingUp.add(player.getUniqueId());
 				plugin.getServer().getScheduler()
 						.scheduleSyncDelayedTask(plugin, traveltask, warmup * 20);
 			} else {

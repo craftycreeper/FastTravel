@@ -37,7 +37,7 @@ public class FastTravelRemoveCommand implements CommandExecutor {
             } else if (plugin.getServer().getPlayer(player) == null) {
                 FastTravelUtil.sendFTMessage(sender, "Player not found.");
 
-            } else if (signRaw.isAutomatic() || !signRaw.foundBy(plugin.getServer().getPlayer(player))){
+            } else if (signRaw.isAutomatic() || !signRaw.foundBy(plugin.getServer().getPlayer(player).getUniqueId())){
                 FastTravelUtil.sendFTMessage(sender, "Sign is automatic or hasn't been found by " + player);
             }
 

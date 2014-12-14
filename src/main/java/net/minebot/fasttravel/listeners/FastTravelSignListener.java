@@ -96,7 +96,7 @@ public class FastTravelSignListener implements Listener {
 		}
 
 		else {
-			FastTravelSign newFTSign = new FastTravelSign(lines[1], player, sign);
+			FastTravelSign newFTSign = new FastTravelSign(lines[1], player.getUniqueId(), sign);
 
 			// Economy support - set default price
 			if (plugin.getEconomy() != null) {
@@ -111,7 +111,7 @@ public class FastTravelSignListener implements Listener {
 			FastTravelUtil.sendFTMessage(player, "New travel point " + ChatColor.AQUA + lines[1]
 					+ ChatColor.WHITE + " created.");
 
-			newFTSign.addPlayer(player);
+			newFTSign.addPlayer(player.getUniqueId());
 
 			// Colorize sign
 			event.setLine(0, ChatColor.DARK_PURPLE + "[FastTravel]");

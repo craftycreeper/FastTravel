@@ -43,6 +43,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class FastTravelSignsPlugin extends JavaPlugin {
 
@@ -55,7 +56,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
     public static boolean updateFound;
 
 	// Players in transit - put here for now. Should find a better place later.
-	public ArrayList<String> playersWarmingUp;
+	public ArrayList<UUID> playersWarmingUp;
 
     public void onEnable() {
 		// If folder does not exist, create it
@@ -75,7 +76,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
                     FastTravelUtil.curVersion + " new version: " + FastTravelUtil.newVersion);
         }
 
-		playersWarmingUp = new ArrayList<String>();
+		playersWarmingUp = new ArrayList<UUID>();
 
 
 		// Events

@@ -87,11 +87,11 @@ public class FastTravelPlayerListener implements Listener {
 		// Now that the checks are done - see if the user has the sign, and
 		// if not, add it.
 
-		if (ftsign.foundBy(player)) {
+		if (ftsign.foundBy(player.getUniqueId())) {
 			FastTravelUtil.sendFTMessage(player, "You have already added travel point "
 					+ ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE + ".");
 		} else {
-			ftsign.addPlayer(player);
+			ftsign.addPlayer(player.getUniqueId());
 			FastTravelUtil.sendFTMessage(player,
 					"Travel point " + ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE
 							+ " added!");
@@ -104,11 +104,12 @@ public class FastTravelPlayerListener implements Listener {
         Player p = event.getPlayer();
         List<FastTravelSign> signs = FastTravelSignDB.getAllSigns();
 
+
         for (FastTravelSign sign : signs){
-			if (sign.foundBy(p)){
+			if (sign.foundBy(p.getUniqueId())){
 
 			} else if (sign.getSignLocation().distance(p.getLocation()) <= sign.getRange()){
-                sign.addPlayer(p);
+                sign.addPlayer(p.getUniqueId());
                 FastTravelUtil.sendFTMessage(p, "You have found FastTravel: " + ChatColor.AQUA + sign.getName());
             }
         }

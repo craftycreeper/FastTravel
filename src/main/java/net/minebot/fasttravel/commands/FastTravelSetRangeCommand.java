@@ -3,6 +3,7 @@ package net.minebot.fasttravel.commands;
 import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelSignDB;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,6 +38,7 @@ public class FastTravelSetRangeCommand implements CommandExecutor {
                 e.printStackTrace();
             }
             sign.setRange(range);
+            FastTravelUtil.sendFTMessage(sender, "Set range of " + ChatColor.AQUA + sign.getName() + ChatColor.WHITE +" to: " + range);
 
             return true;
         }
