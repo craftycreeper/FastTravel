@@ -24,17 +24,45 @@
  *
  */
 
-package net.minebot.fasttravel.menu;
+package net.minebot.fasttravel.commands;
 
+import net.minebot.fasttravel.FastTravelSignsPlugin;
+import net.minebot.fasttravel.menu.TravelMenu;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Created by oneill011990 on 13.12.2014.
+ * Created by oneill011990 on 15.12.2014.
  */
-public class MenuBuilder {
+public class FastTravelMenuCommand implements CommandExecutor {
 
-    public static void newMenu(Player player){
+    FastTravelSignsPlugin plugin;
 
+    public FastTravelMenuCommand(FastTravelSignsPlugin plugin) {
+        this.plugin = plugin;
     }
 
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+
+        if (!(sender instanceof Player)){
+            return false;
+        }
+
+        if (!sender.hasPermission("fasttravelsigns.menu")){
+            return false;
+        }
+
+        Player player = (Player) sender;
+
+        TravelMenu menu = new TravelMenu(player);
+
+        plugin.menus.add(menu);
+
+        menu.open(1);
+
+        return true;
+    }
 }

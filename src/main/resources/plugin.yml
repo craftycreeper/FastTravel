@@ -62,6 +62,9 @@ permissions:
     fasttravelsigns.save:
         description: Saves signs to file and reloads database and configuration.
         default: op
+    fasttravelsigns.menu:
+        description: Allows use of /ftmenu command.
+        default: op
 commands:
     ft:
         description: Obtain list of travel points and warp to them
@@ -119,3 +122,8 @@ commands:
         permission: fasttravelsigns.save
         usage: |
             /ftsave
+    ftmenu:
+        description: Opens menu with all signs a player can use
+        permission: fasttravelsigns.menu
+        usage: |
+            /ftmenu

@@ -30,11 +30,10 @@ import net.milkbowl.vault.economy.Economy;
 import net.minebot.fasttravel.commands.*;
 import net.minebot.fasttravel.data.FastTravelSignDB;
 import net.minebot.fasttravel.listeners.*;
+import net.minebot.fasttravel.menu.TravelMenu;
 import net.minebot.fasttravel.task.FastTravelTaskExecutor;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -58,6 +57,9 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 	// Players in transit - put here for now. Should find a better place later.
 	public ArrayList<UUID> playersWarmingUp;
 
+	//Menus that have been created
+	public ArrayList<TravelMenu> menus;
+
     public void onEnable() {
 		// If folder does not exist, create it
 		if (!dataDir.isDirectory()) {
@@ -77,6 +79,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
         }
 
 		playersWarmingUp = new ArrayList<UUID>();
+		menus = new ArrayList<TravelMenu>();
 
 
 		// Events
@@ -86,6 +89,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		pm.registerEvents(new FastTravelSignListener(this), this);
 		pm.registerEvents(new FastTravelPlayerListener(), this);
         pm.registerEvents(new FastTravelListener(this), this);
+		pm.registerEvents(new FastTravelInventoryListener(this), this);
 
 		// commands
 		getCommand("ft").setExecutor(new FastTravelCommand(this));
@@ -99,6 +103,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
         getCommand("ftremove").setExecutor(new FastTravelRemoveCommand(this));
         getCommand("ftsetrange").setExecutor(new FastTravelSetRangeCommand());
 		getCommand("ftsave").setExecutor(new FastTravelSaveCommand(this));
+		getCommand("ftmenu").setExecutor(new FastTravelMenuCommand(this));
 
 		getLogger().info("Enabled.");
 	}
@@ -167,4 +172,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
         return config;
     }
 
+	public ArrayList<TravelMenu> getMenus() {
+		return menus;
+	}
 }
