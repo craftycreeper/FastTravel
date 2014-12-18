@@ -69,6 +69,7 @@ public class TravelMenu {
 
         createItemStacks();
         createInventories();
+        fillInventories();
 
     }
 

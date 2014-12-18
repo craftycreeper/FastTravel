@@ -27,6 +27,7 @@
 package net.minebot.fasttravel.data;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
+import net.minebot.fasttravel.FastTravelUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -46,11 +47,15 @@ public class FastTravelSignDB {
 
 	private static String saveFile;
 
+	private static List<String> filePlayers;
+
 	public static void init(FastTravelSignsPlugin plugin, String saveFile) {
 		FastTravelSignDB.plugin = plugin;
 		FastTravelSignDB.saveFile = saveFile;
 
 		signs = new HashMap<String, FastTravelSign>();
+
+		filePlayers = new ArrayList<String>();
 
 		load();
 	}
@@ -72,12 +77,7 @@ public class FastTravelSignDB {
 					signYAML.getString(signName + ".signloc.world"));
 			World tpLocWorld = plugin.getServer().getWorld(
 					signYAML.getString(signName + ".tploc.world"));
-            List<UUID> signPlayers = new ArrayList<UUID>();
-			List<String> filePlayers = signYAML.getStringList(signName + ".players");
-
-			for (String filePlayer : filePlayers) {
-				UUID.fromString(filePlayer);
-			}
+			filePlayers = signYAML.getStringList(signName + ".players");
 
 			double price = signYAML.getDouble(signName + ".price", 0.0);
 
@@ -98,7 +98,8 @@ public class FastTravelSignDB {
 			}
 
 			signs.put(signName.toLowerCase(), new FastTravelSign(signName, creator, price, location, tploc,
-                    automatic, range, signPlayers));
+                    automatic, range, FastTravelUtil.stringToUUID(filePlayers)));
+			filePlayers.clear();
 		}
 
 		plugin.getLogger().info("Loaded " + signs.size() + " fast travel signs.");
@@ -113,22 +114,22 @@ public class FastTravelSignDB {
 			FastTravelSign sign = signs.get(signName);
 			signName = sign.getName();
 			signYAML.set(signName + ".creator", sign.getCreator().toString());
+
 			signYAML.set(signName + ".signloc.world", sign.getSignLocation().getWorld().getName());
 			signYAML.set(signName + ".signloc.x", sign.getSignLocation().getX());
 			signYAML.set(signName + ".signloc.y", sign.getSignLocation().getY());
 			signYAML.set(signName + ".signloc.z", sign.getSignLocation().getZ());
 			signYAML.set(signName + ".signloc.yaw", (double) sign.getSignLocation().getYaw());
+
 			signYAML.set(signName + ".tploc.world", sign.getTPLocation().getWorld().getName());
 			signYAML.set(signName + ".tploc.x", sign.getTPLocation().getX());
 			signYAML.set(signName + ".tploc.y", sign.getTPLocation().getY());
 			signYAML.set(signName + ".tploc.z", sign.getTPLocation().getZ());
 			signYAML.set(signName + ".tploc.yaw", (double) sign.getTPLocation().getYaw());
+
 			signYAML.set(signName + ".automatic", sign.isAutomatic());
 
-            players = sign.getPlayers();
-            for (UUID player : players){
-                signYAML.set(signName + ".players", player.toString());
-            }
+			signYAML.set(signName + ".players", FastTravelUtil.uuidToString(sign.getPlayers()));
 
 			signYAML.set(signName + ".price", sign.getPrice());
             signYAML.set(signName + ".range", sign.getRange());

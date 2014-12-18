@@ -46,6 +46,8 @@ import java.util.UUID;
 
 public class FastTravelSignsPlugin extends JavaPlugin {
 
+	private static FastTravelSignsPlugin instance;
+
 	public static File dataDir = new File("plugins/FastTravelSigns");
 
 	private Economy economy = null;
@@ -65,6 +67,8 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		if (!dataDir.isDirectory()) {
 			dataDir.mkdir();
 		}
+
+		instance = this;
 
 		// Load config and etc
 		dataInit();
@@ -89,7 +93,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		pm.registerEvents(new FastTravelSignListener(this), this);
 		pm.registerEvents(new FastTravelPlayerListener(), this);
         pm.registerEvents(new FastTravelListener(this), this);
-		pm.registerEvents(new FastTravelInventoryListener(this), this);
+		//pm.registerEvents(new FastTravelInventoryListener(this), this);
 
 		// commands
 		getCommand("ft").setExecutor(new FastTravelCommand(this));
@@ -103,7 +107,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
         getCommand("ftremove").setExecutor(new FastTravelRemoveCommand(this));
         getCommand("ftsetrange").setExecutor(new FastTravelSetRangeCommand());
 		getCommand("ftsave").setExecutor(new FastTravelSaveCommand(this));
-		getCommand("ftmenu").setExecutor(new FastTravelMenuCommand(this));
+		//getCommand("ftmenu").setExecutor(new FastTravelMenuCommand(this));
 
 		getLogger().info("Enabled.");
 	}
@@ -175,4 +179,9 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 	public ArrayList<TravelMenu> getMenus() {
 		return menus;
 	}
+
+	public static FastTravelSignsPlugin getInstance() {
+		return instance;
+	}
+
 }
