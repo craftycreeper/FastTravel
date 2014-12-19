@@ -57,6 +57,8 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
 	private UpdateChecker updateChecker;
 
+	public boolean needUpdate;
+	public String newVersion;
 
 
 	// Players in transit - put here for now. Should find a better place later.
@@ -84,6 +86,8 @@ public class FastTravelSignsPlugin extends JavaPlugin {
             getLogger().info("Update found! You are using " +
                     this.getDescription().getVersion() + " new version: " + updateChecker.getVersion() +
 					"\n download it here: " + updateChecker.getLink());
+			needUpdate = true;
+			newVersion = updateChecker.getLink();
         }
 
 		playersWarmingUp = new ArrayList<UUID>();
@@ -95,7 +99,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		pm.registerEvents(new FastTravelBlockListener(), this);
 		pm.registerEvents(new FastTravelEntityListener(), this);
 		pm.registerEvents(new FastTravelSignListener(this), this);
-		pm.registerEvents(new FastTravelPlayerListener(), this);
+		pm.registerEvents(new FastTravelPlayerListener(this), this);
         pm.registerEvents(new FastTravelListener(this), this);
 		pm.registerEvents(new FastTravelInventoryListener(this), this);
 
@@ -139,6 +143,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		getConfig().addDefault("economy.default-price", 0);
         getConfig().addDefault("metrics.enabled", true);
 		getConfig().addDefault("enable menu", false);
+		getConfig().addDefault("notify update", true);
 		getConfig().options().copyDefaults(true);
 		try {
 			getConfig().save(confFile);
@@ -174,7 +179,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 	}
 
 	public void metricsInit(){
-		if (getConfig().get("metrics.enabled") == true){
+		if (getConfig().getBoolean("metrics.enabled")){
 			try {
 				Metrics metrics = new Metrics(this);
 				metrics.start();

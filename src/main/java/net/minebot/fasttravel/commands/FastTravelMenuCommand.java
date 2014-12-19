@@ -47,7 +47,7 @@ public class FastTravelMenuCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-        if (!(sender instanceof Player)){
+        if (!(sender instanceof Player) || !plugin.getConfig().getBoolean("enable menu")){
             return false;
         }
 

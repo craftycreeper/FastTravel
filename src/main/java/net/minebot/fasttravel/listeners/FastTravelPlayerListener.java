@@ -50,6 +50,10 @@ public class FastTravelPlayerListener implements Listener {
 	private HashMap<String, Long> interactLast = new HashMap<String, Long>();
     private FastTravelSignsPlugin plugin;
 
+	public FastTravelPlayerListener(FastTravelSignsPlugin plugin) {
+		this.plugin = plugin;
+	}
+
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if (event.isCancelled())
@@ -101,6 +105,11 @@ public class FastTravelPlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerMove(PlayerMoveEvent event){
+		if (!plugin.getConfig().getBoolean("use range")){
+			return;
+		}
+
+
         Player p = event.getPlayer();
         List<FastTravelSign> signs = FastTravelSignDB.getAllSigns();
 
@@ -119,9 +128,14 @@ public class FastTravelPlayerListener implements Listener {
     }
 
     public void onPlayerJoin(PlayerJoinEvent event){
-        if (event.getPlayer().hasPermission("fasttravelsigns.update") && FastTravelSignsPlugin.updateFound){
+		if (!plugin.getConfig().getBoolean("notify update")){
+			return;
+		}
+
+        if (event.getPlayer().hasPermission("fasttravelsigns.update") && plugin.needUpdate){
             FastTravelUtil.sendFTMessage(event.getPlayer(), "Update found! You are using " + ChatColor.YELLOW +
-                    FastTravelUtil.curVersion + ChatColor.WHITE + " new version: " + ChatColor.YELLOW + FastTravelUtil.newVersion);
+                    plugin.getDescription().getVersion() + ChatColor.WHITE + " new version: " + ChatColor.YELLOW +
+					plugin.newVersion);
         }
     }
 
