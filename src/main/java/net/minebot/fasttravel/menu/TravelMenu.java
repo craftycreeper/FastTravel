@@ -38,9 +38,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by oneill011990 on 13.12.2014.
@@ -121,7 +119,7 @@ public class TravelMenu {
 
     public void fillInventories(){
         for (int i = 0; i < sites; i++){
-            for (int j = i*43; i < (i+1)*44; i++) {
+            for (int j = 0; j < 44 && j < signs.size(); j++) {
                 if (multisites){
                     inventories.get(i).setItem(j, items.get(j));
                 } else {
@@ -193,8 +191,11 @@ public class TravelMenu {
     }
 
     public void travel(String displayName) {
+        if (FastTravelSignDB.getSign(displayName.substring(2)) == null){
+            return;
+        }
         player.closeInventory();
         Bukkit.getServer().getPluginManager().callEvent(new FastTravelEvent(player,
-                FastTravelSignDB.getSign(displayName)));
+                FastTravelSignDB.getSign(displayName.substring(2))));
     }
 }

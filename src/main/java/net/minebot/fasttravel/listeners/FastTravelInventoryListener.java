@@ -27,10 +27,8 @@
 package net.minebot.fasttravel.listeners;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
-import net.minebot.fasttravel.data.FastTravelSign;
-import net.minebot.fasttravel.data.FastTravelSignDB;
-import net.minebot.fasttravel.event.FastTravelEvent;
 import net.minebot.fasttravel.menu.TravelMenu;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -57,7 +55,7 @@ public class FastTravelInventoryListener implements Listener {
     public void onInventoryClick(InventoryClickEvent event){
         Player player = (Player) event.getWhoClicked();
         Inventory inv = event.getInventory();
-        int slot = event.getSlot();
+        int slot = event.getRawSlot();
         boolean isTravelInv = false;
 
         List<TravelMenu> menus = plugin.getMenus();
@@ -75,8 +73,7 @@ public class FastTravelInventoryListener implements Listener {
             inventories.clear();
         }
 
-        if (isTravelInv && slot < 43){
-            //TODO: Fix NullPointer
+        if (isTravelInv && slot <= 44 && event.getCurrentItem().getType() == Material.BEACON){
             menu.travel(event.getCurrentItem().getItemMeta().getDisplayName());
         } else if (slot == 45){
             menu.goBack();
