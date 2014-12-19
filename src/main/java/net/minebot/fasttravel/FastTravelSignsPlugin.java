@@ -83,9 +83,9 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		updateChecker = new UpdateChecker(this, "http://dev.bukkit.org/bukkit-plugins/fasttravel/files.rss");
 
         if (updateChecker.updateFound()){
-            getLogger().info("Update found! You are using " +
-                    this.getDescription().getVersion() + " new version: " + updateChecker.getVersion() +
-					"\n download it here: " + updateChecker.getLink());
+            getLogger().info("Update found! You are using v" +
+                    this.getDescription().getVersion() + ". New version is: v" + updateChecker.getVersion() +
+					"\n get it here: " + updateChecker.getLink());
 			needUpdate = true;
 			newVersion = updateChecker.getLink();
         }
