@@ -69,7 +69,7 @@ public class UpdateChecker {
             Node latestFile = document.getElementsByTagName("item").item(0);
             NodeList children = latestFile.getChildNodes();
 
-            this.version = children.item(1).getTextContent().replaceAll("[a-zA-Z]", "");
+            this.version = children.item(1).getTextContent().replaceAll("[a-zA-Z ]", "");
             this.link = children.item(3).getTextContent();
 
             if (plugin.getDescription().getVersion() != this.version){
