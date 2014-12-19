@@ -150,7 +150,7 @@ public class FastTravelUtil {
      * @param plugin This plugin
      * @return true if update available, false if not
      */
-    //TODO: make this work and find mistake
+	@Deprecated
     public static boolean checkUpdate(FastTravelSignsPlugin plugin){
 		Exception exception;
             try {

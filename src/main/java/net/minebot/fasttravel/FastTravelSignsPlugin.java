@@ -37,6 +37,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.Metrics;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -54,7 +55,9 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
     private static Configuration config;
 
-    public static boolean updateFound;
+	private UpdateChecker updateChecker;
+
+
 
 	// Players in transit - put here for now. Should find a better place later.
 	public ArrayList<UUID> playersWarmingUp;
@@ -73,13 +76,14 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		// Load config and etc
 		dataInit();
         FastTravelTaskExecutor.init();
-        //metricsInit();
-        updateFound = FastTravelUtil.checkUpdate(this);
+        metricsInit();
         config = getConfig();
+		updateChecker = new UpdateChecker(this, "http://dev.bukkit.org/bukkit-plugins/fasttravel/files.rss");
 
-        if (updateFound){
+        if (updateChecker.updateFound()){
             getLogger().info("Update found! You are using " +
-                    FastTravelUtil.curVersion + " new version: " + FastTravelUtil.newVersion);
+                    this.getDescription().getVersion() + " new version: " + updateChecker.getVersion() +
+					"\n download it here: " + updateChecker.getLink());
         }
 
 		playersWarmingUp = new ArrayList<UUID>();
@@ -93,7 +97,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		pm.registerEvents(new FastTravelSignListener(this), this);
 		pm.registerEvents(new FastTravelPlayerListener(), this);
         pm.registerEvents(new FastTravelListener(this), this);
-		//pm.registerEvents(new FastTravelInventoryListener(this), this);
+		pm.registerEvents(new FastTravelInventoryListener(this), this);
 
 		// commands
 		getCommand("ft").setExecutor(new FastTravelCommand(this));
@@ -107,7 +111,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
         getCommand("ftremove").setExecutor(new FastTravelRemoveCommand(this));
         getCommand("ftsetrange").setExecutor(new FastTravelSetRangeCommand());
 		getCommand("ftsave").setExecutor(new FastTravelSaveCommand(this));
-		//getCommand("ftmenu").setExecutor(new FastTravelMenuCommand(this));
+		getCommand("ftmenu").setExecutor(new FastTravelMenuCommand(this));
 
 		getLogger().info("Enabled.");
 	}
@@ -133,7 +137,8 @@ public class FastTravelSignsPlugin extends JavaPlugin {
         getConfig().addDefault("use range", true);
 		getConfig().addDefault("economy.enabled", false);
 		getConfig().addDefault("economy.default-price", 0);
-        //getConfig().addDefault("metrics.enabled", true);
+        getConfig().addDefault("metrics.enabled", true);
+		getConfig().addDefault("enable menu", false);
 		getConfig().options().copyDefaults(true);
 		try {
 			getConfig().save(confFile);
@@ -166,6 +171,17 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 			return;
 		}
 		getLogger().info("Using " + economy.getName() + " for economy support.");
+	}
+
+	public void metricsInit(){
+		if (getConfig().get("metrics.enabled") == true){
+			try {
+				Metrics metrics = new Metrics(this);
+				metrics.start();
+			} catch (IOException e) {
+				// Failed to submit the stats :-(
+			}
+		}
 	}
 
 	public Economy getEconomy() {

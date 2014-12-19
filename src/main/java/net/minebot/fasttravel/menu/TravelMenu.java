@@ -122,7 +122,11 @@ public class TravelMenu {
     public void fillInventories(){
         for (int i = 0; i < sites; i++){
             for (int j = i*43; i < (i+1)*44; i++) {
-                inventories.get(i).setItem(j, items.get(j));
+                if (multisites){
+                    inventories.get(i).setItem(j, items.get(j));
+                } else {
+                    inventories.get(0).setItem(j, items.get(j));
+                }
             }
 
             if (multisites){
