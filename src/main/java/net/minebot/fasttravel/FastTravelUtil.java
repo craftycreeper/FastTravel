@@ -34,8 +34,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginDescriptionFile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -100,6 +98,12 @@ public class FastTravelUtil {
 		sender.sendMessage(ChatColor.LIGHT_PURPLE + "[FastTravel]" + ChatColor.WHITE + " " + mess);
 	}
 
+	/**
+	 * Prints a list of signs to a player.
+	 * @param sender Player the message will be sent to.
+	 * @param signs Signs to sent.
+	 * @param econ Is economy enabled?
+	 */
 	public static void sendFTSignList(CommandSender sender, List<FastTravelSign> signs, boolean econ) {
 		int counter = 0;
 		String pointstr = "";
@@ -127,8 +131,8 @@ public class FastTravelUtil {
 
     /**
      * Checks if location is safe.
-     * @param loc Location to check
-     * @return Is the location safe
+     * @param loc Location to check.
+     * @return Is the location safe?
      */
 	public static boolean safeLocation(Location loc) {
 		double y = loc.getY();
@@ -147,8 +151,8 @@ public class FastTravelUtil {
     /**
      * Method that checks for plugin updates
      *
-     * @param plugin This plugin
-     * @return true if update available, false if not
+     * @param plugin This plugin.
+     * @return True if update available, false if not.
      */
 	@Deprecated
     public static boolean checkUpdate(FastTravelSignsPlugin plugin){
@@ -203,6 +207,11 @@ public class FastTravelUtil {
 		return strings;
 	}
 
+	/**
+	 * Gets yaw for a blockface.
+	 * @param face Face to get yaw from.
+	 * @return Yaw of the face.
+	 */
 	public static int getYawForFace(BlockFace face) {
 		int dir;
 		switch (face) {

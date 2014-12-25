@@ -49,11 +49,11 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 	private List<UUID> players;
 
 	/**
-	 * Constructor for sign without price
+	 * Constructor for sign without price.
 	 *
-	 * @param name    name of sign
-	 * @param creator name of creator
-	 * @param block   location of sign
+	 * @param name    Name of sign.
+	 * @param creator Lame of creator.
+	 * @param block   Location of sign.
 	 */
 	public FastTravelSign(String name, UUID creator, Block block) {
 		this.name = name;
@@ -71,13 +71,13 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 	}
 
 	/**
-	 * Constructor for sign with price
+	 * Constructor for sign with price.
 	 *
 	 * @param name      Name of sign.
 	 * @param creator   Name of creator.
-	 * @param price     Price for teleport.
+	 * @param price     Price for travel.
 	 * @param location  Location of sign.
-	 * @param tpLoc     Teleport destination.
+	 * @param tpLoc     Travel destination.
 	 * @param automatic Accessible for all players?
 	 * @param players   Players that can use this sign.
 	 */
@@ -94,36 +94,36 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 	}
 
 	/**
-	 * Gets name of the sign
+	 * Gets name of the sign.
 	 *
-	 * @return Name
+	 * @return Name of the sign.
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * Gets name of the creator
+	 * Gets name of the creator.
 	 *
-	 * @return creator
+	 * @return Creator of the sign.
 	 */
 	public UUID getCreator() {
 		return creator;
 	}
 
 	/**
-	 * Gets the price for teleport
+	 * Gets the price for travel.
 	 *
-	 * @return price
+	 * @return Price for a travel.
 	 */
 	public double getPrice() {
 		return price;
 	}
 
 	/**
-	 * Sets price for teleport
+	 * Sets price for travel.
 	 *
-	 * @param price price
+	 * @param price Price for a travel.
 	 */
 	public void setPrice(double price) {
 		this.price = price;
@@ -131,18 +131,18 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 	}
 
 	/**
-	 * Gets the location of the sign     *
+	 * Gets the location of the sign.
 	 *
-	 * @return Location
+	 * @return Location of the sign.
 	 */
 	public Location getSignLocation() {
 		return location;
 	}
 
 	/**
-	 * Stets location of the sign
+	 * Stets location of the sign.
 	 *
-	 * @param newSignLoc Location of sign
+	 * @param newSignLoc Location of sign.
 	 */
 	public void setSignLocation(Location newSignLoc) {
 		location = newSignLoc.clone();
@@ -150,9 +150,9 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 	}
 
 	/**
-	 * Sets destination for teleport
+	 * Sets destination for travel.
 	 *
-	 * @param newTPPoint Destination for teleport
+	 * @param newTPPoint Destination for travel.
 	 */
 	public void setTPLocation(Location newTPPoint) {
 		tploc = newTPPoint.clone();
@@ -160,18 +160,18 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 	}
 
 	/**
-	 * Gets destination for teleport
+	 * Gets destination for travel.
 	 *
-	 * @return Location where the player is teleported to
+	 * @return Location where the player will travel to.
 	 */
 	public Location getTPLocation() {
 		return tploc;
 	}
 
 	/**
-	 * Add player to sign
+	 * Add player to sign.
 	 *
-	 * @param player player to add
+	 * @param player player to add.
 	 */
 	public void addPlayer(UUID player) {
 		if (!players.contains(player))
@@ -180,9 +180,9 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 	}
 
 	/**
-	 * Remove player from sign
+	 * Remove player from sign.
 	 *
-	 * @param player player to remove
+	 * @param player Player to remove.
 	 */
 	public void removePlayer(Player player) {
 		if (players.contains(player))
@@ -191,7 +191,7 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 	}
 
 	/**
-	 * Remove all players from sign
+	 * Remove all players from sign.
 	 */
 	public void removeAllPlayers() {
 		players.clear();
@@ -199,19 +199,19 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 	}
 
 	/**
-	 * Gets all players that can use this sign
+	 * Gets all players that can use this sign.
 	 *
-	 * @return UUIDs of players that are allowed to use this sign
+	 * @return UUIDs of players that are allowed to use this sign.
 	 */
 	public List<UUID> getPlayers() {
 		return players;
 	}
 
 	/**
-	 * Is sign already found by player
+	 * Is sign already found by player?
 	 *
-	 * @param player player to check
-	 * @return found by player
+	 * @param player Player to check.
+	 * @return Was it found by player or not?
 	 */
 	public boolean foundBy(UUID player) {
 		return players.contains(player);
@@ -224,26 +224,36 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 	/**
 	 * Is sign usable for all player by default?
 	 *
-	 * @return
+	 * @return Is it automatic
 	 */
 	public boolean isAutomatic() {
 		return automatic;
 	}
 
 	/**
-	 * Sets sign automatic/manuel
+	 * Sets sign automatic/manuel.
 	 *
-	 * @param automatic is automatic
+	 * @param automatic Sets it to manual/automatic.
 	 */
 	public void setAutomatic(boolean automatic) {
 		this.automatic = automatic;
 		FastTravelSignDB.save();
 	}
 
+	/**
+	 * Sets the range of the sign.
+	 *
+	 * @param range Range the sign will be set to.
+	 */
 	public void setRange(int range) {
 		this.range = range;
 	}
 
+	/**
+	 * Gets range of the sign.
+	 *
+	 * @return Range of the sign.
+	 */
 	public int getRange() {
 		return this.range;
 	}
