@@ -65,6 +65,9 @@ permissions:
     fasttravelsigns.menu:
         description: Allows use of /ftmenu command.
         default: op
+    fasttravelsigns.move:
+        description: Allows use of /ftmove command.
+        default: op
 commands:
     ft:
         description: Obtain list of travel points and warp to them
@@ -127,3 +130,8 @@ commands:
         permission: fasttravelsigns.menu
         usage: |
             /ftmenu
+    ftmove:
+        description: Moves a FastTravelSign
+        permission: fasttravelsigns.move
+        usage: |
+            /ftmove [Sign to move]

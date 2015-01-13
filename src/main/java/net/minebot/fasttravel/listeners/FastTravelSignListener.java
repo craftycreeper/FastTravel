@@ -33,6 +33,7 @@ import net.minebot.fasttravel.data.FastTravelSignDB;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -113,9 +114,7 @@ public class FastTravelSignListener implements Listener {
 
 			newFTSign.addPlayer(player.getUniqueId());
 
-			// Colorize sign
-			event.setLine(0, ChatColor.DARK_PURPLE + "[FastTravel]");
-			event.setLine(1, ChatColor.DARK_BLUE + lines[1]);
+            FastTravelUtil.formatSign((Sign) event.getBlock(), lines[1]);
 		}
 
 	}

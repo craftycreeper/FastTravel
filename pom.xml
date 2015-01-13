@@ -32,7 +32,7 @@
 
     <groupId>FastTravelSigns</groupId>
     <artifactId>FastTravel</artifactId>
-    <version>0.9.1</version>
+    <version>0.9.2</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -68,6 +68,10 @@
             <id>Plugin Metrics</id>
             <url>http://repo.mcstats.org/content/repositories/public</url>
         </repository>
+        <repository>
+            <id>dynmap-repo</id>
+            <url>http://repo.mikeprimm.com/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -92,6 +96,12 @@
             <artifactId>metrics</artifactId>
             <version>R7</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>us.dynmap</groupId>
+            <artifactId>DynmapCoreAPI</artifactId>
+            <version>2.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

@@ -28,12 +28,14 @@ package net.minebot.fasttravel;
 
 import net.milkbowl.vault.economy.Economy;
 import net.minebot.fasttravel.commands.*;
+import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelSignDB;
 import net.minebot.fasttravel.listeners.*;
 import net.minebot.fasttravel.menu.TravelMenu;
 import net.minebot.fasttravel.task.FastTravelTaskExecutor;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -43,6 +45,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class FastTravelSignsPlugin extends JavaPlugin {
@@ -63,6 +66,9 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
 	// Players in transit - put here for now. Should find a better place later.
 	public ArrayList<UUID> playersWarmingUp;
+
+    //Players and signs for editing.
+    public HashMap<Player, FastTravelSign> editors = new HashMap<>();
 
 	//Menus that have been created
 	public ArrayList<TravelMenu> menus;
@@ -116,6 +122,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
         getCommand("ftsetrange").setExecutor(new FastTravelSetRangeCommand());
 		getCommand("ftsave").setExecutor(new FastTravelSaveCommand(this));
 		getCommand("ftmenu").setExecutor(new FastTravelMenuCommand(this));
+        getCommand("ftmove").setExecutor(new FastTravelMoveCommand(this));
 
 		getLogger().info("Enabled.");
 	}
@@ -200,7 +207,11 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		return menus;
 	}
 
-	public static FastTravelSignsPlugin getInstance() {
+    public HashMap<Player, FastTravelSign> getEditors() {
+        return editors;
+    }
+
+    public static FastTravelSignsPlugin getInstance() {
 		return instance;
 	}
 

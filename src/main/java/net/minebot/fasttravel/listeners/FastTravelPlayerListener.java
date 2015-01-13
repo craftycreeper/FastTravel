@@ -31,6 +31,7 @@ import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelSignDB;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -42,6 +43,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -102,6 +104,49 @@ public class FastTravelPlayerListener implements Listener {
 		}
 
 	}
+
+    @EventHandler(priority =  EventPriority.LOW)
+    public void onInteract(PlayerInteractEvent event){
+        if (event.isCancelled()){
+            return;
+        }
+
+        if (!plugin.getEditors().keySet().contains(event.getPlayer())){
+            return;
+        }
+
+        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+            return;
+        }
+
+        if (event.getPlayer().getItemInHand().getType() != Material.STICK){
+            return;
+        }
+
+        if (!Arrays.asList(FastTravelUtil.signBlocks).contains(event.getClickedBlock().getType())){
+            return;
+        }
+
+        FastTravelSign sign = plugin.getEditors().get(event.getPlayer());
+
+        sign.getSignLocation().getBlock().breakNaturally();
+
+        sign.setSignLocation(event.getClickedBlock().getLocation());
+
+        if (event.getClickedBlock().getState() instanceof Sign){
+            plugin.getLogger().info("Yup it's a sign");
+        }
+
+        FastTravelUtil.sendFTMessage(event.getPlayer(), "You changed the sign for " + ChatColor.AQUA + sign.getName() +
+                ChatColor.WHITE + ".");
+        FastTravelUtil.formatSign((Sign) event.getClickedBlock().getState(), sign.getName());
+
+        FastTravelSignDB.save();
+
+        plugin.getEditors().remove(event.getPlayer());
+
+
+    }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerMove(PlayerMoveEvent event){

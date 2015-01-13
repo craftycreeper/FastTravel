@@ -53,6 +53,8 @@ public class FastTravelUtil {
                                             Material.REDSTONE_TORCH_OFF, Material.REDSTONE, Material.LONG_GRASS, Material.YELLOW_FLOWER,
                                             Material.CROPS, Material.DEAD_BUSH};
 
+    public static Material[] signBlocks = {Material.SIGN_POST, Material.SIGN, Material.WALL_SIGN};
+
     public static String newVersion;
     public static String curVersion;
 
@@ -253,5 +255,12 @@ public class FastTravelUtil {
 		}
 		return dir + 90;
 	}
+
+    public static void formatSign(Sign sign, String name){
+        // Colorize sign
+        sign.setLine(0, ChatColor.DARK_PURPLE + "[FastTravel]");
+        sign.setLine(1, ChatColor.DARK_BLUE + name);
+
+    }
 
 }

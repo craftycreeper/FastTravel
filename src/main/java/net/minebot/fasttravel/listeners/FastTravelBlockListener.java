@@ -30,6 +30,7 @@ import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelSignDB;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -38,6 +39,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 //import org.bukkit.block.BlockFace;
 //import org.bukkit.event.block.BlockPlaceEvent;
@@ -103,5 +105,16 @@ public class FastTravelBlockListener implements Listener {
 			event.setCancelled(true);
 		}
 	}
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onBlockPlace(BlockPlaceEvent event){
+        Block block = event.getBlock();
+        Location blockLocation = block.getLocation();
+        if (FastTravelUtil.isFTSign(block.getWorld().getBlockAt(blockLocation.getBlockX(),
+                blockLocation.getBlockY() - 1, blockLocation.getBlockZ()))) {
+            FastTravelUtil.sendFTMessage(event.getPlayer(), "You can't place blocks above a FastTravelSign");
+            event.setCancelled(true);
+        }
+    }
 
 }
