@@ -70,7 +70,7 @@ public class FastTravelRemoveCommand implements CommandExecutor {
             FastTravelUtil.sendFTMessage(plugin.getServer().getPlayer(player),
                     "You have been removed from FastTravel: " + ChatColor.AQUA + signRaw.getName());
 
-            signRaw.removePlayer(plugin.getServer().getPlayer(player));
+            signRaw.removePlayer(plugin.getServer().getPlayer(player).getUniqueId());
         }
 
         return false;

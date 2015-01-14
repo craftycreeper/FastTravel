@@ -29,7 +29,6 @@ package net.minebot.fasttravel.data;
 import net.minebot.fasttravel.FastTravelUtil;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.material.Sign;
 
 import java.util.ArrayList;
@@ -184,7 +183,7 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 	 *
 	 * @param player Player to remove.
 	 */
-	public void removePlayer(Player player) {
+	public void removePlayer(UUID player) {
 		if (players.contains(player))
 			players.remove(player);
 		FastTravelSignDB.save();

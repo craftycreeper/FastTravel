@@ -118,7 +118,8 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		getCommand("ftreload").setExecutor(new FastTravelReloadCommand(this));
 		getCommand("ftauto").setExecutor(new FastTravelAutoCommand());
         getCommand("ftclear").setExecutor(new FastTravelClearCommand());
-        getCommand("ftremove").setExecutor(new FastTravelRemoveCommand(this));
+        //not working for now because it uses player names
+        //getCommand("ftremove").setExecutor(new FastTravelRemoveCommand(this));
         getCommand("ftsetrange").setExecutor(new FastTravelSetRangeCommand());
 		getCommand("ftsave").setExecutor(new FastTravelSaveCommand(this));
 		getCommand("ftmenu").setExecutor(new FastTravelMenuCommand(this));

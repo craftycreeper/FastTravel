@@ -108,7 +108,7 @@
 
     <build>
         <defaultGoal>compile package</defaultGoal>
-        <finalName>${project.name}-${project.version} b${build.number}</finalName>
+        <finalName>${project.name}-${project.version}-${build.number}</finalName>
         <sourceDirectory>src/main/java</sourceDirectory>
         <resources>
             <resource>
