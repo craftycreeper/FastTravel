@@ -122,7 +122,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
         getCommand("ftsetrange").setExecutor(new FastTravelSetRangeCommand());
 		getCommand("ftsave").setExecutor(new FastTravelSaveCommand(this));
 		getCommand("ftmenu").setExecutor(new FastTravelMenuCommand(this));
-        getCommand("ftmove").setExecutor(new FastTravelMoveCommand(this));
+        //getCommand("ftmove").setExecutor(new FastTravelMoveCommand(this));
 
 		getLogger().info("Enabled.");
 	}

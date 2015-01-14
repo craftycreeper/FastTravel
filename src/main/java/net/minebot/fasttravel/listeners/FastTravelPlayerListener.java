@@ -105,7 +105,7 @@ public class FastTravelPlayerListener implements Listener {
 
 	}
 
-    @EventHandler(priority =  EventPriority.LOW)
+    //@EventHandler(priority =  EventPriority.LOW)
     public void onInteract(PlayerInteractEvent event){
         if (event.isCancelled()){
             return;
@@ -139,7 +139,6 @@ public class FastTravelPlayerListener implements Listener {
 
         FastTravelUtil.sendFTMessage(event.getPlayer(), "You changed the sign for " + ChatColor.AQUA + sign.getName() +
                 ChatColor.WHITE + ".");
-        FastTravelUtil.formatSign((Sign) event.getClickedBlock().getState(), sign.getName());
 
         FastTravelSignDB.save();
 
@@ -172,6 +171,7 @@ public class FastTravelPlayerListener implements Listener {
 
     }
 
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerJoin(PlayerJoinEvent event){
 		if (!plugin.getConfig().getBoolean("notify update")){
 			return;
