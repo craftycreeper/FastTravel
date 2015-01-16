@@ -24,6 +24,7 @@
 
 package net.minebot.fasttravel;
 
+import de.slikey.effectlib.EffectManager;
 import net.milkbowl.vault.economy.Economy;
 import net.minebot.fasttravel.commands.*;
 import net.minebot.fasttravel.data.FastTravelSign;
@@ -53,6 +54,8 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 	public static File dataDir = new File("plugins/FastTravelSigns");
 
 	private Economy economy = null;
+
+    private EffectManager effectManager;
 
     private static Configuration config;
 
@@ -84,6 +87,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
         FastTravelTaskExecutor.init();
         metricsInit();
         config = getConfig();
+        effectManager = new EffectManager(this);
 		updateChecker = new UpdateChecker(this, "http://dev.bukkit.org/bukkit-plugins/fasttravel/files.rss");
 
         if (updateChecker.updateFound()){
@@ -215,5 +219,9 @@ public class FastTravelSignsPlugin extends JavaPlugin {
     public static FastTravelSignsPlugin getInstance() {
 		return instance;
 	}
+
+    public EffectManager getEffectManager() {
+        return effectManager;
+    }
 
 }

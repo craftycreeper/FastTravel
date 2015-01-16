@@ -24,6 +24,7 @@
 
 package net.minebot.fasttravel.task;
 
+import de.slikey.effectlib.effect.SmokeEntityEffect;
 import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
@@ -66,6 +67,10 @@ public class FastTravelTask implements Runnable {
 		Chunk targChunk = targworld.getChunkAt(targ);
 		if (!targChunk.isLoaded())
 			targChunk.load();
+
+        SmokeEntityEffect smokeEntityEffect = new SmokeEntityEffect(plugin.getEffectManager(), player);
+        smokeEntityEffect.iterations = 2 * 20;
+        smokeEntityEffect.start();
 
 		player.teleport(targ);
 		FastTravelUtil.sendFTMessage(player, "Travelled to " + ChatColor.AQUA + sign.getName()

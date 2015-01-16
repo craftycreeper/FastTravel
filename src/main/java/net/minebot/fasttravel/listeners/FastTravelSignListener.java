@@ -24,6 +24,7 @@
 
 package net.minebot.fasttravel.listeners;
 
+import de.slikey.effectlib.effect.HeartLocationEffect;
 import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
@@ -114,6 +115,11 @@ public class FastTravelSignListener implements Listener {
             // Colorize sign
             event.setLine(0, ChatColor.DARK_PURPLE + "[FastTravel]");
             event.setLine(1, ChatColor.DARK_BLUE + lines[1]);
+
+            HeartLocationEffect heartLocationEffect = new HeartLocationEffect(plugin.getEffectManager(), event.getBlock().getLocation());
+            heartLocationEffect.iterations = 1;
+            heartLocationEffect.start();
+
 		}
 
 	}
