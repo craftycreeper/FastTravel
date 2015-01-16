@@ -2,7 +2,7 @@
  *
  *  * FastTravelSigns - The Simple Exploration and RPG-Friendly Teleportation Plugin
  *  *
- *  * Copyright (c) 2011-2014 craftycreeper, minebot.net, oneill011990
+ *  * Copyright (c) 2011-2015 craftycreeper, minebot.net, oneill011990
  *  *
  *  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  * this software and associated documentation files (the "Software"), to deal in

@@ -2,7 +2,7 @@
  *
  *  * FastTravelSigns - The Simple Exploration and RPG-Friendly Teleportation Plugin
  *  *
- *  * Copyright (c) 2011-2014 craftycreeper, minebot.net, oneill011990
+ *  * Copyright (c) 2011-2015 craftycreeper, minebot.net, oneill011990
  *  *
  *  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  * this software and associated documentation files (the "Software"), to deal in
@@ -119,10 +119,12 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		getCommand("ftauto").setExecutor(new FastTravelAutoCommand());
         getCommand("ftclear").setExecutor(new FastTravelClearCommand());
         //not working for now because it uses player names
+        //TODO Make it work again
         //getCommand("ftremove").setExecutor(new FastTravelRemoveCommand(this));
         getCommand("ftsetrange").setExecutor(new FastTravelSetRangeCommand());
 		getCommand("ftsave").setExecutor(new FastTravelSaveCommand(this));
 		getCommand("ftmenu").setExecutor(new FastTravelMenuCommand(this));
+        //TODO finish method and fix bugs
         //getCommand("ftmove").setExecutor(new FastTravelMoveCommand(this));
 
 		getLogger().info("Enabled.");
