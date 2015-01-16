@@ -86,7 +86,7 @@
             <groupId>de.slikey</groupId>
             <artifactId>EffectLib</artifactId>
             <version>3.0</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.citizensnpcs</groupId>
@@ -154,7 +154,7 @@
                 <configuration>
                     <artifactSet>
                         <includes>
-                            <include>de.slikey.*:*</include>
+                            <include>de.slikey.*:EffectLib*</include>
                             <include>org.mcstats.*:*</include>
                         </includes>
                     </artifactSet>
