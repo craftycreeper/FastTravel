@@ -34,7 +34,6 @@ import net.minebot.fasttravel.menu.TravelMenu;
 import net.minebot.fasttravel.task.FastTravelTaskExecutor;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -55,7 +54,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
 	private Economy economy = null;
 
-    private EffectManager effectManager;
+    private static EffectManager effectManager;
 
     private static Configuration config;
 
@@ -69,7 +68,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 	public ArrayList<UUID> playersWarmingUp;
 
     //Players and signs for editing.
-    public HashMap<Player, FastTravelSign> editors = new HashMap<>();
+    public HashMap<UUID, FastTravelSign> editors = new HashMap<>();
 
 	//Menus that have been created
 	public ArrayList<TravelMenu> menus;
@@ -212,7 +211,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		return menus;
 	}
 
-    public HashMap<Player, FastTravelSign> getEditors() {
+    public HashMap<UUID, FastTravelSign> getEditors() {
         return editors;
     }
 

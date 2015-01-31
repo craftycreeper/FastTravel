@@ -28,7 +28,6 @@ import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.event.FastTravelEvent;
 import net.minebot.fasttravel.task.FastTravelTask;
-import net.minebot.fasttravel.task.FastTravelTaskExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -55,7 +54,8 @@ public class FastTravelListener implements Listener {
         Player p = event.getPlayer();
         FastTravelSign sign = event.getSign();
 
-        FastTravelTaskExecutor.getExecutor().execute(new FastTravelTask(plugin, p, sign));
+        //FastTravelTaskExecutor.getExecutor().execute(new FastTravelTask(plugin, p, sign));
+        plugin.getServer().getScheduler().runTask(plugin, new FastTravelTask(plugin, p, sign));
 
     }
 

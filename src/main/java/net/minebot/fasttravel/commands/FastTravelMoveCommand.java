@@ -67,7 +67,7 @@ public class FastTravelMoveCommand implements CommandExecutor{
             return false;
         }
         FastTravelUtil.sendFTMessage(sender, "Right-click new sign with a stick for this FastTravel.");
-        plugin.getEditors().put(player, sign);
+        plugin.getEditors().put(player.getUniqueId(), sign);
 
 
         return true;

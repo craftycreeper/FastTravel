@@ -140,14 +140,6 @@ public class TravelMenu {
                 inventories.get(i).setItem(53, next);
 
             }
-
-            /*
-            ItemStack travel = new ItemStack(Material.REDSTONE_BLOCK, 1);
-            ItemMeta travelMeta = travel.getItemMeta();
-            travelMeta.setDisplayName(ChatColor.RED + "Travel");
-            travel.setItemMeta(travelMeta);
-            inventories.get(i).setItem(49, travel);
-            */
         }
 
 

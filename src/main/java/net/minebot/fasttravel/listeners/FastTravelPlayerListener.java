@@ -145,7 +145,7 @@ public class FastTravelPlayerListener implements Listener {
 
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
     public void onPlayerMove(PlayerMoveEvent event){
 		if (!plugin.getConfig().getBoolean("use range")){
 			return;
@@ -155,10 +155,12 @@ public class FastTravelPlayerListener implements Listener {
         Player p = event.getPlayer();
         List<FastTravelSign> signs = FastTravelSignDB.getAllSigns();
 
-
         for (FastTravelSign sign : signs){
-			if (sign.foundBy(p.getUniqueId())){
 
+            if (p.getWorld() != sign.getSignLocation().getWorld()) {
+                return;
+            } else if (sign.foundBy(p.getUniqueId())) {
+                return;
 			} else if (sign.getSignLocation().distance(p.getLocation()) <= sign.getRange()){
                 sign.addPlayer(p.getUniqueId());
                 FastTravelUtil.sendFTMessage(p, "You have found FastTravel: " + ChatColor.AQUA + sign.getName());

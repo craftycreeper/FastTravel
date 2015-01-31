@@ -30,6 +30,7 @@ import java.util.concurrent.Executors;
 /**
  * Created by oneill011990 on 17.08.2014.
  */
+@Deprecated
 public class FastTravelTaskExecutor {
 
     private static ExecutorService exec;
