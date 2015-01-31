@@ -44,18 +44,18 @@ public class FastTravelListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
     public void onFastTravel(FastTravelEvent event) {
-
-        if (event.isCancelled()){
-            return;
-        }
 
         Player p = event.getPlayer();
         FastTravelSign sign = event.getSign();
 
-        //FastTravelTaskExecutor.getExecutor().execute(new FastTravelTask(plugin, p, sign));
-        plugin.getServer().getScheduler().runTask(plugin, new FastTravelTask(plugin, p, sign));
+        if (p.hasPermission("fasttravelsigns.overrides.warmup")){
+            plugin.getServer().getScheduler().runTask(plugin, new FastTravelTask(plugin, p.getUniqueId(), sign));
+        } else {
+            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FastTravelTask(plugin, p.getUniqueId(), sign),
+                    plugin.getConfig().getLong("warmup") * 20);
+        }
 
     }
 

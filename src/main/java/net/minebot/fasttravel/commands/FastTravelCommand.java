@@ -29,10 +29,7 @@ import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelSignDB;
 import net.minebot.fasttravel.event.FastTravelEvent;
-import net.minebot.fasttravel.task.FastTravelTask;
 import net.minebot.fasttravel.task.FastTravelTaskExecutor;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -41,10 +38,11 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class FastTravelCommand implements CommandExecutor {
 
-	private HashMap<String, Long> cooldowns = new HashMap<String, Long>();
+	private HashMap<UUID, Long> cooldowns = new HashMap<UUID, Long>();
 	private FastTravelSignsPlugin plugin;
 
     private FastTravelTaskExecutor executor;
@@ -65,11 +63,6 @@ public class FastTravelCommand implements CommandExecutor {
 			return true;
 		}
 
-		if (plugin.playersWarmingUp.contains(player.getUniqueId())) {
-			FastTravelUtil.sendFTMessage(player, "You are already preparing to travel.");
-			return true;
-		}
-
 		if (args.length == 0) {
 			// Send a list
 			FastTravelUtil.sendFTMessage(player, "Your travel points:");
@@ -86,7 +79,7 @@ public class FastTravelCommand implements CommandExecutor {
 			int cooldownLength = plugin.getConfig().getInt("cooldown");
 			long curTime = System.currentTimeMillis() / 1000;
 			if (cooldownLength > 0 && !player.hasPermission("fasttravelsigns.overrides.cooldown")) {
-				Long cd = cooldowns.get(player.getName());
+				Long cd = cooldowns.get(player.getUniqueId());
 				if (cd != null && (curTime - cd) < cooldownLength) {
 					long timeRemaining = (cooldownLength - (curTime - cd));
 					String strRemain = timeRemaining + " seconds";
@@ -128,37 +121,28 @@ public class FastTravelCommand implements CommandExecutor {
 			// Check for economy support, and make sure player has money
 			if (plugin.getEconomy() != null && ftsign.getPrice() > 0
 					&& !player.hasPermission("fasttravelsigns.overrides.price")) {
-				if (!plugin.getEconomy().has(((OfflinePlayer) player), ftsign.getPrice())) {
+				if (!plugin.getEconomy().has(player, ftsign.getPrice())) {
 					FastTravelUtil.sendFTMessage(player,
 							"You lack the money to travel there (Would cost "
 									+ plugin.getEconomy().format(ftsign.getPrice()) + ")");
 					return true;
 				} else {
 					// Charge player
-					plugin.getEconomy().withdrawPlayer(((OfflinePlayer) player), ftsign.getPrice());
-					FastTravelUtil.sendFTMessage(player, "You have been charged "
-							+ plugin.getEconomy().format(ftsign.getPrice()));
+					boolean success = plugin.getEconomy().withdrawPlayer(player, ftsign.getPrice()).transactionSuccess();
+                    if (success){
+                        FastTravelUtil.sendFTMessage(player, "You have been charged "
+                                + plugin.getEconomy().format(ftsign.getPrice()));
+                    } else {
+                        FastTravelUtil.sendFTMessage(player, "Economy seems to be broken, but today is your lucky day," +
+                                " you might travel anyway");
+                    }
 				}
 			}
 
-			// Create travel task
-			FastTravelTask traveltask = new FastTravelTask(plugin, player, ftsign);
-
-			// Handle warmup time if needed
-			int warmup = plugin.getConfig().getInt("warmup");
-			if (warmup > 0 && !player.hasPermission("fasttravelsigns.overrides.warmup")) {
-				FastTravelUtil.sendFTMessage(player,
-						"Travelling to " + ChatColor.AQUA + ftsign.getName() + ChatColor.WHITE
-								+ " in " + warmup + " seconds.");
-				plugin.playersWarmingUp.add(player.getUniqueId());
-				plugin.getServer().getScheduler()
-						.scheduleSyncDelayedTask(plugin, traveltask, warmup * 20);
-			} else {
-                plugin.getServer().getPluginManager().callEvent(new FastTravelEvent(player, ftsign));
-			}
-
 			if (cooldownLength > 0)
-				cooldowns.put(player.getName(), curTime);
+				cooldowns.put(player.getUniqueId(), curTime);
+
+            plugin.getServer().getPluginManager().callEvent(new FastTravelEvent(player, ftsign));
 		}
 		return true;
 	}

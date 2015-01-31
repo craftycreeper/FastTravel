@@ -31,7 +31,6 @@ import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelSignDB;
 import net.minebot.fasttravel.listeners.*;
 import net.minebot.fasttravel.menu.TravelMenu;
-import net.minebot.fasttravel.task.FastTravelTaskExecutor;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.plugin.PluginManager;
@@ -63,10 +62,6 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 	public boolean needUpdate;
 	public String newVersion;
 
-
-	// Players in transit - put here for now. Should find a better place later.
-	public ArrayList<UUID> playersWarmingUp;
-
     //Players and signs for editing.
     public HashMap<UUID, FastTravelSign> editors = new HashMap<>();
 
@@ -83,7 +78,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
 		// Load config and etc
 		dataInit();
-        FastTravelTaskExecutor.init();
+        //FastTravelTaskExecutor.init();
         metricsInit();
         config = getConfig();
         effectManager = new EffectManager(this);
@@ -97,7 +92,6 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 			newVersion = updateChecker.getLink();
         }
 
-		playersWarmingUp = new ArrayList<UUID>();
 		menus = new ArrayList<TravelMenu>();
 
 
@@ -147,7 +141,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		} catch (InvalidConfigurationException e) {
 		}
 		getConfig().addDefault("cooldown", 0);
-		getConfig().addDefault("warmup", 0);
+		getConfig().addDefault("warmup", 0L);
         getConfig().addDefault("use range", true);
 		getConfig().addDefault("enable menu", true);
 		getConfig().addDefault("notify update", true);
@@ -222,5 +216,6 @@ public class FastTravelSignsPlugin extends JavaPlugin {
     public EffectManager getEffectManager() {
         return effectManager;
     }
+
 
 }

@@ -31,28 +31,26 @@ import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 public class FastTravelTask implements Runnable {
 
 	private FastTravelSignsPlugin plugin;
-	private Player player;
-	private String name;
+	private UUID player;
 	private FastTravelSign sign;
 
-	public FastTravelTask(FastTravelSignsPlugin plugin, Player player, FastTravelSign sign) {
+	public FastTravelTask(FastTravelSignsPlugin plugin, UUID player, FastTravelSign sign) {
 		this.plugin = plugin;
 		this.player = player;
-		this.name = player.getName();
 		this.sign = sign;
 	}
 
     @Override
 	public void run() {
-		plugin.playersWarmingUp.remove(name);
 
 		// Double check to make sure they didn't log off...
-		if (!player.isOnline()) {
+		if (!plugin.getServer().getPlayer(player).isOnline()) {
 			return;
 		}
 
@@ -67,8 +65,8 @@ public class FastTravelTask implements Runnable {
 		if (!targChunk.isLoaded())
 			targChunk.load();
 
-		player.teleport(targ);
-		FastTravelUtil.sendFTMessage(player, "Travelled to " + ChatColor.AQUA + sign.getName()
+        plugin.getServer().getPlayer(player).teleport(targ);
+		FastTravelUtil.sendFTMessage(plugin.getServer().getPlayer(player), "Travelled to " + ChatColor.AQUA + sign.getName()
 				+ ChatColor.WHITE + ".");
 	}
 
