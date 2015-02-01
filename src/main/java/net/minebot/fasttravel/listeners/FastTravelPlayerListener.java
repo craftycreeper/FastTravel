@@ -53,26 +53,39 @@ public class FastTravelPlayerListener implements Listener {
 		this.plugin = plugin;
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event) {
+
+        FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "Event was called so you made the mistake " +
+                "not Bukkit.");
 
 		Block block = event.getClickedBlock();
 		Player player = event.getPlayer();
 		Action action = event.getAction();
 
 		if (!FastTravelUtil.isFTSign(block)
-				|| (action != Action.RIGHT_CLICK_BLOCK && action != Action.LEFT_CLICK_BLOCK))
-			return;
+				|| (action != Action.RIGHT_CLICK_BLOCK && action != Action.LEFT_CLICK_BLOCK)){
+            FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "You are not clicking a FastTravelSign.");
+            return;
+        }
+        if (action != Action.RIGHT_CLICK_BLOCK && action != Action.LEFT_CLICK_BLOCK) {
+            FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "You are not clicking it the right way.");
+            return;
+        }
 
 		Sign sign = (Sign) block.getState();
 		String[] lines = sign.getLines();
 		String line1 = ChatColor.stripColor(lines[1]);
 
 		FastTravelSign ftsign = FastTravelSignDB.getSign(line1);
-		if (ftsign == null)
-			return;
+		if (ftsign == null) {
+            FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "Couldn't find sign you are clicking.");
+            return;
+        }
 
 		if (!player.hasPermission("fasttravelsigns.use")) {
+            FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "Could you please stop doing things you" +
+                    " are not allowed to do?");
 			FastTravelUtil.sendFTMessage(player, "You don't have permission to use fast travel.");
 			return;
 		}
@@ -82,6 +95,7 @@ public class FastTravelPlayerListener implements Listener {
 		if (lastTime != null && curTime - lastTime.longValue() <= 8) {
 			// Wait 8 seconds before triggering this again to prevent
 			// spamming someone removing a sign
+            FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "Stop clicking me!");
 			return;
 		}
 		interactLast.put(player.getUniqueId(), curTime);

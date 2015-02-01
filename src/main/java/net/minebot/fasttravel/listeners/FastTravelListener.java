@@ -53,7 +53,7 @@ public class FastTravelListener implements Listener {
 
         FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "Uh, someone wants to Travel");
 
-        if (p.hasPermission("fasttravelsigns.overrides.warmup")){
+        if (p.hasPermission("fasttravelsigns.overrides.warmup")) {
             FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "Oh, someone is a cheater." +
                     " Tar and feather him.");
             plugin.getServer().getScheduler().runTask(plugin, new FastTravelTask(plugin, p.getUniqueId(), sign));

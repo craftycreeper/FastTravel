@@ -64,11 +64,11 @@ public class FastTravelUtil {
 	public static boolean isFTSign(Block block) {
 		if (block == null)
 			return false;
-		if (block.getType() != Material.SIGN && block.getType() != Material.SIGN_POST)
+		if (!Arrays.asList(signBlocks).contains(block.getType()))
 			return false;
 		String[] lines = ((Sign) block.getState()).getLines();
 		String line1 = ChatColor.stripColor(lines[0]);
-		if (line1.equalsIgnoreCase("[fasttravel]"))
+		if (line1.equalsIgnoreCase("[fasttravel]") || line1.equalsIgnoreCase("[ft]"))
 			return true;
 		return false;
 	}

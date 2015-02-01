@@ -121,7 +121,11 @@ public class FastTravelCommand implements CommandExecutor {
                 plugin.getServer().getPluginManager().callEvent(new FastTravelEvent(player, ftsign));
                 return true;
             }
+            plugin.getServer().getPluginManager().callEvent(new FastTravelEvent(player, ftsign));
 		}
+
+        FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "WOW you were smart enough to do something" +
+                " right.");
 		return true;
 	}
 

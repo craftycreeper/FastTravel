@@ -140,7 +140,8 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		} catch (IOException e) {
 		} catch (InvalidConfigurationException e) {
 		}
-		getConfig().addDefault("cooldown", 0);
+        //TODO Readd cooldown between travels.
+		//getConfig().addDefault("cooldown", 0);
 		getConfig().addDefault("warmup", 0L);
         getConfig().addDefault("use range", true);
 		getConfig().addDefault("enable menu", true);
