@@ -29,7 +29,6 @@ import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelSignDB;
 import net.minebot.fasttravel.event.FastTravelEvent;
-import net.minebot.fasttravel.task.FastTravelTaskExecutor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -45,25 +44,37 @@ public class FastTravelCommand implements CommandExecutor {
 	private HashMap<UUID, Long> cooldowns = new HashMap<UUID, Long>();
 	private FastTravelSignsPlugin plugin;
 
-    private FastTravelTaskExecutor executor;
-
 	public FastTravelCommand(FastTravelSignsPlugin instance) {
 		plugin = instance;
 	}
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-		if (!(sender instanceof Player))
-			return false;
+        FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "Uh. somebody sent a command, let's see" +
+                " what's gonna happen next.");
+
+		if (!(sender instanceof Player)) {
+            FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "You are not human you may not" +
+                    " command me.");
+            return false;
+        }
 
 		Player player = (Player) sender;
 
 		if (!player.hasPermission("fasttravelsigns.use")) {
+            FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "Ups a player tried to travel without" +
+                    " a ticket. Someone needs a punishment");
 			FastTravelUtil.sendFTMessage(player, "You don't have permission to use fast travel.");
 			return true;
 		}
 
+        FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "At least you are allowed to do this.");
+
 		if (args.length == 0) {
+
+            FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "Can't you even remember a few names of" +
+                    " points you found out there in the world?");
+
 			// Send a list
 			FastTravelUtil.sendFTMessage(player, "Your travel points:");
 			List<FastTravelSign> usigns = FastTravelSignDB.getSignsFor(player);
@@ -75,37 +86,21 @@ public class FastTravelCommand implements CommandExecutor {
 		}
 
 		else if (args.length == 1) {
-			// Check cooldown
-			int cooldownLength = plugin.getConfig().getInt("cooldown");
-			long curTime = System.currentTimeMillis() / 1000;
-			if (cooldownLength > 0 && !player.hasPermission("fasttravelsigns.overrides.cooldown")) {
-				Long cd = cooldowns.get(player.getUniqueId());
-				if (cd != null && (curTime - cd) < cooldownLength) {
-					long timeRemaining = (cooldownLength - (curTime - cd));
-					String strRemain = timeRemaining + " seconds";
-					if (timeRemaining > 59) {
-						int min = (int) (timeRemaining / 60);
-						if (min == 1)
-							strRemain = "1 minute";
-						else
-							strRemain = min + " minutes";
-					}
-					FastTravelUtil.sendFTMessage(player, "You must wait " + strRemain
-							+ " before travelling again.");
-					return true;
-				}
-			}
 
 			// Time to travel. Check if the requested sign exists.
 			FastTravelSign ftsign = FastTravelSignDB.getSign(args[0]);
 
 			if (ftsign == null) {
+                FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "Traveling to an non existing" +
+                        " location doesn't sound like a good idea does it?");
 				FastTravelUtil.sendFTMessage(player, "That travel point does not exist.");
 				return true;
 			}
 
 			boolean allPoints = player.hasPermission("fasttravelsigns.overrides.allpoints");
 			if (!(ftsign.isAutomatic() || ftsign.foundBy(player.getUniqueId())) && !allPoints) {
+                FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "You don't understand the rules" +
+                        " don't you? First find a point then travel to it.");
 				FastTravelUtil.sendFTMessage(player, "You haven't found that travel point yet.");
 				return true;
 			}
@@ -113,36 +108,19 @@ public class FastTravelCommand implements CommandExecutor {
 			World targworld = ftsign.getTPLocation().getWorld();
 			if (!allPoints && !targworld.equals(player.getWorld())
 					&& !player.hasPermission("fasttravelsigns.multiworld")) {
+                FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "Traveling between different worlds?" +
+                        " Are you Dr. Who or what?");
 				FastTravelUtil
 						.sendFTMessage(player, "You may not fast travel to different worlds.");
 				return true;
 			}
 
-			// Check for economy support, and make sure player has money
-			if (plugin.getEconomy() != null && ftsign.getPrice() > 0
-					&& !player.hasPermission("fasttravelsigns.overrides.price")) {
-				if (!plugin.getEconomy().has(player, ftsign.getPrice())) {
-					FastTravelUtil.sendFTMessage(player,
-							"You lack the money to travel there (Would cost "
-									+ plugin.getEconomy().format(ftsign.getPrice()) + ")");
-					return true;
-				} else {
-					// Charge player
-					boolean success = plugin.getEconomy().withdrawPlayer(player, ftsign.getPrice()).transactionSuccess();
-                    if (success){
-                        FastTravelUtil.sendFTMessage(player, "You have been charged "
-                                + plugin.getEconomy().format(ftsign.getPrice()));
-                    } else {
-                        FastTravelUtil.sendFTMessage(player, "Economy seems to be broken, but today is your lucky day," +
-                                " you might travel anyway");
-                    }
-				}
-			}
-
-			if (cooldownLength > 0)
-				cooldowns.put(player.getUniqueId(), curTime);
-
-            plugin.getServer().getPluginManager().callEvent(new FastTravelEvent(player, ftsign));
+            if (plugin.getEconomy() == null  || !plugin.getConfig().getBoolean("economy.enabled")) {
+                FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "Somebody was lacking the" +
+                        " intelligence to setup economy properly.");
+                plugin.getServer().getPluginManager().callEvent(new FastTravelEvent(player, ftsign));
+                return true;
+            }
 		}
 		return true;
 	}

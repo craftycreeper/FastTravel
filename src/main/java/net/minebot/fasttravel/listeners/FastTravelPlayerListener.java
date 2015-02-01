@@ -29,7 +29,6 @@ import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelSignDB;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -41,23 +40,21 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class FastTravelPlayerListener implements Listener {
 
-	private HashMap<String, Long> interactLast = new HashMap<String, Long>();
+	private HashMap<UUID, Long> interactLast = new HashMap<UUID, Long>();
     private FastTravelSignsPlugin plugin;
 
 	public FastTravelPlayerListener(FastTravelSignsPlugin plugin) {
 		this.plugin = plugin;
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		if (event.isCancelled())
-			return;
 
 		Block block = event.getClickedBlock();
 		Player player = event.getPlayer();
@@ -81,13 +78,13 @@ public class FastTravelPlayerListener implements Listener {
 		}
 
 		long curTime = System.currentTimeMillis() / 1000;
-		Long lastTime = interactLast.get(player.getName());
+		Long lastTime = interactLast.get(player.getUniqueId());
 		if (lastTime != null && curTime - lastTime.longValue() <= 8) {
 			// Wait 8 seconds before triggering this again to prevent
 			// spamming someone removing a sign
 			return;
 		}
-		interactLast.put(player.getName(), curTime);
+		interactLast.put(player.getUniqueId(), curTime);
 		// Now that the checks are done - see if the user has the sign, and
 		// if not, add it.
 
@@ -103,48 +100,6 @@ public class FastTravelPlayerListener implements Listener {
 
 	}
 
-    //@EventHandler(priority =  EventPriority.LOW)
-    public void onInteract(PlayerInteractEvent event){
-        if (event.isCancelled()){
-            return;
-        }
-
-        if (!plugin.getEditors().keySet().contains(event.getPlayer())){
-            return;
-        }
-
-        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-            return;
-        }
-
-        if (event.getPlayer().getItemInHand().getType() != Material.STICK){
-            return;
-        }
-
-        if (!Arrays.asList(FastTravelUtil.signBlocks).contains(event.getClickedBlock().getType())){
-            return;
-        }
-
-        FastTravelSign sign = plugin.getEditors().get(event.getPlayer());
-
-        sign.getSignLocation().getBlock().breakNaturally();
-
-        sign.setSignLocation(event.getClickedBlock().getLocation());
-
-        if (event.getClickedBlock().getState() instanceof Sign){
-            plugin.getLogger().info("Yup it's a sign");
-        }
-
-        FastTravelUtil.sendFTMessage(event.getPlayer(), "You changed the sign for " + ChatColor.AQUA + sign.getName() +
-                ChatColor.WHITE + ".");
-
-        FastTravelSignDB.save();
-
-        plugin.getEditors().remove(event.getPlayer());
-
-
-    }
-
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
     public void onPlayerMove(PlayerMoveEvent event){
 		if (!plugin.getConfig().getBoolean("use range")){
@@ -156,9 +111,8 @@ public class FastTravelPlayerListener implements Listener {
         List<FastTravelSign> signs = FastTravelSignDB.getAllSigns();
 
         for (FastTravelSign sign : signs){
-
             if (p.getWorld() != sign.getSignLocation().getWorld()) {
-                return;
+                continue;
             } else if (sign.foundBy(p.getUniqueId())) {
                 return;
 			} else if (sign.getSignLocation().distance(p.getLocation()) <= sign.getRange()){

@@ -98,6 +98,12 @@ public class FastTravelUtil {
 		sender.sendMessage(ChatColor.LIGHT_PURPLE + "[FastTravel]" + ChatColor.WHITE + " " + mess);
 	}
 
+    public static void sendDebug(boolean enabled, String msg){
+        if (enabled){
+            System.out.println(msg);
+        }
+    }
+
 	/**
 	 * Prints a list of signs to a player.
 	 * @param sender Player the message will be sent to.

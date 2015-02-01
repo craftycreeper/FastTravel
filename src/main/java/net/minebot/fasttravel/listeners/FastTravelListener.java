@@ -25,6 +25,7 @@
 package net.minebot.fasttravel.listeners;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
+import net.minebot.fasttravel.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.event.FastTravelEvent;
 import net.minebot.fasttravel.task.FastTravelTask;
@@ -50,10 +51,15 @@ public class FastTravelListener implements Listener {
         Player p = event.getPlayer();
         FastTravelSign sign = event.getSign();
 
+        FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "Uh, someone wants to Travel");
+
         if (p.hasPermission("fasttravelsigns.overrides.warmup")){
+            FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "Oh, someone is a cheater." +
+                    " Tar and feather him.");
             plugin.getServer().getScheduler().runTask(plugin, new FastTravelTask(plugin, p.getUniqueId(), sign));
         } else {
-            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new FastTravelTask(plugin, p.getUniqueId(), sign),
+            FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "You deserve a cookie.");
+            plugin.getServer().getScheduler().runTaskLater(plugin, new FastTravelTask(plugin, p.getUniqueId(), sign),
                     plugin.getConfig().getLong("warmup") * 20);
         }
 

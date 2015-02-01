@@ -146,6 +146,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		getConfig().addDefault("enable menu", true);
 		getConfig().addDefault("notify update", true);
 		getConfig().addDefault("metrics enabled", true);
+        getConfig().addDefault("DevMode", false);
 		getConfig().addDefault("economy.enabled", false);
 		getConfig().addDefault("economy.default-price", 0);
 		getConfig().options().copyDefaults(true);
