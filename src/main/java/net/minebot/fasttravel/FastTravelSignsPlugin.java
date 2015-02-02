@@ -122,6 +122,9 @@ public class FastTravelSignsPlugin extends JavaPlugin {
         //TODO finish method and fix bugs
         //getCommand("ftmove").setExecutor(new FastTravelMoveCommand(this));
 
+        //Tabcompleter
+        getCommand("ft").setTabCompleter(new FtTabComplete());
+
 		getLogger().info("Enabled.");
 	}
 
@@ -141,7 +144,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		} catch (InvalidConfigurationException e) {
 		}
         //TODO Readd cooldown between travels.
-		//getConfig().addDefault("cooldown", 0);
+		getConfig().addDefault("cooldown", 0);
 		getConfig().addDefault("warmup", 0L);
         getConfig().addDefault("use range", true);
 		getConfig().addDefault("enable menu", true);

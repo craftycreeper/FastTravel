@@ -135,6 +135,16 @@ public class FastTravelUtil {
 			sendFTMessage(sender, pointstr);
 	}
 
+    public static List<String> sendSignNames(List<FastTravelSign> signs) {
+        List<String> names = new ArrayList<>();
+
+        for (FastTravelSign sign : signs) {
+            names.add(sign.getName());
+        }
+
+        return names;
+    }
+
     /**
      * Checks if location is safe.
      * @param loc Location to check.
