@@ -2,7 +2,7 @@
  * FastTravelSigns - The Simple Exploration and RPG-Friendly Teleportation Plugin
  *
  * Copyright (c) 2011-2015 craftycreeper, minebot.net, oneill011990
- *
+ *  
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
@@ -22,60 +22,74 @@
  * SOFTWARE.
  */
 
-package net.minebot.fasttravel.Util;
+package net.minebot.fasttravel.data;
 
-import net.minebot.fasttravel.FastTravelSignsPlugin;
+import java.io.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
-import java.io.File;
-import java.sql.*;
+/**
+ * Created by oneill011990 on 05.02.2015.
+ */
+public abstract class Database {
 
-public class SQLite {
+    protected Connection dbConn;
+    protected Statement dbStatement;
+    private static final HashMap<String, Database> dbSystems;
 
-    private Connection connection;
-    public FastTravelSignsPlugin plugin;
-    private Statement dbStatement;
-
-    public SQLite(FastTravelSignsPlugin plugin) {
-        this.plugin = plugin;
+    static {
+        dbSystems = new HashMap<String, Database>();
     }
 
-    private void connect(){
-        File dbFile = new File(plugin.getDataDir(), "signs.db");
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return;
-        }
+    protected abstract void connect() throws ClassNotFoundException, SQLException;
 
-        try {
-            connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile);
-            dbStatement = connection.createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    //TODO Move somewhere else
-    private void setupTables(){
-        createTables("FastTravelSigns", "name TEXT, creator TEXT, signloc_World TEXT, signloc_X INTEGER," +
+    private void setupTables() {
+        createTable("FastTravelSigns", "name TEXT, creator TEXT, signloc_World TEXT, signloc_X INTEGER," +
                 " signloc_Y INTEGER, signloc_Z INTEGER, signloc_Yaw REAL, " +
                 "tploc_World TEXT, tploc_X INTEGER, tploc_Y INTEGER, tploc_Z INTEGER, tploc_Yaw REAL," +
-                "automatic BOOLEAN, price REAL, range INTEGER");
+                "automatic BOOLEAN, price REAL, range INTEGER, players BLOB");
 
-        createTables("Players", "Name TEXT, UUID TEXT");
+        //createTable("Players", "Name TEXT, UUID TEXT");
     }
 
-    public boolean createTables(String tableName, String colums){
+    public void init() {
         try {
-            dbStatement.executeUpdate("CREATE TABLE IF NOT EXISTS " + tableName + " (" + colums  + ")");
-            return true;
+            connect();
+            dbStatement = dbConn.createStatement();
+            setupTables();
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
+    public void shutdown() {
+        try {
+            dbStatement.close();
+            dbConn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean createTable(String tableName, String columns) {
+        if (dbStatement != null) {
+            try {
+                dbStatement.executeUpdate("CREATE TABLE IF NOT EXISTS " + tableName + " (" + columns + ");");
+                return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
+        } else return false;
+    }
 
     public ResultSet query(String sql) {
         try {
@@ -84,7 +98,7 @@ public class SQLite {
             if (rs.isAfterLast()) return null;
             if (rs.isBeforeFirst()) rs.next();
             return rs;
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
@@ -97,7 +111,7 @@ public class SQLite {
             if (rs.isAfterLast()) return null;
             if (rs.isBeforeFirst()) rs.next();
             return rs.getString(1);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
@@ -110,7 +124,7 @@ public class SQLite {
             if (rs.isAfterLast()) return null;
             if (rs.isBeforeFirst()) rs.next();
             return rs.getString(column);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
@@ -123,7 +137,7 @@ public class SQLite {
             if (rs.isAfterLast()) return -1;
             if (rs.isBeforeFirst()) rs.next();
             return rs.getInt(1);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return 0;
         }
@@ -136,7 +150,7 @@ public class SQLite {
             if (rs.isAfterLast()) return -1;
             if (rs.isBeforeFirst()) rs.next();
             return rs.getInt(column);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return 0;
         }
@@ -149,7 +163,7 @@ public class SQLite {
             if (rs.isAfterLast()) return -1F;
             if (rs.isBeforeFirst()) rs.next();
             return rs.getFloat(1);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return 0;
         }
@@ -162,7 +176,7 @@ public class SQLite {
             if (rs.isAfterLast()) return -1F;
             if (rs.isBeforeFirst()) rs.next();
             return rs.getFloat(column);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return 0;
         }
@@ -175,7 +189,7 @@ public class SQLite {
             if (rs.isAfterLast()) return -1F;
             if (rs.isBeforeFirst()) rs.next();
             return rs.getDouble(1);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return 0;
         }
@@ -188,7 +202,7 @@ public class SQLite {
             if (rs.isAfterLast()) return -1F;
             if (rs.isBeforeFirst()) rs.next();
             return rs.getDouble(column);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return 0;
         }
@@ -201,7 +215,7 @@ public class SQLite {
             if (rs.isAfterLast()) return false;
             if (rs.isBeforeFirst()) rs.next();
             return rs.getBoolean(1);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
@@ -214,7 +228,7 @@ public class SQLite {
             if (rs.isAfterLast()) return false;
             if (rs.isBeforeFirst()) rs.next();
             return rs.getBoolean(column);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
@@ -223,7 +237,7 @@ public class SQLite {
     public int update(String sql) {
         try {
             return dbStatement.executeUpdate(sql);
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return -1;
         }
@@ -237,13 +251,27 @@ public class SQLite {
             if (rs.isBeforeFirst()) rs.next();
             if (rs.getInt(1) == 0) return false;
             else return true;
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    public void insert(String table, String columns, String values) {
+    //Static Stuff
+    public static void registerDatabaseSystem(String systemName, Database dbSystem) {
+        dbSystems.put(systemName, dbSystem);
+    }
+
+    public static Database getDatabaseBySystem(String systemName) {
+        return dbSystems.get(systemName);
+    }
+
+    public static int parseBoolean(boolean bool) {
+        if (bool) return 1;
+        else return 0;
+    }
+
+    public void insertPrimitives(String table, String columns, String values) {
         try {
             dbStatement.executeUpdate("INSERT INTO " + table + " (" + columns + ") VALUES (" + values + ");");
         } catch (SQLException e) {
@@ -251,17 +279,33 @@ public class SQLite {
         }
     }
 
-    public void close() {
-        try {
-            if(connection != null && (!(connection.isClosed()))) {
-                connection.close();
-                if(connection.isClosed()) {
-                    System.out.println("Closed SQLite database");
-                }
-            }
-        } catch(SQLException e) {
-            e.printStackTrace();
+    public void inserList(List<UUID> players) throws IOException, SQLException {
+
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        DataOutputStream dout = new DataOutputStream(bout);
+        for (UUID player : players) {
+            dout.writeBytes(player.toString());
         }
+        dout.close();
+        byte[] asBytes = bout.toByteArray();
+
+        dbStatement.executeUpdate("INSERT INTO FastTravelSigns (players) VALUES (" + asBytes +");");
+
+    }
+
+    public List<UUID> querryList() throws SQLException, IOException {
+        List<UUID> players = new ArrayList<>();
+        ResultSet rs = query("SELECT players FROM FastTravelSigns");
+        while (rs.next()) {
+            byte[] asBytes = rs.getBytes("players");
+            ByteArrayInputStream bin = new ByteArrayInputStream(asBytes);
+            DataInputStream din = new DataInputStream(bin);
+            for (int i = 0; i < asBytes.length / 8; i++) {
+                players.add(UUID.fromString(String.valueOf(din.read())));
+            }
+        }
+        return players;
     }
 
 }
+

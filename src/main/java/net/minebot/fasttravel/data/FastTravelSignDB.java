@@ -25,16 +25,11 @@
 package net.minebot.fasttravel.data;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
-import net.minebot.fasttravel.Util.FastTravelUtil;
+import net.minebot.fasttravel.Util.DBHandler;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.*;
 
 public class FastTravelSignDB {
@@ -51,94 +46,32 @@ public class FastTravelSignDB {
 		FastTravelSignDB.plugin = plugin;
 		FastTravelSignDB.saveFile = saveFile;
 
-		signs = new HashMap<String, FastTravelSign>();
+		signs = new HashMap<>();
 
-		filePlayers = new ArrayList<String>();
+		filePlayers = new ArrayList<>();
 
 		load();
 	}
 
-	private static void load() {
-		YamlConfiguration signYAML = new YamlConfiguration();
-		try {
-			signYAML.load(saveFile);
-		} catch (FileNotFoundException e) {
-		} catch (IOException e) {
-		} catch (InvalidConfigurationException e) {
-			e.printStackTrace();
-		}
+    public static void load(){
 
-		for (String signName : signYAML.getKeys(false)) {
-			UUID creator = UUID.fromString(signYAML.getString(signName + ".creator"));
-            int range = signYAML.getInt(signName + ".range");
-			World locWorld = plugin.getServer().getWorld(
-					signYAML.getString(signName + ".signloc.world"));
-			World tpLocWorld = plugin.getServer().getWorld(
-					signYAML.getString(signName + ".tploc.world"));
-			filePlayers = signYAML.getStringList(signName + ".players");
+        if (FastTravelSignsPlugin.getDbHandler() == DBHandler.File){
+            FileDBHandler.load(saveFile);
+        }else if (FastTravelSignsPlugin.getDbHandler() == DBHandler.SQL) {
 
-			double price = signYAML.getDouble(signName + ".price", 0.0);
+        }
 
-			Location location = new Location(locWorld, signYAML.getDouble(signName + ".signloc.x"),
-					signYAML.getDouble(signName + ".signloc.y"), signYAML.getDouble(signName
-							+ ".signloc.z"));
-			location.setYaw((float) signYAML.getDouble(signName + ".signloc.yaw"));
+    }
 
-			Location tploc = new Location(locWorld, signYAML.getDouble(signName + ".tploc.x"),
-					signYAML.getDouble(signName + ".tploc.y"), signYAML.getDouble(signName
-							+ ".tploc.z"));
-			tploc.setYaw((float) signYAML.getDouble(signName + ".tploc.yaw"));
-			
-			boolean automatic = signYAML.getBoolean(signName + ".automatic", false);
+    public static void save(){
 
-			if (!checkMissing(signName, creator, locWorld, tpLocWorld)){
-				continue;
-			}
+        if (FastTravelSignsPlugin.getDbHandler() == DBHandler.File){
+            FileDBHandler.save();
+        } else if (FastTravelSignsPlugin.getDbHandler() == DBHandler.SQL) {
 
-			signs.put(signName.toLowerCase(), new FastTravelSign(signName, creator, price, location, tploc,
-                    automatic, range, FastTravelUtil.stringToUUID(filePlayers)));
-			filePlayers.clear();
-		}
+        }
 
-		plugin.getLogger().info("Loaded " + signs.size() + " fast travel signs.");
-		save();
-
-	}
-
-	public static void save() {
-		YamlConfiguration signYAML = new YamlConfiguration();
-        List<UUID> players;
-		for (String signName : signs.keySet()) {
-			FastTravelSign sign = signs.get(signName);
-			signName = sign.getName();
-			signYAML.set(signName + ".creator", sign.getCreator().toString());
-
-			signYAML.set(signName + ".signloc.world", sign.getSignLocation().getWorld().getName());
-			signYAML.set(signName + ".signloc.x", sign.getSignLocation().getX());
-			signYAML.set(signName + ".signloc.y", sign.getSignLocation().getY());
-			signYAML.set(signName + ".signloc.z", sign.getSignLocation().getZ());
-			signYAML.set(signName + ".signloc.yaw", (double) sign.getSignLocation().getYaw());
-
-			signYAML.set(signName + ".tploc.world", sign.getTPLocation().getWorld().getName());
-			signYAML.set(signName + ".tploc.x", sign.getTPLocation().getX());
-			signYAML.set(signName + ".tploc.y", sign.getTPLocation().getY());
-			signYAML.set(signName + ".tploc.z", sign.getTPLocation().getZ());
-			signYAML.set(signName + ".tploc.yaw", (double) sign.getTPLocation().getYaw());
-
-			signYAML.set(signName + ".automatic", sign.isAutomatic());
-
-			signYAML.set(signName + ".players", FastTravelUtil.uuidToString(sign.getPlayers()));
-
-			signYAML.set(signName + ".price", sign.getPrice());
-            signYAML.set(signName + ".range", sign.getRange());
-		}
-
-		try {
-			signYAML.save(saveFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    }
 
 	public static void removeSign(String name) {
 		if (signs.containsKey(name.toLowerCase()))
@@ -169,6 +102,10 @@ public class FastTravelSignDB {
 		Collections.sort(allSigns);
 		return allSigns;
 	}
+
+    public static Map<String, FastTravelSign> getSignMap(){
+        return signs;
+    }
 
 	public static void addSign(FastTravelSign sign) {
 		if (!signs.containsKey(sign.getName().toLowerCase()))

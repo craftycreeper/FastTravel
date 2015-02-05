@@ -26,10 +26,12 @@ package net.minebot.fasttravel;
 
 import de.slikey.effectlib.EffectManager;
 import net.milkbowl.vault.economy.Economy;
-import net.minebot.fasttravel.Util.SQLite;
+import net.minebot.fasttravel.Util.DBHandler;
 import net.minebot.fasttravel.Util.UpdateChecker;
 import net.minebot.fasttravel.commands.*;
+import net.minebot.fasttravel.data.Database;
 import net.minebot.fasttravel.data.FastTravelSignDB;
+import net.minebot.fasttravel.data.SQLite;
 import net.minebot.fasttravel.listeners.*;
 import net.minebot.fasttravel.menu.TravelMenu;
 import org.bukkit.configuration.Configuration;
@@ -51,6 +53,10 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 	public static File dataDir = new File("plugins/FastTravelSigns");
 
 	private Economy economy = null;
+
+    private Database db;
+
+    private static DBHandler dbHandler;
 
     private static EffectManager effectManager;
 
@@ -90,8 +96,20 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
 		menus = new ArrayList<TravelMenu>();
 
-        //FastTravelSignDB.init(this, dataDir + "/signs.yml");
-        SQLite.init(this);
+        Database.registerDatabaseSystem("SQL", new SQLite());
+        if (getConfig().getString("database").equalsIgnoreCase("SQL")){
+            db = Database.getDatabaseBySystem("SQL");
+            db.init();
+            dbHandler = DBHandler.SQL;
+        } else {
+            FastTravelSignDB.init(this, dataDir + "/signs.yml");
+            dbHandler = DBHandler.File;
+        }
+
+        if (db == null) {
+            FastTravelSignDB.init(this, dataDir + "/signs.yml");
+            dbHandler = DBHandler.File;
+        }
 
 
 		// Events
@@ -146,6 +164,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		getConfig().addDefault("enable menu", true);
 		getConfig().addDefault("notify update", true);
 		getConfig().addDefault("metrics enabled", true);
+        getConfig().addDefault("database", "file");
         getConfig().addDefault("DevMode", false);
 		getConfig().addDefault("economy.enabled", false);
 		getConfig().addDefault("economy.default-price", 0);
@@ -215,6 +234,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
         return dataDir;
     }
 
-
-
+    public static DBHandler getDbHandler() {
+        return dbHandler;
+    }
 }
