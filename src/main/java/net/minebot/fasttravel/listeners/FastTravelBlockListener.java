@@ -24,7 +24,7 @@
 
 package net.minebot.fasttravel.listeners;
 
-import net.minebot.fasttravel.FastTravelUtil;
+import net.minebot.fasttravel.Util.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelSignDB;
 import org.bukkit.ChatColor;

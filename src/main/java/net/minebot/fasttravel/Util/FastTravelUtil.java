@@ -22,8 +22,9 @@
  * SOFTWARE.
  */
 
-package net.minebot.fasttravel;
+package net.minebot.fasttravel.Util;
 
+import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.data.FastTravelSign;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

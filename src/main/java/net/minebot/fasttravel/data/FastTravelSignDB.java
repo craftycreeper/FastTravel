@@ -25,7 +25,7 @@
 package net.minebot.fasttravel.data;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
-import net.minebot.fasttravel.FastTravelUtil;
+import net.minebot.fasttravel.Util.FastTravelUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;

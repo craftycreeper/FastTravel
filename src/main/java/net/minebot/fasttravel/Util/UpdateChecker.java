@@ -22,9 +22,10 @@
  * SOFTWARE.
  */
 
-package net.minebot.fasttravel;
+package net.minebot.fasttravel.Util;
 
 
+import net.minebot.fasttravel.FastTravelSignsPlugin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

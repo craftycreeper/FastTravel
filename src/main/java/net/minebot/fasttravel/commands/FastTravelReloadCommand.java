@@ -25,7 +25,7 @@
 package net.minebot.fasttravel.commands;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
-import net.minebot.fasttravel.FastTravelUtil;
+import net.minebot.fasttravel.Util.FastTravelUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

@@ -25,7 +25,7 @@
 package net.minebot.fasttravel.commands;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
-import net.minebot.fasttravel.FastTravelUtil;
+import net.minebot.fasttravel.Util.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelSignDB;
 import net.minebot.fasttravel.event.FastTravelEvent;

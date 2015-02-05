@@ -26,8 +26,9 @@ package net.minebot.fasttravel;
 
 import de.slikey.effectlib.EffectManager;
 import net.milkbowl.vault.economy.Economy;
+import net.minebot.fasttravel.Util.SQLite;
+import net.minebot.fasttravel.Util.UpdateChecker;
 import net.minebot.fasttravel.commands.*;
-import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelSignDB;
 import net.minebot.fasttravel.listeners.*;
 import net.minebot.fasttravel.menu.TravelMenu;
@@ -42,8 +43,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
 
 public class FastTravelSignsPlugin extends JavaPlugin {
 
@@ -62,8 +61,6 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 	public boolean needUpdate;
 	public String newVersion;
 
-    //Players and signs for editing.
-    public HashMap<UUID, FastTravelSign> editors = new HashMap<>();
 
 	//Menus that have been created
 	public ArrayList<TravelMenu> menus;
@@ -78,7 +75,6 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
 		// Load config and etc
 		dataInit();
-        //FastTravelTaskExecutor.init();
         metricsInit();
         config = getConfig();
         effectManager = new EffectManager(this);
@@ -93,6 +89,9 @@ public class FastTravelSignsPlugin extends JavaPlugin {
         }
 
 		menus = new ArrayList<TravelMenu>();
+
+        //FastTravelSignDB.init(this, dataDir + "/signs.yml");
+        SQLite.init(this);
 
 
 		// Events
@@ -115,12 +114,10 @@ public class FastTravelSignsPlugin extends JavaPlugin {
         getCommand("ftclear").setExecutor(new FastTravelClearCommand());
         //not working for now because it uses player names
         //TODO Make it work again
-        //getCommand("ftremove").setExecutor(new FastTravelRemoveCommand(this));
+        getCommand("ftremove").setExecutor(new FastTravelRemoveCommand(this));
         getCommand("ftsetrange").setExecutor(new FastTravelSetRangeCommand());
 		getCommand("ftsave").setExecutor(new FastTravelSaveCommand(this));
 		getCommand("ftmenu").setExecutor(new FastTravelMenuCommand(this));
-        //TODO finish method and fix bugs
-        //getCommand("ftmove").setExecutor(new FastTravelMoveCommand(this));
 
         //Tabcompleter
         getCommand("ft").setTabCompleter(new FtTabComplete());
@@ -143,7 +140,6 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		} catch (IOException e) {
 		} catch (InvalidConfigurationException e) {
 		}
-        //TODO Readd cooldown between travels.
 		getConfig().addDefault("cooldown", 0);
 		getConfig().addDefault("warmup", 0L);
         getConfig().addDefault("use range", true);
@@ -164,9 +160,6 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 			setupEconomy();
 		else
 			getLogger().info("Economy support not enabled.");
-
-		// Load signs database
-		FastTravelSignDB.init(this, dataDir + "/signs.yml");
 	}
 
 	public void setupEconomy() {
@@ -210,10 +203,6 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		return menus;
 	}
 
-    public HashMap<UUID, FastTravelSign> getEditors() {
-        return editors;
-    }
-
     public static FastTravelSignsPlugin getInstance() {
 		return instance;
 	}
@@ -221,6 +210,11 @@ public class FastTravelSignsPlugin extends JavaPlugin {
     public EffectManager getEffectManager() {
         return effectManager;
     }
+
+    public File getDataDir() {
+        return dataDir;
+    }
+
 
 
 }

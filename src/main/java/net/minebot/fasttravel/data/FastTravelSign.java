@@ -24,7 +24,7 @@
 
 package net.minebot.fasttravel.data;
 
-import net.minebot.fasttravel.FastTravelUtil;
+import net.minebot.fasttravel.Util.FastTravelUtil;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.material.Sign;

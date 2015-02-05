@@ -24,6 +24,7 @@
 
 package net.minebot.fasttravel;
 
+import net.minebot.fasttravel.Util.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelSignDB;
 import org.bukkit.command.Command;

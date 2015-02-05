@@ -25,7 +25,7 @@
 package net.minebot.fasttravel.commands;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
-import net.minebot.fasttravel.FastTravelUtil;
+import net.minebot.fasttravel.Util.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelSignDB;
 import org.bukkit.ChatColor;
@@ -36,7 +36,6 @@ import org.bukkit.command.CommandSender;
 /**
  * Created by oneill011990 on 03.09.2014.
  */
-//@SuppressWarnings("deprecation")
 public class FastTravelRemoveCommand implements CommandExecutor {
 
     private FastTravelSignsPlugin plugin;
