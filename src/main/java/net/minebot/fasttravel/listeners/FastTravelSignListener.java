@@ -115,10 +115,6 @@ public class FastTravelSignListener implements Listener {
             event.setLine(0, ChatColor.DARK_PURPLE + "[FastTravel]");
             event.setLine(1, ChatColor.DARK_BLUE + lines[1]);
 
-            /*HeartLocationEffect heartLocationEffect = new HeartLocationEffect(plugin.getEffectManager(), event.getBlock().getLocation());
-            heartLocationEffect.iterations = 1;
-            heartLocationEffect.start();*/
-
 		}
 
 	}

@@ -26,7 +26,7 @@ package net.minebot.fasttravel;
 
 import de.slikey.effectlib.EffectManager;
 import net.milkbowl.vault.economy.Economy;
-import net.minebot.fasttravel.Util.DBHandler;
+import net.minebot.fasttravel.Util.DBType;
 import net.minebot.fasttravel.Util.UpdateChecker;
 import net.minebot.fasttravel.commands.*;
 import net.minebot.fasttravel.data.Database;
@@ -56,7 +56,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
     private Database db;
 
-    private static DBHandler dbHandler;
+    private static DBType dbHandler;
 
     private static EffectManager effectManager;
 
@@ -98,17 +98,20 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
         Database.registerDatabaseSystem("SQL", new SQLite());
         if (getConfig().getString("database").equalsIgnoreCase("SQL")){
+            dbHandler = DBType.SQL;
             db = Database.getDatabaseBySystem("SQL");
-            db.init();
-            dbHandler = DBHandler.SQL;
+            FastTravelSignDB.init(this);
+            getLogger().info("Using SQL as database.");
         } else {
             FastTravelSignDB.init(this, dataDir + "/signs.yml");
-            dbHandler = DBHandler.File;
+            dbHandler = DBType.File;
+            getLogger().info("Using YAML file as database.");
         }
 
         if (db == null) {
             FastTravelSignDB.init(this, dataDir + "/signs.yml");
-            dbHandler = DBHandler.File;
+            dbHandler = DBType.File;
+            getLogger().warning("Database not specified, using YAML file as fallback.");
         }
 
 
@@ -145,6 +148,9 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
     public void onDisable() {
 		FastTravelSignDB.save();
+        if (db != null){
+            db.shutdown();
+        }
 
 		getLogger().info("Disabled.");
 	}
@@ -234,7 +240,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
         return dataDir;
     }
 
-    public static DBHandler getDbHandler() {
+    public static DBType getDbHandler() {
         return dbHandler;
     }
 }

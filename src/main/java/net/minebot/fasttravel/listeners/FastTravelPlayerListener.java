@@ -122,7 +122,16 @@ public class FastTravelPlayerListener implements Listener {
 
 
         Player p = event.getPlayer();
+
+        if (FastTravelSignDB.getAllSigns() == null){
+            return;
+        }
+
         List<FastTravelSign> signs = FastTravelSignDB.getAllSigns();
+
+        if (signs.isEmpty()) {
+            return;
+        }
 
         for (FastTravelSign sign : signs){
             if (p.getWorld() != sign.getSignLocation().getWorld()) {

@@ -148,15 +148,15 @@
                 <configuration>
                     <artifactSet>
                         <includes>
-                            <include>de.slikey:*</include>
+                            <!-- <include>de.slikey:*</include> -->
                             <include>org.mcstats.*:*</include>
                         </includes>
                     </artifactSet>
                     <relocations>
-                        <relocation>
+                        <!-- <relocation>
                             <pattern>de.slikey</pattern>
                             <shadedPattern>net.minebot.fasttravel</shadedPattern>
-                        </relocation>
+                        </relocation> -->
                         <relocation>
                             <pattern>org.mcstats</pattern>
                             <shadedPattern>net.minebot.fasttravel</shadedPattern>

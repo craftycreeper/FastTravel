@@ -54,8 +54,6 @@ public abstract class Database {
                 " signloc_Y INTEGER, signloc_Z INTEGER, signloc_Yaw REAL, " +
                 "tploc_World TEXT, tploc_X INTEGER, tploc_Y INTEGER, tploc_Z INTEGER, tploc_Yaw REAL," +
                 "automatic BOOLEAN, price REAL, range INTEGER, players BLOB");
-
-        //createTable("Players", "Name TEXT, UUID TEXT");
     }
 
     public void init() {
@@ -104,136 +102,6 @@ public abstract class Database {
         }
     }
 
-    public String queryString(String sql) {
-        try {
-            ResultSet rs = dbStatement.executeQuery(sql);
-            if (rs == null) return null;
-            if (rs.isAfterLast()) return null;
-            if (rs.isBeforeFirst()) rs.next();
-            return rs.getString(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public String queryString(String sql, String column) {
-        try {
-            ResultSet rs = dbStatement.executeQuery(sql);
-            if (rs == null) return null;
-            if (rs.isAfterLast()) return null;
-            if (rs.isBeforeFirst()) rs.next();
-            return rs.getString(column);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public int queryInt(String sql) {
-        try {
-            ResultSet rs = dbStatement.executeQuery(sql);
-            if (rs == null) return -1;
-            if (rs.isAfterLast()) return -1;
-            if (rs.isBeforeFirst()) rs.next();
-            return rs.getInt(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    public int queryInt(String sql, String column) {
-        try {
-            ResultSet rs = dbStatement.executeQuery(sql);
-            if (rs == null) return -1;
-            if (rs.isAfterLast()) return -1;
-            if (rs.isBeforeFirst()) rs.next();
-            return rs.getInt(column);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    public float queryFloat(String sql) {
-        try {
-            ResultSet rs = dbStatement.executeQuery(sql);
-            if (rs == null) return -1F;
-            if (rs.isAfterLast()) return -1F;
-            if (rs.isBeforeFirst()) rs.next();
-            return rs.getFloat(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    public float queryFloat(String sql, String column) {
-        try {
-            ResultSet rs = dbStatement.executeQuery(sql);
-            if (rs == null) return -1F;
-            if (rs.isAfterLast()) return -1F;
-            if (rs.isBeforeFirst()) rs.next();
-            return rs.getFloat(column);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    public double queryDouble(String sql) {
-        try {
-            ResultSet rs = dbStatement.executeQuery(sql);
-            if (rs == null) return -1F;
-            if (rs.isAfterLast()) return -1F;
-            if (rs.isBeforeFirst()) rs.next();
-            return rs.getDouble(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    public double queryDouble(String sql, String column) {
-        try {
-            ResultSet rs = dbStatement.executeQuery(sql);
-            if (rs == null) return -1F;
-            if (rs.isAfterLast()) return -1F;
-            if (rs.isBeforeFirst()) rs.next();
-            return rs.getDouble(column);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    public boolean queryBoolean(String sql) {
-        try {
-            ResultSet rs = dbStatement.executeQuery(sql);
-            if (rs == null) return false;
-            if (rs.isAfterLast()) return false;
-            if (rs.isBeforeFirst()) rs.next();
-            return rs.getBoolean(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean queryBoolean(String sql, String column) {
-        try {
-            ResultSet rs = dbStatement.executeQuery(sql);
-            if (rs == null) return false;
-            if (rs.isAfterLast()) return false;
-            if (rs.isBeforeFirst()) rs.next();
-            return rs.getBoolean(column);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     public int update(String sql) {
         try {
             return dbStatement.executeUpdate(sql);
@@ -243,9 +111,49 @@ public abstract class Database {
         }
     }
 
-    public boolean tableContains(String table, String column, String value) {
+    public void insert(String columns, String values) {
         try {
-            ResultSet rs = query("SELECT COUNT(" + column + ") AS " + column + "Count FROM " + table + " WHERE " + column + "='" + value + "'");
+            dbStatement.executeUpdate("INSERT INTO FastTravelSigns (" + columns + ") VALUES (" + values + ");");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public byte[] updateList(List<UUID> players) {
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        DataOutputStream dout = new DataOutputStream(bout);
+        for (UUID player : players) {
+            try {
+                dout.writeBytes(player.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            dout.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bout.toByteArray();
+    }
+
+    public List<UUID> getList(String signName) throws SQLException, IOException {
+        List<UUID> players = new ArrayList<>();
+        ResultSet rs = query("SELECT players FROM FastTravelSigns WHERE name = '" + signName + "'");
+        while (rs.next()) {
+            byte[] asBytes = rs.getBytes("players");
+            ByteArrayInputStream bin = new ByteArrayInputStream(asBytes);
+            DataInputStream din = new DataInputStream(bin);
+            for (int i = 0; i < asBytes.length / 8; i++) {
+                players.add(UUID.fromString(String.valueOf(din.read())));
+            }
+        }
+        return players;
+    }
+
+    public boolean tableContains(String column, String value) {
+        try {
+            ResultSet rs = query("SELECT COUNT(" + column + ") AS " + column + "Count FROM FastTravelSigns WHERE " + column + "='" + value + "'");
             if (rs == null) return false;
             if (rs.isAfterLast()) return false;
             if (rs.isBeforeFirst()) rs.next();
@@ -271,41 +179,13 @@ public abstract class Database {
         else return 0;
     }
 
-    public void insertPrimitives(String table, String columns, String values) {
-        try {
-            dbStatement.executeUpdate("INSERT INTO " + table + " (" + columns + ") VALUES (" + values + ");");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public static boolean parseBoolean(int bool){
+        if (bool == 1)
+            return true;
+        else
+            return false;
     }
 
-    public void inserList(List<UUID> players) throws IOException, SQLException {
-
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        DataOutputStream dout = new DataOutputStream(bout);
-        for (UUID player : players) {
-            dout.writeBytes(player.toString());
-        }
-        dout.close();
-        byte[] asBytes = bout.toByteArray();
-
-        dbStatement.executeUpdate("INSERT INTO FastTravelSigns (players) VALUES (" + asBytes +");");
-
-    }
-
-    public List<UUID> querryList() throws SQLException, IOException {
-        List<UUID> players = new ArrayList<>();
-        ResultSet rs = query("SELECT players FROM FastTravelSigns");
-        while (rs.next()) {
-            byte[] asBytes = rs.getBytes("players");
-            ByteArrayInputStream bin = new ByteArrayInputStream(asBytes);
-            DataInputStream din = new DataInputStream(bin);
-            for (int i = 0; i < asBytes.length / 8; i++) {
-                players.add(UUID.fromString(String.valueOf(din.read())));
-            }
-        }
-        return players;
-    }
 
 }
 

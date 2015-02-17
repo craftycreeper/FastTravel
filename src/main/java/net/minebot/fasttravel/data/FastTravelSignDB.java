@@ -25,11 +25,11 @@
 package net.minebot.fasttravel.data;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
-import net.minebot.fasttravel.Util.DBHandler;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
+import net.minebot.fasttravel.Util.DBType;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 
 public class FastTravelSignDB {
@@ -53,22 +53,38 @@ public class FastTravelSignDB {
 		load();
 	}
 
+    public static void init(FastTravelSignsPlugin plugin){
+        FastTravelSignDB.plugin = plugin;
+
+        signs = new HashMap<>();
+
+        filePlayers = new ArrayList<>();
+
+        load();
+    }
+
     public static void load(){
 
-        if (FastTravelSignsPlugin.getDbHandler() == DBHandler.File){
+        if (FastTravelSignsPlugin.getDbHandler() == DBType.File){
             FileDBHandler.load(saveFile);
-        }else if (FastTravelSignsPlugin.getDbHandler() == DBHandler.SQL) {
-
+        }else if (FastTravelSignsPlugin.getDbHandler() == DBType.SQL) {
+            try {
+                SQLDBHandler.load();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }
 
     public static void save(){
 
-        if (FastTravelSignsPlugin.getDbHandler() == DBHandler.File){
+        if (FastTravelSignsPlugin.getDbHandler() == DBType.File){
             FileDBHandler.save();
-        } else if (FastTravelSignsPlugin.getDbHandler() == DBHandler.SQL) {
-
+        } else if (FastTravelSignsPlugin.getDbHandler() == DBType.SQL) {
+            SQLDBHandler.save();
         }
 
     }
@@ -112,24 +128,4 @@ public class FastTravelSignDB {
 			signs.put(sign.getName().toLowerCase(), sign);
 		save();
 	}
-
-	private static boolean checkMissing(String signName, UUID creator, World locWorld, World tplocWorld){
-
-		if (Bukkit.getServer().getOfflinePlayer(creator) == null){
-			plugin.getLogger()
-					.warning("Could not load sign '" + signName + "' - missing creator!");
-			return false;
-		} else if (locWorld == null) {
-			plugin.getLogger()
-					.warning("Could not load sign '" + signName + "' - missing world sign is in!");
-			return false;
-		} else if (tplocWorld == null) {
-			plugin.getLogger()
-					.warning("Could not load sign '" + signName + "' - missing world to travel to!");
-			return false;
-		}
-		return true;
-
-	}
-
 }
