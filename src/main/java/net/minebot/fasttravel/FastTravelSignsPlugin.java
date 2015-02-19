@@ -24,7 +24,6 @@
 
 package net.minebot.fasttravel;
 
-import de.slikey.effectlib.EffectManager;
 import net.milkbowl.vault.economy.Economy;
 import net.minebot.fasttravel.Util.DBType;
 import net.minebot.fasttravel.Util.UpdateChecker;
@@ -58,8 +57,6 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
     private static DBType dbHandler;
 
-    private static EffectManager effectManager;
-
     private static Configuration config;
 
 	private UpdateChecker updateChecker;
@@ -83,7 +80,6 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		dataInit();
         metricsInit();
         config = getConfig();
-        effectManager = new EffectManager(this);
 		updateChecker = new UpdateChecker(this, "http://dev.bukkit.org/bukkit-plugins/fasttravel/files.rss");
 
         if (updateChecker.updateFound()){
@@ -100,12 +96,12 @@ public class FastTravelSignsPlugin extends JavaPlugin {
         if (getConfig().getString("database").equalsIgnoreCase("SQL")){
             dbHandler = DBType.SQL;
             db = Database.getDatabaseBySystem("SQL");
-            FastTravelSignDB.init(this);
             getLogger().info("Using SQL as database.");
+            FastTravelSignDB.init(this);
         } else {
+            getLogger().info("Using YAML file as database.");
             FastTravelSignDB.init(this, dataDir + "/signs.yml");
             dbHandler = DBType.File;
-            getLogger().info("Using YAML file as database.");
         }
 
         if (db == null) {
@@ -231,10 +227,6 @@ public class FastTravelSignsPlugin extends JavaPlugin {
     public static FastTravelSignsPlugin getInstance() {
 		return instance;
 	}
-
-    public EffectManager getEffectManager() {
-        return effectManager;
-    }
 
     public File getDataDir() {
         return dataDir;

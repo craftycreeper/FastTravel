@@ -26,6 +26,7 @@ package net.minebot.fasttravel.data;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
 import org.bukkit.Location;
+import org.bukkit.World;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -53,60 +54,74 @@ public class SQLDBHandler {
 
     public static void load() throws SQLException, IOException {
         db.init();
+
         entries = db.query("SELECT COUNT(*) FROM FastTravelSigns").getInt(1);
-        List<UUID> players = new ArrayList<>();
 
-        ResultSet names = db.query("SELECT name FROM FastTravelSigns");
-        ResultSet creators = db.query("SELECT creator FROM FastTravelSigns");
-        ResultSet signLoc_world = db.query("SELECT signloc_World FROM FastTravelSigns");
-        ResultSet signLoc_x = db.query("SELECT signloc_X FROM FastTravelSigns");
-        ResultSet singLoc_y = db.query("SELECT signloc_Y FROM FastTravelSigns");
-        ResultSet singLoc_z = db.query("SELECT signloc_Z FROM FastTravelSigns");
-        ResultSet singLoc_yaw = db.query("SELECT signloc_Yaw FROM FastTravelSigns");
-        ResultSet tpgLoc_world = db.query("SELECT tploc_World FROM FastTravelSigns");
-        ResultSet tpLoc_x = db.query("SELECT tploc_X FROM FastTravelSigns");
-        ResultSet tpLoc_y = db.query("SELECT tploc_Y FROM FastTravelSigns");
-        ResultSet tpLoc_z = db.query("SELECT tploc_Z FROM FastTravelSigns");
-        ResultSet tpLoc_yaw = db.query("SELECT tploc_Yaw FROM FastTravelSigns");
-        ResultSet automatics = db.query("SELECT automatic FROM FastTravelSigns");
-        ResultSet prices = db.query("SELECT price FROM FastTravelSigns");
-        ResultSet ranges = db.query("SELECT range FROM FastTravelSigns");
-
-        for (int i = 0; i < entries; i++) {
-            players = db.getList(names.getString(i));
-            Location signLoc = new Location(plugin.getServer().getWorld(signLoc_world.getString(i)), signLoc_x.getDouble(i),
-                    singLoc_y.getDouble(i), singLoc_z.getDouble(i));
-            signLoc.setYaw(((float) singLoc_yaw.getDouble(i)));
-            Location tpLoc = new Location(plugin.getServer().getWorld(tpgLoc_world.getString(i)), tpLoc_x.getDouble(i),
-                    tpLoc_y.getDouble(i), tpLoc_z.getDouble(i));
-            tpLoc.setYaw((float) tpLoc_yaw.getDouble(i));
-            FastTravelSignDB.addSign(new FastTravelSign(names.getString(i), UUID.fromString(creators.getString(i)),
-                    prices.getDouble(i), signLoc, tpLoc, automatics.getBoolean(i), ranges.getInt(i), players));
+        if (entries == 0){
+            plugin.getLogger().info("No signs found in the database");
+            return;
         }
 
-        plugin.getLogger().info("Loaded " + FastTravelSignDB.getAllSigns().size() + " fast travel signs.");
+        ResultSet rs = db.query("SELECT * From `FastTravelSigns`");
+
+        if (rs == null){
+            System.out.println("Somehow the database is null.");
+            return;
+        }
+
+        while (rs.next()) {
+            String name = rs.getString(1);
+            UUID creator = UUID.fromString(rs.getString(2));
+            World signloc_World = plugin.getServer().getWorld(rs.getString(3));
+            int signloc_X = rs.getInt(4);
+            int signloc_Y = rs.getInt(5);
+            int signloc_Z = rs.getInt(6);
+            float signloc_Yaw = rs.getFloat(7);
+            World tploc_World = plugin.getServer().getWorld(rs.getString(8));
+            int tploc_X = rs.getInt(9);
+            int tploc_Y = rs.getInt(10);
+            int tploc_Z = rs.getInt(11);
+            float tploc_Yaw = rs.getFloat(12);
+            boolean automatic = Database.parseBoolean(rs.getInt(13));
+            float price = rs.getFloat(14);
+            int range = rs.getInt(15);
+
+            List<UUID> players = db.getList(rs.getBytes(16));
+
+            Location signLoc = new Location(signloc_World, signloc_X, signloc_Y, signloc_Z);
+            signLoc.setYaw(signloc_Yaw);
+
+            Location tpLoc = new Location(tploc_World, tploc_X, tploc_Y, tploc_Z);
+            tpLoc.setYaw(tploc_Yaw);
+
+            FastTravelSignDB.addSign(new FastTravelSign(name, creator, price, signLoc, tpLoc, automatic, range,
+                    players));
+
+        }
+
+        plugin.getLogger().info("Loaded " + FastTravelSignDB.getAllSigns().size() + " fast travel rs.");
     }
 
     public static void save(){
         for (String signName : FastTravelSignDB.getSignMap().keySet()) {
             FastTravelSign sign = FastTravelSignDB.getSign(signName);
-            if (db.tableContains("name", signName)){
+            if (!db.tableContains("name", signName)){
                 addNew(FastTravelSignDB.getSign(signName));
                 return;
             }
 
             try {
-                PreparedStatement prepStatement = db.dbConn.prepareStatement("UPDATE FastTravelSigns SET name = '" +
-                        signName.toString() + ", creator = '" + sign.getCreator().toString() + "', signloc_World = '" +
-                        sign.getSignLocation().getWorld().toString() + "', singloc_X = '" +
-                        sign.getSignLocation().getX() + "', singloc_Y = '" + sign.getSignLocation().getY() +
-                        "', singloc_Z = '" + sign.getSignLocation().getZ() + "', signloc_Yaw  = '" +
-                        sign.getSignLocation().getYaw() + "', tploc_World = '" +
-                        sign.getTPLocation().getWorld().toString() + ", tploc_X = '" + sign.getTPLocation().getX() +
-                        "', tploc_Y = '"+ sign.getTPLocation().getY() + "', tploc_Z = '" +
+                PreparedStatement prepStatement = db.dbConn.prepareStatement("UPDATE `FastTravelSigns` SET `name` = '" +
+                        signName.toString() + ", `creator` = '" + sign.getCreator().toString() + "', `signloc_World` = '" +
+                        sign.getSignLocation().getWorld().toString() + "', `signloc_X` = '" +
+                        sign.getSignLocation().getX() + "', `signloc_Y` = '" + sign.getSignLocation().getY() +
+                        "', `signloc_Z` = '" + sign.getSignLocation().getZ() + "', `signloc_Yaw`  = '" +
+                        sign.getSignLocation().getYaw() + "',`tploc_World` = '" +
+                        sign.getTPLocation().getWorld().toString() + ", `tploc_X` = '" + sign.getTPLocation().getX() +
+                        "', `tploc_Y` = '"+ sign.getTPLocation().getY() + "', `tploc_Z` = '" +
                         sign.getTPLocation().getZ() + "', tploc_Yaw = '" + sign.getTPLocation().getYaw() +
-                        "', automatic = '" + sign.isAutomatic() + "', price = '" + sign.getPrice() +
-                        "', range = '" + sign.getPrice() + "', players = ? WHERE name = '" +
+                        "', `automatic` = '" + db.parseBoolean(sign.isAutomatic()) + "', `price` = '" + sign.getPrice() +
+                        "', `range` = '" + sign.getPrice() + "', `players` = ? WHERE `name` = '" +
                         signName.toString() + "';");
 
                 prepStatement.setBytes(1, db.updateList(sign.getPlayers()));
@@ -120,21 +135,18 @@ public class SQLDBHandler {
 
     private static void addNew(FastTravelSign sign){
         try {
-            PreparedStatement prepStatement = db.dbConn.prepareStatement("UPDATE FastTravelSigns SET name = '" +
-                    sign.getName() + ", creator = '" + sign.getCreator().toString() + "', signloc_World = '" +
-                    sign.getSignLocation().getWorld().toString() + "', singloc_X = '" +
-                    sign.getSignLocation().getX() + "', singloc_Y = '" + sign.getSignLocation().getY() +
-                    "', singloc_Z = '" + sign.getSignLocation().getZ() + "', signloc_Yaw  = '" +
-                    sign.getSignLocation().getYaw() + "', tploc_World = '" +
-                    sign.getTPLocation().getWorld().toString() + ", tploc_X = '" + sign.getTPLocation().getX() +
-                    "', tploc_Y = '"+ sign.getTPLocation().getY() + "', tploc_Z = '" +
-                    sign.getTPLocation().getZ() + "', tploc_Yaw = '" + sign.getTPLocation().getYaw() +
-                    "', automatic = '" + sign.isAutomatic() + "', price = '" + sign.getPrice() +
-                    "', range = '" + sign.getPrice() + "', players = ? WHERE name = '" +
-                    sign.getName() + "';");
+            PreparedStatement prepStatement = db.dbConn.prepareStatement("INSERT INTO `FastTravelSigns` (name, creator," +
+                    " signloc_World, signloc_X, signloc_Y, signloc_Z, signloc_Yaw, tploc_World, tploc_X," +
+                    " tploc_Y, tploc_Z, tploc_Yaw, automatic, price, range, players) VALUES ('" + sign.getName() +
+                    "', '" + sign.getCreator().toString() + "', '" + sign.getSignLocation().getWorld().getName() +
+                    "', '" + sign.getSignLocation().getX() + "', '" + sign.getSignLocation().getY() + "', '" +
+                    sign.getSignLocation().getZ() + "', '" + sign.getSignLocation().getYaw() + "', '" +
+                    sign.getTPLocation().getWorld().getName() + "', ' " + sign.getTPLocation().getX() + "', '" +
+                    sign.getTPLocation().getY() + "', '" + sign.getTPLocation().getZ() + "', '" +
+                    sign.getTPLocation().getYaw() + "', '" + Database.parseBoolean(sign.isAutomatic()) + "', '" +
+                    sign.getPrice() + "', '" + sign.getRange() + "', null);");
 
-            prepStatement.setBytes(1, db.updateList(sign.getPlayers()));
-            prepStatement.executeUpdate();
+            prepStatement.execute();
 
         } catch (SQLException e) {
             e.printStackTrace();

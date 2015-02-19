@@ -53,7 +53,7 @@ public abstract class Database {
         createTable("FastTravelSigns", "name TEXT, creator TEXT, signloc_World TEXT, signloc_X INTEGER," +
                 " signloc_Y INTEGER, signloc_Z INTEGER, signloc_Yaw REAL, " +
                 "tploc_World TEXT, tploc_X INTEGER, tploc_Y INTEGER, tploc_Z INTEGER, tploc_Yaw REAL," +
-                "automatic BOOLEAN, price REAL, range INTEGER, players BLOB");
+                "automatic SMALLINT, price REAL, range INTEGER, players BLOB");
     }
 
     public void init() {
@@ -92,9 +92,6 @@ public abstract class Database {
     public ResultSet query(String sql) {
         try {
             ResultSet rs = dbStatement.executeQuery(sql);
-            if (rs == null) return null;
-            if (rs.isAfterLast()) return null;
-            if (rs.isBeforeFirst()) rs.next();
             return rs;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -108,14 +105,6 @@ public abstract class Database {
         } catch (SQLException e) {
             e.printStackTrace();
             return -1;
-        }
-    }
-
-    public void insert(String columns, String values) {
-        try {
-            dbStatement.executeUpdate("INSERT INTO FastTravelSigns (" + columns + ") VALUES (" + values + ");");
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
@@ -137,17 +126,13 @@ public abstract class Database {
         return bout.toByteArray();
     }
 
-    public List<UUID> getList(String signName) throws SQLException, IOException {
+    public List<UUID> getList(byte[] playersRaw) throws SQLException, IOException {
         List<UUID> players = new ArrayList<>();
-        ResultSet rs = query("SELECT players FROM FastTravelSigns WHERE name = '" + signName + "'");
-        while (rs.next()) {
-            byte[] asBytes = rs.getBytes("players");
-            ByteArrayInputStream bin = new ByteArrayInputStream(asBytes);
+            ByteArrayInputStream bin = new ByteArrayInputStream(playersRaw);
             DataInputStream din = new DataInputStream(bin);
-            for (int i = 0; i < asBytes.length / 8; i++) {
+            for (int i = 0; i < playersRaw.length / 8; i++) {
                 players.add(UUID.fromString(String.valueOf(din.read())));
             }
-        }
         return players;
     }
 
