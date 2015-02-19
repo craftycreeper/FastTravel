@@ -62,12 +62,7 @@ public class SQLDBHandler {
             return;
         }
 
-        ResultSet rs = db.query("SELECT * From `FastTravelSigns`");
-
-        if (rs == null){
-            System.out.println("Somehow the database is null.");
-            return;
-        }
+        ResultSet rs = db.query("SELECT * From FastTravelSigns");
 
         while (rs.next()) {
             String name = rs.getString(1);
@@ -87,6 +82,10 @@ public class SQLDBHandler {
             int range = rs.getInt(15);
 
             List<UUID> players = db.getList(rs.getBytes(16));
+
+            if (!players.contains(creator)){
+                players.add(creator);
+            }
 
             Location signLoc = new Location(signloc_World, signloc_X, signloc_Y, signloc_Z);
             signLoc.setYaw(signloc_Yaw);
@@ -111,18 +110,13 @@ public class SQLDBHandler {
             }
 
             try {
-                PreparedStatement prepStatement = db.dbConn.prepareStatement("UPDATE `FastTravelSigns` SET `name` = '" +
-                        signName.toString() + ", `creator` = '" + sign.getCreator().toString() + "', `signloc_World` = '" +
-                        sign.getSignLocation().getWorld().toString() + "', `signloc_X` = '" +
-                        sign.getSignLocation().getX() + "', `signloc_Y` = '" + sign.getSignLocation().getY() +
-                        "', `signloc_Z` = '" + sign.getSignLocation().getZ() + "', `signloc_Yaw`  = '" +
-                        sign.getSignLocation().getYaw() + "',`tploc_World` = '" +
-                        sign.getTPLocation().getWorld().toString() + ", `tploc_X` = '" + sign.getTPLocation().getX() +
-                        "', `tploc_Y` = '"+ sign.getTPLocation().getY() + "', `tploc_Z` = '" +
-                        sign.getTPLocation().getZ() + "', tploc_Yaw = '" + sign.getTPLocation().getYaw() +
-                        "', `automatic` = '" + db.parseBoolean(sign.isAutomatic()) + "', `price` = '" + sign.getPrice() +
-                        "', `range` = '" + sign.getPrice() + "', `players` = ? WHERE `name` = '" +
-                        signName.toString() + "';");
+                PreparedStatement prepStatement = db.dbConn.prepareStatement("UPDATE FastTravelSigns SET " +
+                        "tploc_World = '" + sign.getTPLocation().getWorld().getName() + "', tploc_X = '" +
+                        sign.getTPLocation().getX() + "', tploc_Y = '"+ sign.getTPLocation().getY() +
+                        "', tploc_Z = '" + sign.getTPLocation().getZ() + "', tploc_Yaw = '" +
+                        sign.getTPLocation().getYaw() + "', automatic = '" + db.parseBoolean(sign.isAutomatic()) +
+                        "', price = '" + sign.getPrice() + "', range = '" + sign.getPrice() +
+                        "', players = ? WHERE name = '" + signName.toString() + "';");
 
                 prepStatement.setBytes(1, db.updateList(sign.getPlayers()));
                 prepStatement.executeUpdate();
@@ -135,16 +129,16 @@ public class SQLDBHandler {
 
     private static void addNew(FastTravelSign sign){
         try {
-            PreparedStatement prepStatement = db.dbConn.prepareStatement("INSERT INTO `FastTravelSigns` (name, creator," +
+            PreparedStatement prepStatement = db.dbConn.prepareStatement("INSERT INTO FastTravelSigns (name, creator," +
                     " signloc_World, signloc_X, signloc_Y, signloc_Z, signloc_Yaw, tploc_World, tploc_X," +
-                    " tploc_Y, tploc_Z, tploc_Yaw, automatic, price, range, players) VALUES ('" + sign.getName() +
+                    " tploc_Y, tploc_Z, tploc_Yaw, automatic, price, range) VALUES ('" + sign.getName() +
                     "', '" + sign.getCreator().toString() + "', '" + sign.getSignLocation().getWorld().getName() +
                     "', '" + sign.getSignLocation().getX() + "', '" + sign.getSignLocation().getY() + "', '" +
                     sign.getSignLocation().getZ() + "', '" + sign.getSignLocation().getYaw() + "', '" +
                     sign.getTPLocation().getWorld().getName() + "', ' " + sign.getTPLocation().getX() + "', '" +
                     sign.getTPLocation().getY() + "', '" + sign.getTPLocation().getZ() + "', '" +
                     sign.getTPLocation().getYaw() + "', '" + Database.parseBoolean(sign.isAutomatic()) + "', '" +
-                    sign.getPrice() + "', '" + sign.getRange() + "', null);");
+                    sign.getPrice() + "', '" + sign.getRange() + "';");
 
             prepStatement.execute();
 
