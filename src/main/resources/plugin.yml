@@ -68,6 +68,9 @@ permissions:
     fasttravelsigns.move:
         description: Allows use of /ftmove command.
         default: op
+    fasttravelsigns.convert:
+        description: Allows use of /ftconvert command.
+        default: op
 commands:
     ft:
         description: Obtain list of travel points and warp to them
@@ -135,3 +138,8 @@ commands:
         permission: fasttravelsigns.move
         usage: |
             /ftmove [Sign to move]
+    ftconvert:
+        description: Converts the database type.
+        permission: fasttravelsigns.convert
+        usage: |
+            /ftconvert

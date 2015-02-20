@@ -135,6 +135,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
         getCommand("ftsetrange").setExecutor(new FastTravelSetRangeCommand());
 		getCommand("ftsave").setExecutor(new FastTravelSaveCommand(this));
 		getCommand("ftmenu").setExecutor(new FastTravelMenuCommand(this));
+        getCommand("ftconvert").setExecutor(new FastTravelConvertCommand(this));
 
         //Tabcompleter
         getCommand("ft").setTabCompleter(new FtTabComplete());

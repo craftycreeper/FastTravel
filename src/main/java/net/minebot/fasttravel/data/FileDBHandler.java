@@ -137,6 +137,40 @@ public class FileDBHandler {
         }
     }
 
+    public static void save(String saveFile) {
+        YamlConfiguration signYAML = new YamlConfiguration();
+        for (String signName : FastTravelSignDB.getSignMap().keySet()) {
+            FastTravelSign sign = FastTravelSignDB.getSignMap().get(signName);
+            signName = sign.getName();
+            signYAML.set(signName + ".creator", sign.getCreator().toString());
+
+            signYAML.set(signName + ".signloc.world", sign.getSignLocation().getWorld().getName());
+            signYAML.set(signName + ".signloc.x", sign.getSignLocation().getX());
+            signYAML.set(signName + ".signloc.y", sign.getSignLocation().getY());
+            signYAML.set(signName + ".signloc.z", sign.getSignLocation().getZ());
+            signYAML.set(signName + ".signloc.yaw", (double) sign.getSignLocation().getYaw());
+
+            signYAML.set(signName + ".tploc.world", sign.getTPLocation().getWorld().getName());
+            signYAML.set(signName + ".tploc.x", sign.getTPLocation().getX());
+            signYAML.set(signName + ".tploc.y", sign.getTPLocation().getY());
+            signYAML.set(signName + ".tploc.z", sign.getTPLocation().getZ());
+            signYAML.set(signName + ".tploc.yaw", (double) sign.getTPLocation().getYaw());
+
+            signYAML.set(signName + ".automatic", sign.isAutomatic());
+
+            signYAML.set(signName + ".players", FastTravelUtil.uuidToString(sign.getPlayers()));
+
+            signYAML.set(signName + ".price", sign.getPrice());
+            signYAML.set(signName + ".range", sign.getRange());
+        }
+
+        try {
+            signYAML.save(saveFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static boolean checkMissing(String signName, UUID creator, World locWorld, World tplocWorld){
 
         if (Bukkit.getServer().getOfflinePlayer(creator) == null){
