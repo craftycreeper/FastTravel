@@ -97,15 +97,15 @@ public class FastTravelSignsPlugin extends JavaPlugin {
             dbHandler = DBType.SQL;
             db = Database.getDatabaseBySystem("SQL");
             getLogger().info("Using SQL as database.");
-            FastTravelSignDB.init(this);
+            FastTravelSignDB.init(this, true);
         } else {
             getLogger().info("Using YAML file as database.");
-            FastTravelSignDB.init(this, dataDir + "/signs.yml");
+            FastTravelSignDB.init(this, dataDir + "/signs.yml", true);
             dbHandler = DBType.File;
         }
 
         if (db == null) {
-            FastTravelSignDB.init(this, dataDir + "/signs.yml");
+            FastTravelSignDB.init(this, dataDir + "/signs.yml", true);
             dbHandler = DBType.File;
             getLogger().warning("Database not specified, using YAML file as fallback.");
         }

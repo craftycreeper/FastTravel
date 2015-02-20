@@ -42,7 +42,7 @@ public class FastTravelSignDB {
 
 	private static List<String> filePlayers;
 
-	public static void init(FastTravelSignsPlugin plugin, String saveFile) {
+	public static void init(FastTravelSignsPlugin plugin, String saveFile, boolean load) {
 		FastTravelSignDB.plugin = plugin;
 		FastTravelSignDB.saveFile = saveFile;
 
@@ -50,17 +50,19 @@ public class FastTravelSignDB {
 
 		filePlayers = new ArrayList<>();
 
-		load();
+        if (load)
+		    load();
 	}
 
-    public static void init(FastTravelSignsPlugin plugin){
+    public static void init(FastTravelSignsPlugin plugin, boolean load){
         FastTravelSignDB.plugin = plugin;
 
         signs = new HashMap<>();
 
         filePlayers = new ArrayList<>();
 
-        load();
+        if (load)
+            load();
     }
 
     public static void load(){

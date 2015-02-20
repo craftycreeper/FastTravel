@@ -244,6 +244,7 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 	 */
 	public void setRange(int range) {
 		this.range = range;
+        FastTravelSignDB.save();
 	}
 
 	/**

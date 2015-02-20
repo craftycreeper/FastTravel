@@ -141,7 +141,7 @@ public class SQLDBHandler {
                     sign.getTPLocation().getWorld().getName() + "', ' " + sign.getTPLocation().getX() + "', '" +
                     sign.getTPLocation().getY() + "', '" + sign.getTPLocation().getZ() + "', '" +
                     sign.getTPLocation().getYaw() + "', '" + db.parseBoolean(sign.isAutomatic()) + "', '" +
-                    sign.getPrice() + "', '" + sign.getRange() + "', ?;");
+                    sign.getPrice() + "', '" + sign.getRange() + "', ?);");
 
             prepStatement.setBytes(1, db.updateList(creator));
             prepStatement.execute();
