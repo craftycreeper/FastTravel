@@ -57,7 +57,7 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 		this.creator = creator;
 
 		this.price = 0;
-		this.range = -1;
+		this.range = 0;
 		this.players = new ArrayList<UUID>();
 		this.setAutomatic(false);
 

@@ -77,7 +77,7 @@ public class SQLDBHandler {
             int tploc_Y = rs.getInt(10);
             int tploc_Z = rs.getInt(11);
             float tploc_Yaw = rs.getFloat(12);
-            boolean automatic = Database.parseBoolean(rs.getInt(13));
+            boolean automatic = db.parseBoolean(rs.getInt(13));
             float price = rs.getFloat(14);
             int range = rs.getInt(15);
 
@@ -98,7 +98,7 @@ public class SQLDBHandler {
 
         }
 
-        plugin.getLogger().info("Loaded " + FastTravelSignDB.getAllSigns().size() + " fast travel rs.");
+        plugin.getLogger().info("Loaded " + FastTravelSignDB.getAllSigns().size() + " FastTravelSigns.");
     }
 
     public static void save(){
@@ -129,17 +129,21 @@ public class SQLDBHandler {
 
     private static void addNew(FastTravelSign sign){
         try {
+            List<UUID> creator = new ArrayList<>();
+            creator.add(sign.getCreator());
+
             PreparedStatement prepStatement = db.dbConn.prepareStatement("INSERT INTO FastTravelSigns (name, creator," +
                     " signloc_World, signloc_X, signloc_Y, signloc_Z, signloc_Yaw, tploc_World, tploc_X," +
-                    " tploc_Y, tploc_Z, tploc_Yaw, automatic, price, range) VALUES ('" + sign.getName() +
+                    " tploc_Y, tploc_Z, tploc_Yaw, automatic, price, range, players) VALUES ('" + sign.getName() +
                     "', '" + sign.getCreator().toString() + "', '" + sign.getSignLocation().getWorld().getName() +
                     "', '" + sign.getSignLocation().getX() + "', '" + sign.getSignLocation().getY() + "', '" +
                     sign.getSignLocation().getZ() + "', '" + sign.getSignLocation().getYaw() + "', '" +
                     sign.getTPLocation().getWorld().getName() + "', ' " + sign.getTPLocation().getX() + "', '" +
                     sign.getTPLocation().getY() + "', '" + sign.getTPLocation().getZ() + "', '" +
-                    sign.getTPLocation().getYaw() + "', '" + Database.parseBoolean(sign.isAutomatic()) + "', '" +
-                    sign.getPrice() + "', '" + sign.getRange() + "';");
+                    sign.getTPLocation().getYaw() + "', '" + db.parseBoolean(sign.isAutomatic()) + "', '" +
+                    sign.getPrice() + "', '" + sign.getRange() + "', ?;");
 
+            prepStatement.setBytes(1, db.updateList(creator));
             prepStatement.execute();
 
         } catch (SQLException e) {

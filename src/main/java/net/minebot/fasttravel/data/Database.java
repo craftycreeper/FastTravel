@@ -25,6 +25,7 @@
 package net.minebot.fasttravel.data;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -127,12 +128,19 @@ public abstract class Database {
     }
 
     public List<UUID> getList(byte[] playersRaw) throws SQLException, IOException {
+
+        String tmpRaw = new String(playersRaw, StandardCharsets.UTF_8);
+
+        int uuids = tmpRaw.length() / 36;
+
         List<UUID> players = new ArrayList<>();
-            ByteArrayInputStream bin = new ByteArrayInputStream(playersRaw);
-            DataInputStream din = new DataInputStream(bin);
-            for (int i = 0; i < playersRaw.length / 8; i++) {
-                players.add(UUID.fromString(String.valueOf(din.read())));
-            }
+        ByteArrayInputStream bin = new ByteArrayInputStream(playersRaw);
+        DataInputStream din = new DataInputStream(bin);
+        StringBuffer inputLine = new StringBuffer();
+        for (int j = 0; j < uuids-36; j += 36){
+            players.add(UUID.fromString(tmpRaw.substring(j, j+36)));
+            System.out.println(tmpRaw.substring(j, j+36));
+        }
         return players;
     }
 
@@ -159,12 +167,12 @@ public abstract class Database {
         return dbSystems.get(systemName);
     }
 
-    public static int parseBoolean(boolean bool) {
+    public  int parseBoolean(boolean bool) {
         if (bool) return 1;
         else return 0;
     }
 
-    public static boolean parseBoolean(int bool){
+    public  boolean parseBoolean(int bool){
         if (bool == 1)
             return true;
         else

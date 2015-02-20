@@ -28,5 +28,5 @@ package net.minebot.fasttravel.Util;
  * Created by oneill011990 on 05.02.2015.
  */
 public enum DBType {
-    SQL, File
+    SQL, File, MySQL
 }
