@@ -63,7 +63,8 @@ public class FastTravelConvertCommand implements CommandExecutor {
             return true;
         } else if (plugin.getDbHandler() == DBType.SQL) {
             FastTravelUtil.sendFTMessage(sender, "Converting database to YAML-File.");
-            FileDBHandler.save(plugin.getDataDir() + "/signs.yaml");
+            FileDBHandler.load(plugin.getDataDir() + "/signs.yml");
+            FileDBHandler.save(plugin.getDataDir() + "/signs.yml");
             return true;
         }
 
