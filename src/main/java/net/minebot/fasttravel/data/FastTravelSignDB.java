@@ -69,7 +69,7 @@ public class FastTravelSignDB {
 
         if (FastTravelSignsPlugin.getDbHandler() == DBType.File){
             FileDBHandler.load(saveFile);
-        }else if (FastTravelSignsPlugin.getDbHandler() == DBType.SQL) {
+        }else if (FastTravelSignsPlugin.getDbHandler() == DBType.SQLite) {
             try {
                 SQLDBHandler.load();
             } catch (SQLException e) {
@@ -85,7 +85,7 @@ public class FastTravelSignDB {
 
         if (FastTravelSignsPlugin.getDbHandler() == DBType.File){
             FileDBHandler.save();
-        } else if (FastTravelSignsPlugin.getDbHandler() == DBType.SQL) {
+        } else if (FastTravelSignsPlugin.getDbHandler() == DBType.SQLite) {
             SQLDBHandler.save();
         }
 

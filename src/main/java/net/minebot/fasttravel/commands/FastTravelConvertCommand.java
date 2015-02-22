@@ -55,13 +55,13 @@ public class FastTravelConvertCommand implements CommandExecutor {
         }
 
         if (plugin.getDbHandler() == DBType.File){
-            db = Database.getDatabaseBySystem("SQL");
+            db = Database.getDatabaseBySystem("SQLite");
             FastTravelUtil.sendFTMessage(sender, "Converting database to SQLite.");
             db.init();
             SQLDBHandler.save();
             db.shutdown();
             return true;
-        } else if (plugin.getDbHandler() == DBType.SQL) {
+        } else if (plugin.getDbHandler() == DBType.SQLite) {
             FastTravelUtil.sendFTMessage(sender, "Converting database to YAML-File.");
             FileDBHandler.load(plugin.getDataDir() + "/signs.yml");
             FileDBHandler.save(plugin.getDataDir() + "/signs.yml");

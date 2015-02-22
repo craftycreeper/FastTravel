@@ -53,6 +53,8 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
 	private Economy economy = null;
 
+    private Metrics metrics;
+
     private Database db;
 
     private static DBType dbHandler;
@@ -78,8 +80,9 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
 		// Load config and etc
 		dataInit();
-        metricsInit();
         config = getConfig();
+
+        //Updatecheck
 		updateChecker = new UpdateChecker(this, "http://dev.bukkit.org/bukkit-plugins/fasttravel/files.rss");
 
         if (updateChecker.updateFound()){
@@ -92,11 +95,12 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
 		menus = new ArrayList<TravelMenu>();
 
-        Database.registerDatabaseSystem("SQL", new SQLite());
-        if (getConfig().getString("database").equalsIgnoreCase("SQL")){
-            dbHandler = DBType.SQL;
-            db = Database.getDatabaseBySystem("SQL");
-            getLogger().info("Using SQL as database.");
+        //Database
+        Database.registerDatabaseSystem("SQLite", new SQLite());
+        if (getConfig().getString("database").equalsIgnoreCase("SQLite")){
+            dbHandler = DBType.SQLite;
+            db = Database.getDatabaseBySystem("SQLite");
+            getLogger().info("Using SQLite as database.");
             FastTravelSignDB.init(this, true);
         } else {
             getLogger().info("Using YAML file as database.");
@@ -109,7 +113,6 @@ public class FastTravelSignsPlugin extends JavaPlugin {
             dbHandler = DBType.File;
             getLogger().warning("Database not specified, using YAML file as fallback.");
         }
-
 
 		// Events
 		PluginManager pm = getServer().getPluginManager();
@@ -140,7 +143,10 @@ public class FastTravelSignsPlugin extends JavaPlugin {
         //Tabcompleter
         getCommand("ft").setTabCompleter(new FtTabComplete());
 
-		getLogger().info("Enabled.");
+        //mcstats.org metrics
+        metricsInit();
+
+        getLogger().info("Enabled.");
 	}
 
     public void onDisable() {
@@ -205,11 +211,44 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 	public void metricsInit(){
 		if (getConfig().getBoolean("metrics.enabled")){
 			try {
-				Metrics metrics = new Metrics(this);
+				metrics = new Metrics(this);
+
+                Metrics.Graph dbUsage = metrics.createGraph("Databases");
+
+                if (getDbHandler() == DBType.SQLite) {
+
+                    dbUsage.addPlotter(new Metrics.Plotter() {
+                        @Override
+                        public int getValue() {
+                            return 1;
+                        }
+                    });
+
+                } else if (getDbHandler() == DBType.File) {
+
+                    dbUsage.addPlotter(new Metrics.Plotter() {
+                        @Override
+                        public int getValue() {
+                            return 2;
+                        }
+                    });
+
+                } else if (getDbHandler() == DBType.MySQL){
+
+                    dbUsage.addPlotter(new Metrics.Plotter() {
+                        @Override
+                        public int getValue() {
+                            return 3;
+                        }
+                    });
+
+                }
+
 				metrics.start();
 			} catch (IOException e) {
 				// Failed to submit the stats :-(
 			}
+
 		}
 	}
 

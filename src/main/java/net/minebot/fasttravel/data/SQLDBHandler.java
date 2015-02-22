@@ -47,7 +47,7 @@ public class SQLDBHandler {
     private static int entries;
 
     static {
-        db = Database.getDatabaseBySystem("SQL");
+        db = Database.getDatabaseBySystem("SQLite");
         plugin = FastTravelSignsPlugin.getInstance();
         filePlayers = new ArrayList<>();
     }
@@ -60,6 +60,8 @@ public class SQLDBHandler {
         if (entries == 0){
             plugin.getLogger().info("No signs found in the database");
             return;
+        } else {
+            plugin.getLogger().info(entries + " FastTravelSigns found in the database. Starting to load them.");
         }
 
         ResultSet rs = db.query("SELECT * From FastTravelSigns");
@@ -81,16 +83,21 @@ public class SQLDBHandler {
             float price = rs.getFloat(14);
             int range = rs.getInt(15);
 
-            List<UUID> players = db.getList(rs.getBytes(16));
+            List<UUID> players = null;
+
+            players = db.getList(rs.getBytes(16));
 
             if (!players.contains(creator)){
                 players.add(creator);
             }
 
-            Location signLoc = new Location(signloc_World, signloc_X, signloc_Y, signloc_Z);
+            Location tpLoc = null;
+            Location signLoc = null;
+
+            signLoc = new Location(signloc_World, signloc_X, signloc_Y, signloc_Z);
             signLoc.setYaw(signloc_Yaw);
 
-            Location tpLoc = new Location(tploc_World, tploc_X, tploc_Y, tploc_Z);
+            tpLoc = new Location(tploc_World, tploc_X, tploc_Y, tploc_Z);
             tpLoc.setYaw(tploc_Yaw);
 
             FastTravelSignDB.addSign(new FastTravelSign(name, creator, price, signLoc, tpLoc, automatic, range,
@@ -98,6 +105,7 @@ public class SQLDBHandler {
 
         }
 
+        rs.close();
         plugin.getLogger().info("Loaded " + FastTravelSignDB.getAllSigns().size() + " FastTravelSigns.");
     }
 
