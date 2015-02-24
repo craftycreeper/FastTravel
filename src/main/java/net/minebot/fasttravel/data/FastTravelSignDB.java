@@ -25,7 +25,6 @@
 package net.minebot.fasttravel.data;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
-import net.minebot.fasttravel.Util.DBType;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;

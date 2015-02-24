@@ -25,9 +25,9 @@
 package net.minebot.fasttravel;
 
 import net.milkbowl.vault.economy.Economy;
-import net.minebot.fasttravel.Util.DBType;
 import net.minebot.fasttravel.Util.UpdateChecker;
 import net.minebot.fasttravel.commands.*;
+import net.minebot.fasttravel.data.DBType;
 import net.minebot.fasttravel.data.Database;
 import net.minebot.fasttravel.data.FastTravelSignDB;
 import net.minebot.fasttravel.data.SQLite;

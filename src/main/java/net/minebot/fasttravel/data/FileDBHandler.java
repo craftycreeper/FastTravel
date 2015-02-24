@@ -99,7 +99,7 @@ public class FileDBHandler {
             filePlayers.clear();
         }
 
-        plugin.getLogger().info("Loaded " + FastTravelSignDB.getAllSigns().size() + " fast travel signs.");
+        plugin.getLogger().info("Loaded " + FastTravelSignDB.getAllSigns().size() + " FastTravelSigns from File.");
         save();
     }
 

@@ -27,10 +27,7 @@ package net.minebot.fasttravel.task;
 import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.Util.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
-import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 
 import java.util.UUID;
 
@@ -110,9 +107,13 @@ public class FastTravelTask implements Runnable {
 
         FastTravelUtil.sendDebug(plugin.getConfig().getBoolean("DevMode"), "Ok now let's Travel");
 
+        plugin.getServer().getPlayer(player).getWorld().playSound(plugin.getServer().getPlayer(player).getLocation(),
+                Sound.CHICKEN_EGG_POP, 15, 1);
+        plugin.getServer().getPlayer(player).getWorld().playEffect(plugin.getServer().getPlayer(player).getLocation(),
+                Effect.SMOKE, 1);
         plugin.getServer().getPlayer(player).teleport(targ);
 		FastTravelUtil.sendFTMessage(plugin.getServer().getPlayer(player), "Travelled to " + ChatColor.AQUA + sign.getName()
-				+ ChatColor.WHITE + ".");
+                + ChatColor.WHITE + ".");
 	}
 
 }

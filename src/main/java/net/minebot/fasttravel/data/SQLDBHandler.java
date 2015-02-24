@@ -100,16 +100,27 @@ public class SQLDBHandler {
             tpLoc = new Location(tploc_World, tploc_X, tploc_Y, tploc_Z);
             tpLoc.setYaw(tploc_Yaw);
 
-            FastTravelSignDB.addSign(new FastTravelSign(name, creator, price, signLoc, tpLoc, automatic, range,
-                    players));
+            FastTravelSign sign = null;
+
+            sign = new FastTravelSign(name, creator, price, signLoc, tpLoc, automatic, range, players);
+
+            if (plugin.getConfig().getBoolean("DevMode")){
+                plugin.getLogger().info("Loaded sign: " + sign.getName());
+            }
+
+            FastTravelSignDB.addSign(sign);
 
         }
 
         rs.close();
-        plugin.getLogger().info("Loaded " + FastTravelSignDB.getAllSigns().size() + " FastTravelSigns.");
+        plugin.getLogger().info("Loaded " + FastTravelSignDB.getAllSigns().size() + " FastTravelSigns from SQLite" +
+                " database.");
     }
 
     public static void save(){
+
+        db.update("DELETE FROM FastTravelSigns;");
+
         for (String signName : FastTravelSignDB.getSignMap().keySet()) {
             FastTravelSign sign = FastTravelSignDB.getSign(signName);
             if (!db.tableContains("name", signName)){

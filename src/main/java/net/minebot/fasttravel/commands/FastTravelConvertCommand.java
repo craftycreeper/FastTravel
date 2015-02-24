@@ -25,11 +25,8 @@
 package net.minebot.fasttravel.commands;
 
 import net.minebot.fasttravel.FastTravelSignsPlugin;
-import net.minebot.fasttravel.Util.DBType;
 import net.minebot.fasttravel.Util.FastTravelUtil;
-import net.minebot.fasttravel.data.Database;
-import net.minebot.fasttravel.data.FileDBHandler;
-import net.minebot.fasttravel.data.SQLDBHandler;
+import net.minebot.fasttravel.data.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -60,11 +57,15 @@ public class FastTravelConvertCommand implements CommandExecutor {
             db.init();
             SQLDBHandler.save();
             db.shutdown();
+            FastTravelUtil.sendFTMessage(sender, "Converted " + FastTravelSignDB.getAllSigns().size() + " signs to" +
+                    " SQLite database.");
             return true;
         } else if (plugin.getDbHandler() == DBType.SQLite) {
             FastTravelUtil.sendFTMessage(sender, "Converting database to YAML-File.");
             FileDBHandler.load(plugin.getDataDir() + "/signs.yml");
             FileDBHandler.save(plugin.getDataDir() + "/signs.yml");
+            FastTravelUtil.sendFTMessage(sender, "Converted " + FastTravelSignDB.getAllSigns().size() + " signs to" +
+                    " YAML-File database.");
             return true;
         }
 

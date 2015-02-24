@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.minebot.fasttravel.Util;
+package net.minebot.fasttravel.data;
 
 /**
  * Created by oneill011990 on 05.02.2015.

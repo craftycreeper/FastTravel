@@ -78,7 +78,7 @@ public abstract class Database {
         }
     }
 
-    public boolean createTable(String tableName, String columns) {
+    private boolean createTable(String tableName, String columns) {
         if (dbStatement != null) {
             try {
                 dbStatement.executeUpdate("CREATE TABLE IF NOT EXISTS " + tableName + " (" + columns + ");");
