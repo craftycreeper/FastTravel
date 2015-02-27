@@ -165,14 +165,14 @@ public class TravelMenu {
     public void goNext(){
         if (currentSite < sites){
             player.openInventory(inventories.get(currentSite+1));
-            currentSite += 1;
+            currentSite++;
         }
     }
 
     public void goBack(){
         if (currentSite > sites){
             player.openInventory(inventories.get(currentSite-1));
-            currentSite -= 1;
+            currentSite--;
         }
     }
 

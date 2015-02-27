@@ -51,8 +51,8 @@ public class FastTravelConvertCommand implements CommandExecutor {
             return false;
         }
 
-        if (plugin.getDbHandler() == DBType.File){
-            db = Database.getDatabaseBySystem("SQLite");
+        if (plugin.getDBHandler() == DBType.File){
+            db = Database.getDatabaseBySystem(DBType.SQLite);
             FastTravelUtil.sendFTMessage(sender, "Converting database to SQLite.");
             db.init();
             SQLDBHandler.save();
@@ -60,7 +60,7 @@ public class FastTravelConvertCommand implements CommandExecutor {
             FastTravelUtil.sendFTMessage(sender, "Converted " + FastTravelSignDB.getAllSigns().size() + " signs to" +
                     " SQLite database.");
             return true;
-        } else if (plugin.getDbHandler() == DBType.SQLite) {
+        } else if (plugin.getDBHandler() == DBType.SQLite) {
             FastTravelUtil.sendFTMessage(sender, "Converting database to YAML-File.");
             FileDBHandler.load(plugin.getDataDir() + "/signs.yml");
             FileDBHandler.save(plugin.getDataDir() + "/signs.yml");

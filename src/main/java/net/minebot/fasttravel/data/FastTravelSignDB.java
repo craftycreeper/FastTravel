@@ -39,15 +39,11 @@ public class FastTravelSignDB {
 
 	private static String saveFile;
 
-	private static List<String> filePlayers;
-
-	public static void init(FastTravelSignsPlugin plugin, String saveFile, boolean load) {
+    public static void init(FastTravelSignsPlugin plugin, String saveFile, boolean load) {
 		FastTravelSignDB.plugin = plugin;
 		FastTravelSignDB.saveFile = saveFile;
 
 		signs = new HashMap<>();
-
-		filePlayers = new ArrayList<>();
 
         if (load)
 		    load();
@@ -58,22 +54,18 @@ public class FastTravelSignDB {
 
         signs = new HashMap<>();
 
-        filePlayers = new ArrayList<>();
-
         if (load)
             load();
     }
 
     public static void load(){
 
-        if (FastTravelSignsPlugin.getDbHandler() == DBType.File){
+        if (FastTravelSignsPlugin.getDBHandler() == DBType.File){
             FileDBHandler.load(saveFile);
-        }else if (FastTravelSignsPlugin.getDbHandler() == DBType.SQLite) {
+        }else if (FastTravelSignsPlugin.getDBHandler() == DBType.SQLite) {
             try {
                 SQLDBHandler.load();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (SQLException | IOException e) {
                 e.printStackTrace();
             }
         }
@@ -82,9 +74,9 @@ public class FastTravelSignDB {
 
     public static void save(){
 
-        if (FastTravelSignsPlugin.getDbHandler() == DBType.File){
-            FileDBHandler.save();
-        } else if (FastTravelSignsPlugin.getDbHandler() == DBType.SQLite) {
+        if (FastTravelSignsPlugin.getDBHandler() == DBType.File){
+            FileDBHandler.save(plugin.getDataDir() + "/signs.yml");
+        } else if (FastTravelSignsPlugin.getDBHandler() == DBType.SQLite) {
             SQLDBHandler.save();
         }
 
@@ -93,7 +85,12 @@ public class FastTravelSignDB {
 	public static void removeSign(String name) {
 		if (signs.containsKey(name.toLowerCase()))
 			signs.remove(name.toLowerCase());
-		save();
+
+        if (FastTravelSignsPlugin.getDBHandler() == DBType.File){
+            save();
+        } else if (FastTravelSignsPlugin.getDBHandler() == DBType.SQLite){
+            Database.getDatabaseBySystem(DBType.SQLite).update("DELETE * FROM FastTravelSigns WHERE name = '" + name + "';");
+        }
 	}
 
 	public static FastTravelSign getSign(String name) {
@@ -104,7 +101,7 @@ public class FastTravelSignDB {
 	}
 
 	public static List<FastTravelSign> getSignsFor(Player player) {
-		List<FastTravelSign> playerSigns = new ArrayList<FastTravelSign>();
+		List<FastTravelSign> playerSigns = new ArrayList<>();
 		for (FastTravelSign sign : signs.values()) {
 			if (sign.isAutomatic() || sign.foundBy(player.getUniqueId()))
 				playerSigns.add(sign);
@@ -114,7 +111,7 @@ public class FastTravelSignDB {
 	}
 
 	public static List<FastTravelSign> getAllSigns() {
-		List<FastTravelSign> allSigns = new ArrayList<FastTravelSign>();
+		List<FastTravelSign> allSigns = new ArrayList<>();
 		allSigns.addAll(signs.values());
 		Collections.sort(allSigns);
 		return allSigns;

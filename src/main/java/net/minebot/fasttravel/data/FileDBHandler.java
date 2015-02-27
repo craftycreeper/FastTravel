@@ -32,7 +32,6 @@ import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,9 +60,7 @@ public class FileDBHandler {
         YamlConfiguration signYAML = new YamlConfiguration();
         try {
             signYAML.load(saveFile);
-        } catch (FileNotFoundException e) {
-        } catch (IOException e) {
-        } catch (InvalidConfigurationException e) {
+        } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
 
@@ -83,7 +80,7 @@ public class FileDBHandler {
                     + ".signloc.z"));
             location.setYaw((float) signYAML.getDouble(signName + ".signloc.yaw"));
 
-            Location tploc = new Location(locWorld, signYAML.getDouble(signName + ".tploc.x"),
+            Location tploc = new Location(tpLocWorld, signYAML.getDouble(signName + ".tploc.x"),
                     signYAML.getDouble(signName + ".tploc.y"), signYAML.getDouble(signName
                     + ".tploc.z"));
             tploc.setYaw((float) signYAML.getDouble(signName + ".tploc.yaw"));

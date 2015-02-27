@@ -33,6 +33,7 @@ import net.minebot.fasttravel.data.FastTravelSignDB;
 import net.minebot.fasttravel.data.SQLite;
 import net.minebot.fasttravel.listeners.*;
 import net.minebot.fasttravel.menu.TravelMenu;
+import org.bukkit.World;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.plugin.PluginManager;
@@ -41,7 +42,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -93,25 +93,23 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 			newVersion = updateChecker.getLink();
         }
 
-		menus = new ArrayList<TravelMenu>();
+		menus = new ArrayList<>();
 
         //Database
-        Database.registerDatabaseSystem("SQLite", new SQLite());
+        Database.registerDatabaseSystem(DBType.SQLite, new SQLite());
         if (getConfig().getString("database").equalsIgnoreCase("SQLite")){
             dbHandler = DBType.SQLite;
-            db = Database.getDatabaseBySystem("SQLite");
+            db = Database.getDatabaseBySystem(DBType.SQLite);
             getLogger().info("Using SQLite as database.");
             FastTravelSignDB.init(this, true);
-        } else {
+        } else if (getConfig().getString("database").equalsIgnoreCase("File")){
             getLogger().info("Using YAML file as database.");
             FastTravelSignDB.init(this, dataDir + "/signs.yml", true);
             dbHandler = DBType.File;
-        }
-
-        if (db == null) {
+        } else {
+            getLogger().warning("Database setting is invalid, using YAML file as fallback.");
             FastTravelSignDB.init(this, dataDir + "/signs.yml", true);
             dbHandler = DBType.File;
-            getLogger().warning("Database not specified, using YAML file as fallback.");
         }
 
 		// Events
@@ -128,12 +126,14 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		getCommand("ftlist").setExecutor(new FastTravelListCommand(this));
 		getCommand("ftprice").setExecutor(new FastTravelPriceCommand(this));
 		getCommand("ftdelete").setExecutor(new FastTravelDeleteCommand());
-		getCommand("ftsetpoint").setExecutor(new FastTravelSetpointCommand());
+		getCommand("ftsetpoint").setExecutor(new FastTravelSetpointCommand(this));
 		getCommand("ftreload").setExecutor(new FastTravelReloadCommand(this));
 		getCommand("ftauto").setExecutor(new FastTravelAutoCommand());
         getCommand("ftclear").setExecutor(new FastTravelClearCommand());
-        //not working for now because it uses player names
-        //TODO Make it work again
+        /*
+         * TODO Make it work again
+         * not working for now because it uses player names
+         */
         getCommand("ftremove").setExecutor(new FastTravelRemoveCommand(this));
         getCommand("ftsetrange").setExecutor(new FastTravelSetRangeCommand());
 		getCommand("ftsave").setExecutor(new FastTravelSaveCommand(this));
@@ -145,6 +145,13 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
         //mcstats.org metrics
         metricsInit();
+
+        if (config.getBoolean("DevMode")) {
+            getLogger().info("Worlds found:");
+            for (World world : getServer().getWorlds()) {
+                getLogger().info(world.getName());
+            }
+        }
 
         getLogger().info("Enabled.");
 	}
@@ -163,17 +170,16 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		String confFile = dataDir + "/config.yml";
 		try {
 			getConfig().load(confFile);
-		} catch (FileNotFoundException e) {
-		} catch (IOException e) {
-		} catch (InvalidConfigurationException e) {
+		} catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
 		}
-		getConfig().addDefault("cooldown", 0);
+        getConfig().addDefault("cooldown", 0);
 		getConfig().addDefault("warmup", 0L);
         getConfig().addDefault("use range", true);
 		getConfig().addDefault("enable menu", true);
 		getConfig().addDefault("notify update", true);
 		getConfig().addDefault("metrics enabled", true);
-        getConfig().addDefault("database", "file");
+        getConfig().addDefault("database", "File");
         getConfig().addDefault("DevMode", false);
 		getConfig().addDefault("economy.enabled", false);
 		getConfig().addDefault("economy.default-price", 0);
@@ -215,7 +221,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 
                 Metrics.Graph dbUsage = metrics.createGraph("Databases");
 
-                if (getDbHandler() == DBType.SQLite) {
+                if (getDBHandler() == DBType.SQLite) {
 
                     dbUsage.addPlotter(new Metrics.Plotter() {
                         @Override
@@ -224,7 +230,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
                         }
                     });
 
-                } else if (getDbHandler() == DBType.File) {
+                } else if (getDBHandler() == DBType.File) {
 
                     dbUsage.addPlotter(new Metrics.Plotter() {
                         @Override
@@ -233,7 +239,7 @@ public class FastTravelSignsPlugin extends JavaPlugin {
                         }
                     });
 
-                } else if (getDbHandler() == DBType.MySQL){
+                } else if (getDBHandler() == DBType.MySQL){
 
                     dbUsage.addPlotter(new Metrics.Plotter() {
                         @Override
@@ -256,10 +262,6 @@ public class FastTravelSignsPlugin extends JavaPlugin {
 		return economy;
 	}
 
-    public static Configuration getConfiguration() {
-        return config;
-    }
-
 	public ArrayList<TravelMenu> getMenus() {
 		return menus;
 	}
@@ -272,7 +274,8 @@ public class FastTravelSignsPlugin extends JavaPlugin {
         return dataDir;
     }
 
-    public static DBType getDbHandler() {
+    public static DBType getDBHandler() {
         return dbHandler;
     }
+
 }

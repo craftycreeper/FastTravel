@@ -42,10 +42,10 @@ public abstract class Database {
 
     protected Connection dbConn;
     protected Statement dbStatement;
-    private static final HashMap<String, Database> dbSystems;
+    private static final HashMap<DBType, Database> dbSystems;
 
     static {
-        dbSystems = new HashMap<String, Database>();
+        dbSystems = new HashMap<DBType, Database>();
     }
 
     protected abstract void connect() throws ClassNotFoundException, SQLException;
@@ -159,11 +159,11 @@ public abstract class Database {
     }
 
     //Static Stuff
-    public static void registerDatabaseSystem(String systemName, Database dbSystem) {
+    public static void registerDatabaseSystem(DBType systemName, Database dbSystem) {
         dbSystems.put(systemName, dbSystem);
     }
 
-    public static Database getDatabaseBySystem(String systemName) {
+    public static Database getDatabaseBySystem(DBType systemName) {
         return dbSystems.get(systemName);
     }
 

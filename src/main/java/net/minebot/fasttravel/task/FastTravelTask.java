@@ -93,7 +93,7 @@ public class FastTravelTask implements Runnable {
         }
 
 
-		Location targ = sign.getTPLocation().clone();
+		Location targ = sign.getTPLocation();
 		while (!FastTravelUtil.safeLocation(targ)) {
 			// Find a safe place - simple "go up" algorithm
 			targ.setY(targ.getY() + 1);
@@ -111,6 +111,7 @@ public class FastTravelTask implements Runnable {
                 Sound.CHICKEN_EGG_POP, 15, 1);
         plugin.getServer().getPlayer(player).getWorld().playEffect(plugin.getServer().getPlayer(player).getLocation(),
                 Effect.SMOKE, 1);
+
         plugin.getServer().getPlayer(player).teleport(targ);
 		FastTravelUtil.sendFTMessage(plugin.getServer().getPlayer(player), "Travelled to " + ChatColor.AQUA + sign.getName()
                 + ChatColor.WHITE + ".");

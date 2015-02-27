@@ -58,13 +58,13 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 
 		this.price = 0;
 		this.range = 0;
-		this.players = new ArrayList<UUID>();
+		this.players = new ArrayList<>();
 		this.setAutomatic(false);
 
 		this.location = block.getLocation();
 		Sign s = (Sign) block.getState().getData();
 		this.location.setYaw((float) FastTravelUtil.getYawForFace(s.getFacing()));
-		this.tploc = location.clone();
+		this.tploc = location;
 	}
 
 	/**
@@ -143,7 +143,7 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 	 */
 	public void setSignLocation(Location newSignLoc) {
 		location = newSignLoc.clone();
-		FastTravelSignDB.save();
+        FastTravelSignDB.save();
 	}
 
 	/**
@@ -153,7 +153,7 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 	 */
 	public void setTPLocation(Location newTPPoint) {
 		tploc = newTPPoint.clone();
-		FastTravelSignDB.save();
+        FastTravelSignDB.save();
 	}
 
 	/**
@@ -214,8 +214,8 @@ public class FastTravelSign implements Comparable<FastTravelSign> {
 		return players.contains(player);
 	}
 
-	public int compareTo(FastTravelSign o) {
-		return this.name.toLowerCase().compareTo(o.getName().toLowerCase());
+	public int compareTo(FastTravelSign sign) {
+		return this.name.toLowerCase().compareTo(sign.getName().toLowerCase());
 	}
 
 	/**

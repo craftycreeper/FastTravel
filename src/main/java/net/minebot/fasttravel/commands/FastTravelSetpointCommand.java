@@ -24,6 +24,7 @@
 
 package net.minebot.fasttravel.commands;
 
+import net.minebot.fasttravel.FastTravelSignsPlugin;
 import net.minebot.fasttravel.Util.FastTravelUtil;
 import net.minebot.fasttravel.data.FastTravelSign;
 import net.minebot.fasttravel.data.FastTravelSignDB;
@@ -35,7 +36,13 @@ import org.bukkit.entity.Player;
 
 public class FastTravelSetpointCommand implements CommandExecutor {
 
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    private FastTravelSignsPlugin plugin;
+
+    public FastTravelSetpointCommand(FastTravelSignsPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
 		if (!(sender instanceof Player)) {
 			return false;
@@ -61,6 +68,8 @@ public class FastTravelSetpointCommand implements CommandExecutor {
 			FastTravelUtil.sendFTMessage(sender, ChatColor.AQUA + sign.getName() + ChatColor.WHITE
 					+ " has had its alternate teleport location cleared.");
 		}
+
+        FastTravelSignDB.save();
 
 		return true;
 	}

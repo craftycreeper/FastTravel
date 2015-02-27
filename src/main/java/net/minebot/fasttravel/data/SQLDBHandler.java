@@ -47,7 +47,7 @@ public class SQLDBHandler {
     private static int entries;
 
     static {
-        db = Database.getDatabaseBySystem("SQLite");
+        db = Database.getDatabaseBySystem(DBType.SQLite);
         plugin = FastTravelSignsPlugin.getInstance();
         filePlayers = new ArrayList<>();
     }
@@ -118,9 +118,6 @@ public class SQLDBHandler {
     }
 
     public static void save(){
-
-        db.update("DELETE FROM FastTravelSigns;");
-
         for (String signName : FastTravelSignDB.getSignMap().keySet()) {
             FastTravelSign sign = FastTravelSignDB.getSign(signName);
             if (!db.tableContains("name", signName)){
