@@ -1,0 +1,145 @@
+name: FastTravelSigns
+main: net.minebot.fasttravel.FastTravelSignsPlugin
+version: ${project.version}
+permissions:
+    fasttravelsigns.use:
+        description: Allows users to find travel points and use them with /ft.
+        default: true
+    fasttravelsigns.overrides.allpoints:
+        description: Allows one to go to any fast travel point.
+        default: op
+    fasttravelsigns.overrides.cooldown:
+        description: Allows one to avoid cooldowns.
+        default: op
+    fasttravelsigns.overrides.warmup:
+        description: Allows one to avoid warmup time.
+        default: op
+    fasttravelsigns.overrides.price:
+        description: Allows one to avoid travel costs.
+        default: op
+    fasttravelsigns.multiworld:
+        description: Allows users to use fast travel points located in other worlds.
+        default: op
+    fasttravelsigns.create:
+        description: Allows users to create travel points.
+        default: op
+    fasttravelsigns.remove.all:
+        description: Allows users to remove all travel signs, including those of others.
+        default: op
+    fasttravelsigns.remove.own:
+        description: Allows users to remove their own travel signs.
+        default: op
+    fasttravelsigns.list:
+        description: Allows use of /ftlist command.
+        default: op
+    fasttravelsigns.price:
+        description: Allows use of /ftprice command.
+        default: op
+    fasttravelsigns.delete:
+        description: Allows use of /ftdelete command.
+        default: op
+    fasttravelsigns.setpoint:
+        description: Allows use of /ftsetpoint command.
+        default: op
+    fasttravelsigns.reload:
+        description: Allows use of /ftreload command.
+        default: op
+    fasttravelsigns.auto:
+        description: Allows use of /ftauto command.
+        default: op
+    fasttravelsigns.clear:
+        description: Allows use of /ftclear command.
+        default: op
+    fasttravelsigns.remove:
+        description: Allows use of /ftremove command.
+        default: op
+    fasttravelsigns.range:
+        description: Allows use of /ftrange command.
+        default: op
+    fasttravelsigns.update:
+        description: Sends player info if an update is available.
+        default: op
+    fasttravelsigns.save:
+        description: Saves signs to file and reloads database and configuration.
+        default: op
+    fasttravelsigns.menu:
+        description: Allows use of /ftmenu command.
+        default: op
+    fasttravelsigns.move:
+        description: Allows use of /ftmove command.
+        default: op
+    fasttravelsigns.convert:
+        description: Allows use of /ftconvert command.
+        default: op
+commands:
+    ft:
+        description: Obtain list of travel points and warp to them
+        permission: fasttravelsigns.use
+        usage: |
+            /ft [travelpoint]
+    ftlist:
+        description: Get a list of all fast travel points
+        permission: fasttravelsigns.list
+        usage: |
+            /ftlist
+    ftprice:
+        description: Set the price to travel to a given point
+        permission: fasttravelsigns.price
+        usage: |
+            /ftprice [travelpoint] [price]
+    ftdelete:
+        description: Delete an existing travel point
+        permission: fasttravelsigns.delete
+        usage: |
+            /ftdelete [travelpoint]
+    ftsetpoint:
+        description: Set an alternate teleport point for a given fast travel point
+        permission: fasttravelsigns.setpoint
+        usage: |
+            /ftsetpoint [travelpoint]
+            /ftsetpoint [travelpoint] clear
+    ftreload:
+        description: Reload FastTravelSigns config file and signs database
+        permission: fasttravelsigns.reload
+        usage: |
+            /ftreload
+    ftauto:
+        description: Toggle whether or not a sign is available to all players on an "always on" basis
+        permission: fasttravelsigns.auto
+        usage: |
+            /ftauto [travelpoint]
+    ftclear:
+        description: Removes all players from a sign
+        permission: fasttravelsigns.clear
+        usage: |
+            /ftclear [travelpoint]
+    ftremove:
+        description: Removes a player from a sign
+        permission: fasttravelsigns.remove
+        usage: |
+            /ftremove [travelpoint] [player]
+    ftsetrange:
+        description: Set the range for a sign
+        permission: fasttravelsigns.range
+        usage: |
+            /ftsetrange [travelpoint] [range]
+    ftsave:
+        description: Saves signs to file and reloads database and configuration
+        permission: fasttravelsigns.save
+        usage: |
+            /ftsave
+    ftmenu:
+        description: Opens menu with all signs a player can use
+        permission: fasttravelsigns.menu
+        usage: |
+            /ftmenu
+    ftmove:
+        description: Moves a FastTravelSign
+        permission: fasttravelsigns.move
+        usage: |
+            /ftmove [Sign to move]
+    ftconvert:
+        description: Converts the database type.
+        permission: fasttravelsigns.convert
+        usage: |
+            /ftconvert
